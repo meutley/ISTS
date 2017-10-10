@@ -1,6 +1,6 @@
 using System;
 
-using ISTS.Domain;
+using ISTS.Domain.Sessions;
 
 namespace ISTS.Application.Sessions
 {

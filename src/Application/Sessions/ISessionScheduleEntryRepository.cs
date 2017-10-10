@@ -1,6 +1,7 @@
 using System;
+using System.Collections.Generic;
 
-using ISTS.Domain;
+using ISTS.Domain.Sessions;
 
 namespace ISTS.Application.Sessions
 {
