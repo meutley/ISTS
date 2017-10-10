@@ -1,6 +1,6 @@
 using System;
 
-namespace ISTS.Application.Exceptions
+namespace ISTS.Domain.Exceptions
 {
     public class InvalidDateRangeException : Exception
     {

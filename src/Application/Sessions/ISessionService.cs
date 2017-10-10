@@ -4,6 +4,7 @@ namespace ISTS.Application.Sessions
 {
     public interface ISessionService
     {
-        void Reschedule(Guid sessionId, DateTime startDateTime, DateTime endDateTime);
+        SessionDto Create(SessionDto session);
+        SessionDto Get(Guid id);
     }
 }
