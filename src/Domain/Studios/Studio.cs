@@ -1,11 +1,12 @@
 using System;
 
-using ISTS.Helpers.Validation;
+using ISTS.Domain.Exceptions;
 using ISTS.Domain.Schedules;
+using ISTS.Helpers.Validation;
 
 namespace ISTS.Domain.Studios
 {
-    public class Studio : IDomainObject
+    public class Studio : IAggregateRoot
     {
         public Guid Id { get; private set; }
 
@@ -28,11 +29,36 @@ namespace ISTS.Domain.Studios
             return result;
         }
 
-        public StudioSession CreateSession(DateRange scheduledTime)
+        public StudioSession CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var session = StudioSession.Create(this.Id, scheduledTime);
+            var validatorResult = sessionScheduleValidator.Validate(this.Id, scheduledTime);
+            if (validatorResult != SessionScheduleValidatorResult.Success)
+            {
+                HandleSessionScheduleValidatorError(validatorResult);
+            }
+            else
+            {
+                var session = StudioSession.Create(this.Id, scheduledTime);
+                return session;
+            }
 
-            return session;
+            throw new InvalidOperationException();
+        }
+
+        private void HandleSessionScheduleValidatorError(SessionScheduleValidatorResult validatorResult)
+        {
+            switch (validatorResult)
+            {
+                case SessionScheduleValidatorResult.Success:
+                    return;
+                case SessionScheduleValidatorResult.Overlapping:
+                    throw new OverlappingScheduleException();
+                case SessionScheduleValidatorResult.StartProvidedEndNull:
+                case SessionScheduleValidatorResult.StartNullEndProvided:
+                    throw new ScheduleStartAndEndMustBeProvidedException();
+                case SessionScheduleValidatorResult.StartGreaterThanOrEqualToEnd:
+                    throw new ScheduleEndMustBeGreaterThanStartException();
+            }
         }
     }
 }

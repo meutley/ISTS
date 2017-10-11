@@ -5,7 +5,7 @@ using ISTS.Domain.Schedules;
 
 namespace ISTS.Domain.Studios
 {
-    public class StudioSession : IDomainObject
+    public class StudioSession
     {
         public Guid Id { get; protected set; }
 

@@ -2,7 +2,7 @@ using System;
 
 namespace ISTS.Domain
 {
-    public interface IDomainObject
+    public interface IAggregateRoot
     {
         Guid Id { get; }
     }
