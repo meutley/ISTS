@@ -48,6 +48,7 @@ namespace ISTS.Domain.Studios
             else
             {
                 var session = StudioSession.Create(this.Id, scheduledTime);
+                _studioSessions.Add(session);
                 return session;
             }
 

@@ -17,5 +17,10 @@ namespace ISTS.Infrastructure.Repository
         {
             return Studio.Create("asdf", "asdf");
         }
+
+        public IEnumerable<StudioSessionSchedule> GetSchedule(Guid studioId, DateTime from, DateTime to)
+        {
+            return Enumerable.Empty<StudioSessionSchedule>();
+        }
     }
 }

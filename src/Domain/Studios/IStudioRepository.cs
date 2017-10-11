@@ -7,5 +7,6 @@ namespace ISTS.Domain.Studios
     {
         IEnumerable<Studio> Get();
         Studio Get(Guid id);
+        IEnumerable<StudioSessionSchedule> GetSchedule(Guid studioId, DateTime from, DateTime to);
     }
 }
