@@ -43,7 +43,7 @@ namespace ISTS.Domain.Studios
             var validatorResult = sessionScheduleValidator.Validate(this.Id, scheduledTime);
             if (validatorResult != SessionScheduleValidatorResult.Success)
             {
-                HandleSessionScheduleValidatorError(validatorResult);
+                ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);
             }
             else
             {
@@ -52,22 +52,6 @@ namespace ISTS.Domain.Studios
             }
 
             throw new InvalidOperationException();
-        }
-
-        private void HandleSessionScheduleValidatorError(SessionScheduleValidatorResult validatorResult)
-        {
-            switch (validatorResult)
-            {
-                case SessionScheduleValidatorResult.Success:
-                    return;
-                case SessionScheduleValidatorResult.Overlapping:
-                    throw new OverlappingScheduleException();
-                case SessionScheduleValidatorResult.StartProvidedEndNull:
-                case SessionScheduleValidatorResult.StartNullEndProvided:
-                    throw new ScheduleStartAndEndMustBeProvidedException();
-                case SessionScheduleValidatorResult.StartGreaterThanOrEqualToEnd:
-                    throw new ScheduleEndMustBeGreaterThanStartException();
-            }
         }
     }
 }
