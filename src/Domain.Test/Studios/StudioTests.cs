@@ -76,7 +76,7 @@ namespace ISTS.Domain.Tests.Studios
         public void CreateSession_Throws_OverlappingScheduleException()
         {
             _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
+                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
                 .Returns(SessionScheduleValidatorResult.Overlapping);
 
             var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
@@ -87,24 +87,10 @@ namespace ISTS.Domain.Tests.Studios
         }
 
         [Fact]
-        public void CreateSession_Throws_ScheduleStartAndEndMustBeProvidedException()
-        {
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.StartNullEndProvided);
-
-            var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
-
-            var ex = Assert.Throws<ScheduleStartAndEndMustBeProvidedException>(() => _studio.CreateSession(schedule, _sessionScheduleValidatorMock.Object));
-
-            Assert.NotNull(ex);
-        }
-
-        [Fact]
         public void CreateSession_Throws_ScheduleEndMustBeGreaterThanStartException()
         {
             _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
+                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
                 .Returns(SessionScheduleValidatorResult.StartGreaterThanOrEqualToEnd);
 
             var schedule = DateRange.Create(DateTime.Now, DateTime.Now);

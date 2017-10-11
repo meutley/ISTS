@@ -15,7 +15,7 @@ namespace ISTS.Domain.Sessions
 
         public static Session Create(Guid studioId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)
         {
-            if (ValidateSchedule(studioId, schedule, sessionScheduleValidator))
+            if (ValidateSchedule(studioId, null, schedule, sessionScheduleValidator))
             {
                 var session = new Session
                 {
@@ -31,7 +31,7 @@ namespace ISTS.Domain.Sessions
 
         public Session Reschedule(DateRange newSchedule, ISessionScheduleValidator sessionScheduleValidator)
         {
-            if (Session.ValidateSchedule(this.StudioId, newSchedule, sessionScheduleValidator))
+            if (Session.ValidateSchedule(this.StudioId, this.Id, newSchedule, sessionScheduleValidator))
             {
                 this.ScheduledTime = newSchedule;
                 return this;
@@ -40,9 +40,9 @@ namespace ISTS.Domain.Sessions
             throw new InvalidOperationException();
         }
 
-        private static bool ValidateSchedule(Guid studioId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)
+        private static bool ValidateSchedule(Guid studioId, Guid? sessionId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var validatorResult = sessionScheduleValidator.Validate(studioId, schedule);
+            var validatorResult = sessionScheduleValidator.Validate(studioId, sessionId, schedule);
             if (validatorResult != SessionScheduleValidatorResult.Success)
             {
                 ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);

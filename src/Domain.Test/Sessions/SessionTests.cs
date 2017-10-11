@@ -20,7 +20,7 @@ namespace ISTS.Domain.Tests.Sessions
             _sessionScheduleValidatorMock = new Mock<ISessionScheduleValidator>();
 
             _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
+                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
                 .Returns(SessionScheduleValidatorResult.Success);
         }
 
@@ -54,7 +54,7 @@ namespace ISTS.Domain.Tests.Sessions
         public void Reschedule_Throws_OverlappingScheduleException()
         {
             _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
+                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
                 .Returns(SessionScheduleValidatorResult.Success);
 
             var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
@@ -62,7 +62,7 @@ namespace ISTS.Domain.Tests.Sessions
             var session = Session.Create(_studioId, schedule, _sessionScheduleValidatorMock.Object);
 
             _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
+                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
                 .Returns(SessionScheduleValidatorResult.Overlapping);
 
             var ex = Assert.Throws<OverlappingScheduleException>(() => session.Reschedule(newSchedule, _sessionScheduleValidatorMock.Object));
@@ -71,30 +71,10 @@ namespace ISTS.Domain.Tests.Sessions
         }
 
         [Fact]
-        public void CreateSession_Throws_ScheduleStartAndEndMustBeProvidedException()
-        {
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.Success);
-
-            var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
-            var newSchedule = DateRange.Create(DateTime.Now.AddDays(2), DateTime.Now.AddDays(2));
-            var session = Session.Create(_studioId, schedule, _sessionScheduleValidatorMock.Object);
-
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.StartNullEndProvided);
-
-            var ex = Assert.Throws<ScheduleStartAndEndMustBeProvidedException>(() => session.Reschedule(newSchedule, _sessionScheduleValidatorMock.Object));
-
-            Assert.NotNull(ex);
-        }
-
-        [Fact]
         public void CreateSession_Throws_ScheduleEndMustBeGreaterThanStartException()
         {
             _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
+                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
                 .Returns(SessionScheduleValidatorResult.Success);
 
             var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
@@ -102,7 +82,7 @@ namespace ISTS.Domain.Tests.Sessions
             var session = Session.Create(_studioId, schedule, _sessionScheduleValidatorMock.Object);
 
             _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<DateRange>()))
+                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
                 .Returns(SessionScheduleValidatorResult.StartGreaterThanOrEqualToEnd);
 
             var ex = Assert.Throws<ScheduleEndMustBeGreaterThanStartException>(() => session.Reschedule(newSchedule, _sessionScheduleValidatorMock.Object));

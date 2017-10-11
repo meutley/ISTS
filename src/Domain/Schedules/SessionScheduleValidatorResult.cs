@@ -4,8 +4,6 @@ namespace ISTS.Domain.Schedules
     {
         Success,
         Overlapping,
-        StartProvidedEndNull,
-        StartNullEndProvided,
         StartGreaterThanOrEqualToEnd
     }
 }

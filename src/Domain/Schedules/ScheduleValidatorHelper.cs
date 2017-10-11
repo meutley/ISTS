@@ -14,9 +14,6 @@ namespace ISTS.Domain.Schedules
                     return;
                 case SessionScheduleValidatorResult.Overlapping:
                     throw new OverlappingScheduleException();
-                case SessionScheduleValidatorResult.StartProvidedEndNull:
-                case SessionScheduleValidatorResult.StartNullEndProvided:
-                    throw new ScheduleStartAndEndMustBeProvidedException();
                 case SessionScheduleValidatorResult.StartGreaterThanOrEqualToEnd:
                     throw new ScheduleEndMustBeGreaterThanStartException();
             }

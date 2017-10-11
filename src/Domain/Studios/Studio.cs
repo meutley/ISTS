@@ -40,7 +40,7 @@ namespace ISTS.Domain.Studios
 
         public StudioSession CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var validatorResult = sessionScheduleValidator.Validate(this.Id, scheduledTime);
+            var validatorResult = sessionScheduleValidator.Validate(this.Id, null, scheduledTime);
             if (validatorResult != SessionScheduleValidatorResult.Success)
             {
                 ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);
