@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using ISTS.Domain.Exceptions;
 using ISTS.Domain.Schedules;
@@ -8,11 +10,18 @@ namespace ISTS.Domain.Studios
 {
     public class Studio : IAggregateRoot
     {
+        private List<StudioSession> _studioSessions = new List<StudioSession>();
+
         public Guid Id { get; private set; }
 
         public string Name { get; private set; }
 
         public string FriendlyUrl { get; private set; }
+
+        public virtual ReadOnlyCollection<StudioSession> StudioSessions
+        {
+            get { return _studioSessions.AsReadOnly(); }
+        }
 
         public static Studio Create(string name, string friendlyUrl)
         {
