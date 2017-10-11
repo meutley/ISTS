@@ -1,8 +1,9 @@
 using System;
 
 using ISTS.Helpers.Validation;
+using ISTS.Domain.Schedules;
 
-namespace ISTS.Domain.Model.Studios
+namespace ISTS.Domain.Studios
 {
     public class Studio : IDomainObject
     {
@@ -25,6 +26,13 @@ namespace ISTS.Domain.Model.Studios
             };
 
             return result;
+        }
+
+        public StudioSession CreateSession(DateRange scheduledTime)
+        {
+            var session = StudioSession.Create(this.Id, scheduledTime);
+
+            return session;
         }
     }
 }

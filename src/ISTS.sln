@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTS.Helpers", "Helpers\IST
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTS.Helpers.Test", "Helpers.Test\ISTS.Helpers.Test.csproj", "{93DBBAEF-167B-4B18-BC47-6C61A41A43A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTS.Application", "Application\ISTS.Application.csproj", "{A51CA8BE-227E-4AEB-9B12-F90E070DBC6D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

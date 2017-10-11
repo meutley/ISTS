@@ -1,6 +1,6 @@
 using System;
 
-namespace ISTS.Domain.Model.Schedules
+namespace ISTS.Domain.Schedules
 {
     public class DateRange
     {
