@@ -47,12 +47,8 @@ namespace ISTS.Domain.Sessions
             {
                 ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);
             }
-            else
-            {
-                return true;
-            }
-
-            return false;
+            
+            return validatorResult == SessionScheduleValidatorResult.Success;
         }
     }
 }

@@ -4,9 +4,9 @@ using ISTS.Domain.Exceptions;
 
 namespace ISTS.Domain.Schedules
 {
-    public static class ScheduleValidatorHelper
+    internal static class ScheduleValidatorHelper
     {
-        public static void HandleSessionScheduleValidatorError(SessionScheduleValidatorResult validatorResult)
+        internal static void HandleSessionScheduleValidatorError(SessionScheduleValidatorResult validatorResult)
         {
             switch (validatorResult)
             {
