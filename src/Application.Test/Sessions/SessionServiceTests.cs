@@ -29,10 +29,10 @@ namespace ISTS.Application.Test.Sessions
             _sessionService = new SessionService(_sessionScheduleValidator.Object, _sessionRepository.Object, _mapper.Object);
 
             _mapper
-                .Setup(x => x.Map<SessionDto>(It.IsAny<Session>()))
-                .Returns((Session source) =>
+                .Setup(x => x.Map<StudioSessionDto>(It.IsAny<StudioSession>()))
+                .Returns((StudioSession source) =>
                 {
-                    return new SessionDto
+                    return new StudioSessionDto
                     {
                         Id = source.Id,
                         StudioId = source.StudioId,
@@ -49,55 +49,28 @@ namespace ISTS.Application.Test.Sessions
         }
         
         [Fact]
-        public void Reschedule_Calls_Repository_And_Returns_Session_With_New_Schedule()
+        public void CreateSession_Returns_StudioSessionDto_Without_Schedule()
         {
-            var sessionId = Guid.NewGuid();
-            var session = Session.Create(sessionId, null, _sessionScheduleValidator.Object);
+            var studioId = Guid.NewGuid();
+            var studio = Studio.Create(studioId, "Name", "Url");
 
-            var newSchedule = new DateRangeDto
+            var studioSession = new StudioSessionDto
             {
-                Start = DateTime.Now,
-                End = DateTime.Now.AddHours(2)
+                StudioId = studioId
             };
 
-            _sessionRepository
+            _studioRepository
                 .Setup(r => r.Get(It.IsAny<Guid>()))
-                .Returns(session);
+                .Returns(studio);
 
-            var result = _sessionService.Reschedule(sessionId, newSchedule);
+            var result = _studioService.CreateSession(studioId, studioSession);
 
             Assert.NotNull(result);
-            Assert.NotNull(result.ScheduledTime);
-            Assert.Equal(result.ScheduledTime.Start, newSchedule.Start);
-            Assert.Equal(result.ScheduledTime.End, newSchedule.End);
+            Assert.Null(result.ScheduledTime);
+            Assert.Equal(studioId, studioSession.StudioId);
 
-            _sessionRepository.Verify(r => r.Get(It.IsAny<Guid>()), Times.Once);
-            _sessionRepository.Verify(r => r.SetSchedule(It.IsAny<Guid>(), It.IsAny<DateRange>()), Times.Once);
-        }
-
-        [Fact]
-        public void Reschedule_Should_Throw_OverlappingScheduleException()
-        {
-            var sessionId = Guid.NewGuid();
-            var session = Session.Create(sessionId, null, _sessionScheduleValidator.Object);
-
-            var newSchedule = new DateRangeDto
-            {
-                Start = DateTime.Now,
-                End = DateTime.Now.AddHours(2)
-            };
-
-            _sessionRepository
-                .Setup(r => r.Get(It.IsAny<Guid>()))
-                .Returns(session);
-
-            _sessionScheduleValidator
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
-                .Throws(new OverlappingScheduleException());
-
-            var ex = Assert.Throws<OverlappingScheduleException>(() => _sessionService.Reschedule(sessionId, newSchedule));
-
-            Assert.NotNull(ex);
+            _studioRepository.Verify(r => r.Get(It.IsAny<Guid>()), Times.Once);
+            _studioRepository.Verify(r => r.CreateSession(It.IsAny<Guid>(), It.IsAny<DateRange>()), Times.Once);
         }
     }
 }

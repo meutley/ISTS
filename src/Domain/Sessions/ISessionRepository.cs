@@ -9,6 +9,6 @@ namespace ISTS.Domain.Sessions
     {
         IEnumerable<Session> Get();
         Session Get(Guid id);
-        void SetSchedule(Guid sessionId, DateRange schedule);
+        Session SetSchedule(Guid sessionId, DateRange schedule);
     }
 }
