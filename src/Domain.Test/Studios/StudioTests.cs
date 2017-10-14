@@ -3,22 +3,13 @@ using Xunit;
 
 using Moq;
 
-using ISTS.Domain.Exceptions;
-using ISTS.Domain.Schedules;
 using ISTS.Domain.Studios;
 
 namespace ISTS.Domain.Tests.Studios
 {
     public class StudioTests
     {
-        private readonly Mock<ISessionScheduleValidator> _sessionScheduleValidatorMock;
-
         private static readonly Studio _studio = Studio.Create("StudioName", "StudioFriendlyUrl");
-
-        public StudioTests()
-        {
-            _sessionScheduleValidatorMock = new Mock<ISessionScheduleValidator>();
-        }
 
         [Fact]
         public void Create_Throws_ArgumentNullException_When_Name_Is_Null()
@@ -47,57 +38,13 @@ namespace ISTS.Domain.Tests.Studios
         }
 
         [Fact]
-        public void CreateSession_Returns_New_StudioSession_With_StudioId_And_No_Schedule()
+        public void CreateRoom_Returns_New_StudioRoom_With_StudioId()
         {
-            var session = _studio.CreateSession(null, _sessionScheduleValidatorMock.Object);
+            var room = _studio.CreateRoom("RoomName");
 
-            Assert.NotNull(session);
-            Assert.Equal(_studio.Id, session.StudioId);
-            Assert.Null(session.ScheduledTime);
-        }
-
-        [Fact]
-        public void CreateSession_Returns_New_StudioSession_With_StudioId_And_Schedule()
-        {
-            var start = DateTime.Now;
-            var end = start.AddHours(2);
-
-            var schedule = DateRange.Create(start, end);
-            var session = _studio.CreateSession(schedule, _sessionScheduleValidatorMock.Object);
-
-            Assert.NotNull(session);
-            Assert.Equal(_studio.Id, session.StudioId);
-            Assert.NotNull(session.ScheduledTime);
-            Assert.Equal(start, session.ScheduledTime.Start);
-            Assert.Equal(end, session.ScheduledTime.End);
-        }
-
-        [Fact]
-        public void CreateSession_Throws_OverlappingScheduleException()
-        {
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.Overlapping);
-
-            var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
-
-            var ex = Assert.Throws<OverlappingScheduleException>(() => _studio.CreateSession(schedule, _sessionScheduleValidatorMock.Object));
-
-            Assert.NotNull(ex);
-        }
-
-        [Fact]
-        public void CreateSession_Throws_ScheduleEndMustBeGreaterThanStartException()
-        {
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.StartGreaterThanOrEqualToEnd);
-
-            var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
-
-            var ex = Assert.Throws<ScheduleEndMustBeGreaterThanStartException>(() => _studio.CreateSession(schedule, _sessionScheduleValidatorMock.Object));
-
-            Assert.NotNull(ex);
+            Assert.NotNull(room);
+            Assert.Equal(_studio.Id, room.StudioId);
+            Assert.Equal("RoomName", room.Name);
         }
     }
 }

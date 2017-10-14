@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ISTS.Domain.Exceptions;
+using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
-using ISTS.Domain.Studios;
 
 namespace ISTS.Application.Schedules
 {
     public class SessionScheduleValidator : ISessionScheduleValidator
     {
-        private readonly IStudioRepository _studioRepository;
+        private readonly IRoomRepository _roomRepository;
 
         public SessionScheduleValidator(
-            IStudioRepository studioRepository)
+            IRoomRepository roomRepository)
         {
-            _studioRepository = studioRepository;
+            _roomRepository = roomRepository;
         }
 
-        public SessionScheduleValidatorResult Validate(Guid studioId, Guid? sessionId, DateRange schedule)
+        public SessionScheduleValidatorResult Validate(Guid roomId, Guid? sessionId, DateRange schedule)
         {
             if (schedule != null)
             {
@@ -27,13 +27,13 @@ namespace ISTS.Application.Schedules
                     throw new ScheduleEndMustBeGreaterThanStartException();
                 }
 
-                var studioSchedule =
-                    _studioRepository
-                    .GetSchedule(studioId, schedule.Start, schedule.End)
+                var roomSchedule =
+                    _roomRepository
+                    .GetSchedule(roomId, schedule)
                     .Where(s => s.SessionId != sessionId)
                     .ToList();
 
-                if (studioSchedule.Any() && DoesScheduleOverlap(schedule, studioSchedule))
+                if (roomSchedule.Any() && DoesScheduleOverlap(schedule, roomSchedule))
                 {
                     throw new OverlappingScheduleException();
                 }
@@ -42,10 +42,10 @@ namespace ISTS.Application.Schedules
             return SessionScheduleValidatorResult.Success;
         }
 
-        private bool DoesScheduleOverlap(DateRange schedule, List<StudioSessionSchedule> studioSchedule)
+        private bool DoesScheduleOverlap(DateRange schedule, List<RoomSessionSchedule> roomSchedule)
         {
             var overlap =
-                studioSchedule
+                roomSchedule
                 .Where(s => s.Schedule != null && DoDateRangesOverlap(schedule, s.Schedule));
 
             return overlap.Any();

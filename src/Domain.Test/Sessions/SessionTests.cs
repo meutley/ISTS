@@ -30,7 +30,7 @@ namespace ISTS.Domain.Tests.Sessions
             var session = Session.Create(_studioId, null, _sessionScheduleValidatorMock.Object);
 
             Assert.NotNull(session);
-            Assert.Equal(_studioId, session.StudioId);
+            Assert.Equal(_studioId, session.RoomId);
             Assert.Null(session.ScheduledTime);
         }
 
@@ -44,7 +44,7 @@ namespace ISTS.Domain.Tests.Sessions
             var session = Session.Create(_studioId, schedule, _sessionScheduleValidatorMock.Object);
 
             Assert.NotNull(session);
-            Assert.Equal(_studioId, session.StudioId);
+            Assert.Equal(_studioId, session.RoomId);
             Assert.NotNull(session.ScheduledTime);
             Assert.Equal(session.ScheduledTime.Start, start);
             Assert.Equal(session.ScheduledTime.End, end);

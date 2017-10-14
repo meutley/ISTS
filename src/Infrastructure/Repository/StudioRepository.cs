@@ -19,14 +19,9 @@ namespace ISTS.Infrastructure.Repository
             return Studio.Create("asdf", "asdf");
         }
 
-        public StudioSession CreateSession(Guid studioId, DateRange schedule)
+        public StudioRoom CreateRoom(StudioRoom entity)
         {
             return null;
-        }
-
-        public IEnumerable<StudioSessionSchedule> GetSchedule(Guid studioId, DateTime from, DateTime to)
-        {
-            return Enumerable.Empty<StudioSessionSchedule>();
         }
     }
 }

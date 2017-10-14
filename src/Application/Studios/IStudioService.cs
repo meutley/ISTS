@@ -6,6 +6,6 @@ namespace ISTS.Application.Studios
 {
     public interface IStudioService
     {
-        StudioSessionDto CreateSession(Guid studioId, StudioSessionDto session);
+        StudioRoomDto CreateRoom(Guid studioId, StudioRoomDto room);
     }
 }

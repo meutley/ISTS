@@ -11,6 +11,6 @@ namespace ISTS.Application.Studios
 
         public string FriendlyUrl { get; set; }
 
-        public List<StudioSessionDto> StudioSessions { get; set; }
+        public List<StudioRoomDto> StudioRooms { get; set; }
     }
 }

@@ -14,7 +14,6 @@ namespace ISTS.Application.Test.Studios
 {
     public class StudioServiceTests
     {
-        private readonly Mock<ISessionScheduleValidator> _sessionScheduleValidator;
         private readonly Mock<IStudioRepository>  _studioRepository;
         private readonly Mock<IMapper> _mapper;
 
@@ -22,28 +21,20 @@ namespace ISTS.Application.Test.Studios
 
         public StudioServiceTests()
         {
-            _sessionScheduleValidator = new Mock<ISessionScheduleValidator>();
             _studioRepository = new Mock<IStudioRepository>();
             _mapper = new Mock<IMapper>();
 
-            _studioService = new StudioService(_sessionScheduleValidator.Object, _studioRepository.Object, _mapper.Object);
+            _studioService = new StudioService(_studioRepository.Object, _mapper.Object);
 
             _mapper
-                .Setup(x => x.Map<SessionDto>(It.IsAny<Session>()))
-                .Returns((Session source) =>
+                .Setup(x => x.Map<StudioRoomDto>(It.IsAny<StudioRoom>()))
+                .Returns((StudioRoom source) =>
                 {
-                    return new SessionDto
+                    return new StudioRoomDto
                     {
                         Id = source.Id,
                         StudioId = source.StudioId,
-                        ScheduledTime =
-                            source.ScheduledTime == null
-                            ? null
-                            : new DateRangeDto
-                            {
-                                Start = source.ScheduledTime.Start,
-                                End = source.ScheduledTime.End
-                            }
+                        Name = source.Name
                     };
                 });
         }

@@ -2,15 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using ISTS.Domain.Exceptions;
-using ISTS.Domain.Schedules;
 using ISTS.Helpers.Validation;
 
 namespace ISTS.Domain.Studios
 {
     public class Studio : IAggregateRoot
     {
-        private List<StudioSession> _studioSessions = new List<StudioSession>();
+        private List<StudioRoom> _rooms = new List<StudioRoom>();
 
         public Guid Id { get; private set; }
 
@@ -18,9 +16,9 @@ namespace ISTS.Domain.Studios
 
         public string FriendlyUrl { get; private set; }
 
-        public virtual ReadOnlyCollection<StudioSession> StudioSessions
+        public virtual ReadOnlyCollection<StudioRoom> StudioRooms
         {
-            get { return _studioSessions.AsReadOnly(); }
+            get { return _rooms.AsReadOnly(); }
         }
 
         public static Studio Create(string name, string friendlyUrl)
@@ -38,21 +36,14 @@ namespace ISTS.Domain.Studios
             return result;
         }
 
-        public StudioSession CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
+        public StudioRoom CreateRoom(string name)
         {
-            var validatorResult = sessionScheduleValidator.Validate(this.Id, null, scheduledTime);
-            if (validatorResult != SessionScheduleValidatorResult.Success)
-            {
-                ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);
-            }
-            else
-            {
-                var session = StudioSession.Create(this.Id, scheduledTime);
-                _studioSessions.Add(session);
-                return session;
-            }
+            ArgumentNotNullValidator.Validate(name, nameof(name));
 
-            throw new InvalidOperationException();
+            var room = StudioRoom.Create(this.Id, name);
+            _rooms.Add(room);
+
+            return room;
         }
     }
 }
