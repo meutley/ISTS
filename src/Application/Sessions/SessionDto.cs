@@ -8,7 +8,7 @@ namespace ISTS.Application.Sessions
     {
         public Guid Id { get; set; }
 
-        public Guid StudioId { get; set; }
+        public Guid RoomId { get; set; }
 
         public DateRangeDto ScheduledTime { get; set; }
     }

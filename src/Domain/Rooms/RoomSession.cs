@@ -23,5 +23,17 @@ namespace ISTS.Domain.Rooms
 
             return roomSession;
         }
+
+        public static RoomSession Reschedule(RoomSession session, DateRange schedule)
+        {
+            var roomSession = new RoomSession
+            {
+                Id = session.Id,
+                RoomId = session.RoomId,
+                Schedule = schedule
+            };
+
+            return roomSession;
+        }
     }
 }

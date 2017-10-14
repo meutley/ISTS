@@ -18,10 +18,5 @@ namespace ISTS.Infrastructure.Repository
         {
             return null;
         }
-
-        public Session SetSchedule(Guid sessionId, DateRange schedule)
-        {
-            return null;
-        }
     }
 }

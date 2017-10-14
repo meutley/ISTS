@@ -9,6 +9,8 @@ namespace ISTS.Domain.Rooms
     {
         Room Get(Guid id);
         RoomSession CreateSession(Guid roomId, RoomSession entity);
+        RoomSession GetSession(Guid id);
+        RoomSession RescheduleSession(Guid id, DateRange schedule);
         IEnumerable<RoomSessionSchedule> GetSchedule(Guid id, DateRange range);
     }
 }

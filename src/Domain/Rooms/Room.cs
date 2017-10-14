@@ -35,19 +35,40 @@ namespace ISTS.Domain.Rooms
 
         public RoomSession CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var validatorResult = sessionScheduleValidator.Validate(this.Id, null, scheduledTime);
-            if (validatorResult != SessionScheduleValidatorResult.Success)
-            {
-                ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);
-            }
-            else
+            if (Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator))
             {
                 var session = RoomSession.Create(this.Id, scheduledTime);
                 _sessions.Add(session);
-                return session;
+                return session; 
             }
 
             throw new InvalidOperationException();
+        }
+
+        public RoomSession RescheduleSession(RoomSession session, DateRange newSchedule, ISessionScheduleValidator sessionScheduleValidator)
+        {
+            if (Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator))
+            {
+                _sessions.Remove(session);
+                var sessionModel = RoomSession.Reschedule(session, newSchedule);
+                _sessions.Add(sessionModel);
+
+                return sessionModel;
+            }
+
+            throw new InvalidOperationException();
+        }
+
+        private static bool ValidateSchedule(Guid roomId, Guid? sessionId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)
+        {
+            var validatorResult = sessionScheduleValidator.Validate(roomId, sessionId, schedule);
+            if (validatorResult != SessionScheduleValidatorResult.Success)
+            {
+                ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);
+                return false;
+            }
+            
+            return true;
         }
     }
 }

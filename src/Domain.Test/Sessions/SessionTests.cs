@@ -49,45 +49,5 @@ namespace ISTS.Domain.Tests.Sessions
             Assert.Equal(session.ScheduledTime.Start, start);
             Assert.Equal(session.ScheduledTime.End, end);
         }
-
-        [Fact]
-        public void Reschedule_Throws_OverlappingScheduleException()
-        {
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.Success);
-
-            var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
-            var newSchedule = DateRange.Create(DateTime.Now.AddDays(2), DateTime.Now.AddDays(2));
-            var session = Session.Create(_studioId, schedule, _sessionScheduleValidatorMock.Object);
-
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.Overlapping);
-
-            var ex = Assert.Throws<OverlappingScheduleException>(() => session.Reschedule(newSchedule, _sessionScheduleValidatorMock.Object));
-
-            Assert.NotNull(ex);
-        }
-
-        [Fact]
-        public void CreateSession_Throws_ScheduleEndMustBeGreaterThanStartException()
-        {
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.Success);
-
-            var schedule = DateRange.Create(DateTime.Now, DateTime.Now);
-            var newSchedule = DateRange.Create(DateTime.Now.AddDays(2), DateTime.Now.AddDays(2));
-            var session = Session.Create(_studioId, schedule, _sessionScheduleValidatorMock.Object);
-
-            _sessionScheduleValidatorMock
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.StartGreaterThanOrEqualToEnd);
-
-            var ex = Assert.Throws<ScheduleEndMustBeGreaterThanStartException>(() => session.Reschedule(newSchedule, _sessionScheduleValidatorMock.Object));
-
-            Assert.NotNull(ex);
-        }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 
 using AutoMapper;
-
+using ISTS.Application.Schedules;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 
@@ -36,6 +36,23 @@ namespace ISTS.Application.Rooms
             var entity = _roomRepository.CreateSession(room.Id, model);
 
             var result = _mapper.Map<RoomSessionDto>(entity);
+            return result;
+        }
+
+        public RoomSessionDto RescheduleSession(Guid sessionId, DateRangeDto newSchedule)
+        {
+            var entity = _roomRepository.GetSession(sessionId);
+            var room = _roomRepository.Get(entity.RoomId);
+
+            var schedule =
+                newSchedule == null
+                ? null
+                : DateRange.Create(newSchedule.Start, newSchedule.End);
+
+            var model = room.RescheduleSession(entity, schedule, _sessionScheduleValidator);
+            var updatedEntity = _roomRepository.RescheduleSession(model.Id, model.Schedule);
+
+            var result = _mapper.Map<RoomSessionDto>(updatedEntity);
             return result;
         }
     }

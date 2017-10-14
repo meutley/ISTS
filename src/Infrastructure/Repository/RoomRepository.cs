@@ -19,6 +19,16 @@ namespace ISTS.Infrastructure.Repository
             return null;
         }
 
+        public RoomSession GetSession(Guid id)
+        {
+            return null;
+        }
+
+        public RoomSession RescheduleSession(Guid id, DateRange schedule)
+        {
+            return null;
+        }
+
         public IEnumerable<RoomSessionSchedule> GetSchedule(Guid id, DateRange range)
         {
             return Enumerable.Empty<RoomSessionSchedule>();
