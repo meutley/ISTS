@@ -28,11 +28,11 @@ namespace ISTS.Application.Studios
             return result;
         }
         
-        public StudioRoomDto CreateRoom(Guid studioId, StudioRoomDto room)
+        public StudioRoomDto CreateRoom(Guid studioId, string name)
         {
             var studio = _studioRepository.Get(studioId);
 
-            var studioRoom = studio.CreateRoom(room.Name);
+            var studioRoom = studio.CreateRoom(name);
             var result = _studioRepository.CreateRoom(studioRoom);
 
             var studioRoomDto = _mapper.Map<StudioRoomDto>(result);
