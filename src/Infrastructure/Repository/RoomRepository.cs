@@ -14,17 +14,27 @@ namespace ISTS.Infrastructure.Repository
             return null;
         }
 
-        public RoomSession CreateSession(Guid roomId, RoomSession entity)
-        {
-            return null;
-        }
-
         public RoomSession GetSession(Guid id)
         {
             return null;
         }
 
+        public RoomSession CreateSession(Guid roomId, RoomSession entity)
+        {
+            return null;
+        }
+
         public RoomSession RescheduleSession(Guid id, DateRange schedule)
+        {
+            return null;
+        }
+
+        public RoomSession StartSession(Guid id, DateTime time)
+        {
+            return null;
+        }
+
+        public RoomSession EndSession(Guid id, DateTime time)
         {
             return null;
         }

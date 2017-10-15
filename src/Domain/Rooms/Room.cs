@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
+using ISTS.Domain.Exceptions;
 using ISTS.Domain.Schedules;
 
 namespace ISTS.Domain.Rooms
@@ -47,16 +49,60 @@ namespace ISTS.Domain.Rooms
 
         public RoomSession RescheduleSession(RoomSession session, DateRange newSchedule, ISessionScheduleValidator sessionScheduleValidator)
         {
-            if (Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator))
+            RoomSession result = null;
+            DoWithSession(session.Id, (s) =>
             {
-                _sessions.Remove(session);
-                var sessionModel = RoomSession.Reschedule(session, newSchedule);
-                _sessions.Add(sessionModel);
+                if (Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator))
+                {
+                    var sessionModel = s.Reschedule(newSchedule);
+                    result = sessionModel;
+                }
+            });
 
-                return sessionModel;
+            return result;
+        }
+
+        public RoomSession StartSession(Guid sessionId, DateTime time)
+        {
+            RoomSession result = null;
+            DoWithSession(sessionId, (session) =>
+            {
+                if (session.ActualStartTime.HasValue)
+                {
+                    throw new SessionAlreadyStartedException();
+                }
+                
+                result = session.SetActualStartTime(time);
+            });
+
+            return result;
+        }
+
+        public RoomSession EndSession(Guid sessionId, DateTime time)
+        {
+            RoomSession result = null;
+            DoWithSession(sessionId, (session) =>
+            {
+                if (!session.ActualStartTime.HasValue)
+                {
+                    throw new SessionNotStartedException();
+                }
+                
+                result = session.SetActualEndTime(time);
+            });
+
+            return result;
+        }
+
+        private void DoWithSession(Guid sessionId, Action<RoomSession> action)
+        {
+            var session = _sessions.SingleOrDefault(s => s.Id == sessionId);
+            if (session == null)
+            {
+                throw new ArgumentException($"Session Id {sessionId} not found in Room {this.Id}");
             }
 
-            throw new InvalidOperationException();
+            action(session);
         }
 
         private static bool ValidateSchedule(Guid roomId, Guid? sessionId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)

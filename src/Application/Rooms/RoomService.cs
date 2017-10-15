@@ -55,5 +55,31 @@ namespace ISTS.Application.Rooms
             var result = _mapper.Map<RoomSessionDto>(updatedEntity);
             return result;
         }
+
+        public RoomSessionDto StartSession(Guid sessionId)
+        {
+            var entity = _roomRepository.GetSession(sessionId);
+            var room = _roomRepository.Get(entity.RoomId);
+
+            var startTime = DateTime.Now;
+            var model = room.StartSession(sessionId, startTime);
+            _roomRepository.StartSession(sessionId, startTime);
+
+            var result = _mapper.Map<RoomSessionDto>(model);
+            return result;
+        }
+
+        public RoomSessionDto EndSession(Guid sessionId)
+        {
+            var entity = _roomRepository.GetSession(sessionId);
+            var room = _roomRepository.Get(entity.RoomId);
+
+            var time = DateTime.Now;
+            var model = room.EndSession(sessionId, time);
+            _roomRepository.EndSession(sessionId, time);
+
+            var result = _mapper.Map<RoomSessionDto>(model);
+            return result;
+        }
     }
 }

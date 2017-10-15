@@ -12,6 +12,10 @@ namespace ISTS.Domain.Rooms
 
         public DateRange Schedule { get; protected set; }
 
+        public DateTime? ActualStartTime { get; protected set; }
+
+        public DateTime? ActualEndTime { get; protected set; }
+
         public static RoomSession Create(Guid roomId, DateRange schedule)
         {
             var roomSession = new RoomSession
@@ -24,16 +28,22 @@ namespace ISTS.Domain.Rooms
             return roomSession;
         }
 
-        public static RoomSession Reschedule(RoomSession session, DateRange schedule)
+        public RoomSession Reschedule(DateRange schedule)
         {
-            var roomSession = new RoomSession
-            {
-                Id = session.Id,
-                RoomId = session.RoomId,
-                Schedule = schedule
-            };
+            this.Schedule = schedule;
+            return this;
+        }
 
-            return roomSession;
+        public RoomSession SetActualStartTime(DateTime? time)
+        {
+            this.ActualStartTime = time;
+            return this;
+        }
+
+        public RoomSession SetActualEndTime(DateTime? time)
+        {
+            this.ActualEndTime = time;
+            return this;
         }
     }
 }
