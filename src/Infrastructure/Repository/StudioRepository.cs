@@ -9,6 +9,11 @@ namespace ISTS.Infrastructure.Repository
 {
     public class StudioRepository : IStudioRepository
     {
+        public Studio Create(Studio entity)
+        {
+            return entity;
+        }
+        
         public IEnumerable<Studio> Get()
         {
             return Enumerable.Empty<Studio>();

@@ -45,5 +45,12 @@ namespace ISTS.Domain.Rooms
             this.ActualEndTime = time;
             return this;
         }
+
+        public RoomSession ResetActualTime()
+        {
+            this.ActualStartTime = null;
+            this.ActualEndTime = null;
+            return this;
+        }
     }
 }

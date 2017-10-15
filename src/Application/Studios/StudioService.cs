@@ -18,6 +18,15 @@ namespace ISTS.Application.Studios
             _studioRepository = studioRepository;
             _mapper = mapper;
         }
+
+        public StudioDto Create(string name, string friendlyUrl)
+        {
+            var model = Studio.Create(name, friendlyUrl);
+            var entity = _studioRepository.Create(model);
+
+            var result = _mapper.Map<StudioDto>(entity);
+            return result;
+        }
         
         public StudioRoomDto CreateRoom(Guid studioId, StudioRoomDto room)
         {

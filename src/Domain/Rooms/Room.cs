@@ -94,6 +94,17 @@ namespace ISTS.Domain.Rooms
             return result;
         }
 
+        public RoomSession ResetActualTime(Guid sessionId)
+        {
+            RoomSession result = null;
+            DoWithSession(sessionId, (session) =>
+            {
+                result = session.ResetActualTime();
+            });
+
+            return result;
+        }
+
         private void DoWithSession(Guid sessionId, Action<RoomSession> action)
         {
             var session = _sessions.SingleOrDefault(s => s.Id == sessionId);
