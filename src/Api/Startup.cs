@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using AutoMapper;
+
+using ISTS.Infrastructure.Model;
 
 namespace ISTS.Api
 {
@@ -27,6 +30,8 @@ namespace ISTS.Api
         {
             services.AddMvc();
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddDbContext<IstsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IstsDb")));
 
             DependencyInjectionConfiguration.Configure(services);
         }
