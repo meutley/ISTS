@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTS.Infrastructure", "Infr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTS.Application.Test", "Application.Test\ISTS.Application.Test.csproj", "{23576F6B-5484-449B-B745-36A6A889FA7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTS.Api", "Api\ISTS.Api.csproj", "{C88C36CF-3066-4B43-BB70-CB7836F1EE54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,5 +140,17 @@ Global
 		{23576F6B-5484-449B-B745-36A6A889FA7D}.Release|x64.Build.0 = Release|x64
 		{23576F6B-5484-449B-B745-36A6A889FA7D}.Release|x86.ActiveCfg = Release|x86
 		{23576F6B-5484-449B-B745-36A6A889FA7D}.Release|x86.Build.0 = Release|x86
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Debug|x64.ActiveCfg = Debug|x64
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Debug|x64.Build.0 = Debug|x64
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Debug|x86.ActiveCfg = Debug|x86
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Debug|x86.Build.0 = Debug|x86
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Release|x64.ActiveCfg = Release|x64
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Release|x64.Build.0 = Release|x64
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Release|x86.ActiveCfg = Release|x86
+		{C88C36CF-3066-4B43-BB70-CB7836F1EE54}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal

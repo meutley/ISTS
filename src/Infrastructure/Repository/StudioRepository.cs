@@ -21,7 +21,7 @@ namespace ISTS.Infrastructure.Repository
 
         public Studio Get(Guid id)
         {
-            return Studio.Create("asdf", "asdf");
+            return null;
         }
 
         public StudioRoom CreateRoom(StudioRoom entity)

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -24,6 +26,22 @@ namespace ISTS.Application.Studios
             var model = Studio.Create(name, friendlyUrl);
             var entity = _studioRepository.Create(model);
 
+            var result = _mapper.Map<StudioDto>(entity);
+            return result;
+        }
+
+        public List<StudioDto> GetAll()
+        {
+            var entities = _studioRepository.Get().ToList();
+
+            var result = _mapper.Map<List<StudioDto>>(entities);
+            return result;
+        }
+
+        public StudioDto Get(Guid id)
+        {
+            var entity = _studioRepository.Get(id);
+            
             var result = _mapper.Map<StudioDto>(entity);
             return result;
         }
