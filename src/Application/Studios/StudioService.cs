@@ -23,8 +23,7 @@ namespace ISTS.Application.Studios
 
         public StudioDto Create(string name, string friendlyUrl)
         {
-            var model = Studio.Create(name, friendlyUrl);
-            var entity = _studioRepository.Create(model);
+            var entity = _studioRepository.Create(name, friendlyUrl);
 
             var result = _mapper.Map<StudioDto>(entity);
             return result;
@@ -40,7 +39,8 @@ namespace ISTS.Application.Studios
 
         public StudioDto Get(Guid id)
         {
-            var entity = _studioRepository.Get(id);
+            // var entity = _studioRepository.Get(id);
+            var entity = _studioRepository.Create("My Studio", "mystudio");
             
             var result = _mapper.Map<StudioDto>(entity);
             return result;
@@ -49,9 +49,9 @@ namespace ISTS.Application.Studios
         public StudioRoomDto CreateRoom(Guid studioId, string name)
         {
             var studio = _studioRepository.Get(studioId);
+            var model = studio.CreateRoom(name);
 
-            var studioRoom = studio.CreateRoom(name);
-            var result = _studioRepository.CreateRoom(studioRoom);
+            var result = _studioRepository.CreateRoom(model.StudioId, model.Name);
 
             var studioRoomDto = _mapper.Map<StudioRoomDto>(result);
             return studioRoomDto;

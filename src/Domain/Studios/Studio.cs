@@ -16,7 +16,7 @@ namespace ISTS.Domain.Studios
 
         public string FriendlyUrl { get; private set; }
 
-        public virtual ReadOnlyCollection<StudioRoom> StudioRooms
+        public virtual ReadOnlyCollection<StudioRoom> Rooms
         {
             get { return _rooms.AsReadOnly(); }
         }

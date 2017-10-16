@@ -41,10 +41,10 @@ namespace ISTS.Api.Controllers
         
         // POST api/studio
         [HttpPost]
-        public void Post([FromBody]string name, [FromBody]string friendlyUrl)
+        public ApiModelResult<StudioDto> Post([FromBody]string name, [FromBody]string friendlyUrl)
         {
             var studio = _studioService.Create(name, friendlyUrl);
-            return ApiModelResult<List<StudioDto>>.Ok(studio);
+            return ApiModelResult<StudioDto>.Ok(studio);
         }
     }
 }

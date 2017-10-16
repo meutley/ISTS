@@ -32,7 +32,7 @@ namespace ISTS.Application.Test.Studios
                 .Returns((Studio source) =>
                 {
                     var rooms = new List<StudioRoomDto>();
-                    foreach (var room in source.StudioRooms)
+                    foreach (var room in source.Rooms)
                     {
                         rooms.Add(_mapper.Object.Map<StudioRoomDto>(room));
                     }
@@ -42,7 +42,7 @@ namespace ISTS.Application.Test.Studios
                         Id = source.Id,
                         Name = source.Name,
                         FriendlyUrl = source.FriendlyUrl,
-                        StudioRooms = rooms
+                        Rooms = rooms
                     };
                 });
 
@@ -67,7 +67,7 @@ namespace ISTS.Application.Test.Studios
             var model = Studio.Create(name, friendlyUrl);
             
             _studioRepository
-                .Setup(r => r.Create(It.IsAny<Studio>()))
+                .Setup(r => r.Create(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(model);
             
             var result = _studioService.Create(name, friendlyUrl);
@@ -92,7 +92,7 @@ namespace ISTS.Application.Test.Studios
             var roomModel = StudioRoom.Create(model.Id, roomName);
 
             _studioRepository
-                .Setup(r => r.CreateRoom(It.IsAny<StudioRoom>()))
+                .Setup(r => r.CreateRoom(It.IsAny<Guid>(),It.IsAny<string>()))
                 .Returns(roomModel);
             
             var result = _studioService.CreateRoom(model.Id, roomName);
@@ -100,7 +100,7 @@ namespace ISTS.Application.Test.Studios
             Assert.NotNull(result);
             Assert.Equal(model.Id, result.StudioId);
             Assert.Equal(roomName, result.Name);
-            Assert.Equal(1, model.StudioRooms.Count);
+            Assert.Equal(1, model.Rooms.Count);
         }
     }
 }

@@ -8,6 +8,8 @@ namespace ISTS.Domain.Studios
 
         public Guid StudioId { get; protected set; }
 
+        public virtual Studio Studio { get; protected set; }
+
         public string Name { get; protected set; }
 
         public static StudioRoom Create(Guid studioId, string name)

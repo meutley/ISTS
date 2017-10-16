@@ -7,10 +7,10 @@ namespace ISTS.Domain.Studios
 {
     public interface IStudioRepository
     {
-        Studio Create(Studio entity);
+        Studio Create(string name, string friendlyUrl);
         IEnumerable<Studio> Get();
         Studio Get(Guid id);
         
-        StudioRoom CreateRoom(StudioRoom entity);
+        StudioRoom CreateRoom(Guid studioId, string name);
     }
 }

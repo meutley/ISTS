@@ -10,7 +10,22 @@ namespace ISTS.Domain.Rooms
 
         public Guid RoomId { get; protected set; }
 
-        public DateRange Schedule { get; protected set; }
+        public virtual Room Room { get; protected set; }
+
+        public DateTime? ScheduledStartTime { get; protected set; }
+
+        public DateTime? ScheduledEndTime { get; protected set; }
+
+        public DateRange Schedule
+        {
+            get
+            {
+                return
+                    !ScheduledStartTime.HasValue
+                    ? null
+                    : DateRange.Create(ScheduledStartTime.Value, ScheduledEndTime.Value);
+            }
+        }
 
         public DateTime? ActualStartTime { get; protected set; }
 
@@ -22,7 +37,8 @@ namespace ISTS.Domain.Rooms
             {
                 Id = Guid.NewGuid(),
                 RoomId = roomId,
-                Schedule = schedule
+                ScheduledStartTime = schedule?.Start,
+                ScheduledEndTime = schedule?.End
             };
 
             return roomSession;
@@ -30,7 +46,8 @@ namespace ISTS.Domain.Rooms
 
         public RoomSession Reschedule(DateRange schedule)
         {
-            this.Schedule = schedule;
+            this.ScheduledStartTime = schedule?.Start;
+            this.ScheduledEndTime = schedule?.End;
             return this;
         }
 

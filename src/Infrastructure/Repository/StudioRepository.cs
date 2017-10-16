@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ISTS.Domain.Schedules;
 using ISTS.Domain.Studios;
 
 namespace ISTS.Infrastructure.Repository
@@ -17,18 +16,14 @@ namespace ISTS.Infrastructure.Repository
             _context = context;
         }
         
-        public Studio Create(Studio model)
+        public Studio Create(string name, string friendlyUrl)
         {
-            var entity = new Model.Studio
-            {
-                Id = model.Id,
-                Name = model.Name,
-                FriendlyUrl = model.FriendlyUrl
-            };
+            var entity = Studio.Create(name, friendlyUrl);
 
             _context.Studios.Add(entity);
             _context.SaveChanges();
-            return model;
+            
+            return entity;
         }
         
         public IEnumerable<Studio> Get()
@@ -41,7 +36,7 @@ namespace ISTS.Infrastructure.Repository
             return null;
         }
 
-        public StudioRoom CreateRoom(StudioRoom entity)
+        public StudioRoom CreateRoom(Guid studioId, string name)
         {
             return null;
         }
