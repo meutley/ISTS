@@ -4,11 +4,20 @@ using System.Linq;
 
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
+using ISTS.Infrastructure.Model;
 
 namespace ISTS.Infrastructure.Repository
 {
     public class RoomRepository : IRoomRepository
     {
+        private readonly IstsContext _context;
+
+        public RoomRepository(
+            IstsContext context)
+        {
+            _context = context;
+        }
+        
         public Room Get(Guid id)
         {
             return null;
@@ -41,7 +50,14 @@ namespace ISTS.Infrastructure.Repository
 
         public IEnumerable<RoomSessionSchedule> GetSchedule(Guid id, DateRange range)
         {
-            return Enumerable.Empty<RoomSessionSchedule>();
+            var sessions = _context.Sessions
+                .Where(s => s.RoomId == id)
+                .ToList();
+
+            var schedule = sessions
+                .Select(s => RoomSessionSchedule.Create(s.Id, s.Schedule));
+
+            return schedule;
         }
     }
 }
