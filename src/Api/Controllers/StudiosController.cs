@@ -11,7 +11,7 @@ using ISTS.Application.Studios;
 namespace ISTS.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class StudioController : Controller
+    public class StudiosController : Controller
     {
         private readonly IStudioService _studioService;
 
@@ -34,19 +34,17 @@ namespace ISTS.Api.Controllers
         
         // POST api/studio
         [HttpPost]
-        public ApiModelResult<StudioDto> Post([FromBody]string name, [FromBody]string friendlyUrl)
+        public ApiModelResult<StudioDto> Post([FromBody]StudioDto model)
         {
-            var dto = new StudioDto { Name = name, FriendlyUrl = friendlyUrl };
-            var studio = _studioService.Create(dto);
+            var studio = _studioService.Create(model);
             return ApiModelResult<StudioDto>.Ok(studio);
         }
 
-        // PUT api/studio
+        // PUT api/studio/1
         [HttpPut("{id}")]
-        public ApiModelResult<StudioDto> Put(Guid id, [FromBody]string name, [FromBody]string friendlyUrl)
+        public ApiModelResult<StudioDto> Put([FromBody]StudioDto model)
         {
-            var dto = new StudioDto { Id = id, Name = name, FriendlyUrl = friendlyUrl };
-            var studio = _studioService.Update(dto);
+            var studio = _studioService.Update(model);
             return ApiModelResult<StudioDto>.Ok(studio);
         }
     }
