@@ -5,6 +5,7 @@ using System.Linq;
 
 using ISTS.Domain.Exceptions;
 using ISTS.Domain.Schedules;
+using ISTS.Domain.Studios;
 
 namespace ISTS.Domain.Rooms
 {
@@ -17,6 +18,8 @@ namespace ISTS.Domain.Rooms
         public Guid StudioId { get; protected set; }
 
         public string Name { get; protected set; }
+
+        public virtual Studio Studio { get; protected set; }
 
         public ReadOnlyCollection<RoomSession> Sessions
         {
