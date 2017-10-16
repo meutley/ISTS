@@ -70,7 +70,8 @@ namespace ISTS.Application.Test.Studios
                 .Setup(r => r.Create(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(model);
             
-            var result = _studioService.Create(name, friendlyUrl);
+            var dto = new StudioDto { Name = name, FriendlyUrl = friendlyUrl };
+            var result = _studioService.Create(dto);
 
             Assert.NotNull(result);
             Assert.Equal(name, result.Name);
@@ -95,12 +96,12 @@ namespace ISTS.Application.Test.Studios
                 .Setup(r => r.CreateRoom(It.IsAny<Guid>(),It.IsAny<string>()))
                 .Returns(roomModel);
             
-            var result = _studioService.CreateRoom(model.Id, roomName);
+            var dto = new StudioRoomDto { StudioId = model.Id, Name = roomName };
+            var result = _studioService.CreateRoom(dto);
 
             Assert.NotNull(result);
             Assert.Equal(model.Id, result.StudioId);
             Assert.Equal(roomName, result.Name);
-            Assert.Equal(1, model.Rooms.Count);
         }
     }
 }

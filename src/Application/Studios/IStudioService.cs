@@ -7,10 +7,11 @@ namespace ISTS.Application.Studios
 {
     public interface IStudioService
     {
-        StudioDto Create(string name, string friendlyUrl);
+        StudioDto Create(StudioDto model);
         List<StudioDto> GetAll();
         StudioDto Get(Guid id);
+        StudioDto Update(StudioDto model);
         
-        StudioRoomDto CreateRoom(Guid studioId, string name);
+        StudioRoomDto CreateRoom(StudioRoomDto model);
     }
 }

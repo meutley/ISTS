@@ -21,6 +21,7 @@ namespace ISTS.Api.Controllers
             _studioService = studioService;
         }
         
+        // GET api/studio/1
         [HttpGet("{id}")]
         public ApiModelResult<StudioDto> Get(Guid id)
         {
@@ -30,20 +31,22 @@ namespace ISTS.Api.Controllers
                 ? ApiModelResult<StudioDto>.Ok(studio)
                 : ApiModelResult<StudioDto>.NotFound(null);
         }
-
-        [HttpGet]
-        public ApiModelResult<List<StudioDto>> List()
-        {
-            var studios = _studioService.GetAll();
-
-            return ApiModelResult<List<StudioDto>>.Ok(studios);
-        }
         
         // POST api/studio
         [HttpPost]
         public ApiModelResult<StudioDto> Post([FromBody]string name, [FromBody]string friendlyUrl)
         {
-            var studio = _studioService.Create(name, friendlyUrl);
+            var dto = new StudioDto { Name = name, FriendlyUrl = friendlyUrl };
+            var studio = _studioService.Create(dto);
+            return ApiModelResult<StudioDto>.Ok(studio);
+        }
+
+        // PUT api/studio
+        [HttpPut("{id}")]
+        public ApiModelResult<StudioDto> Put(Guid id, [FromBody]string name, [FromBody]string friendlyUrl)
+        {
+            var dto = new StudioDto { Id = id, Name = name, FriendlyUrl = friendlyUrl };
+            var studio = _studioService.Update(dto);
             return ApiModelResult<StudioDto>.Ok(studio);
         }
     }

@@ -36,6 +36,15 @@ namespace ISTS.Domain.Studios
             return result;
         }
 
+        public void Update(string name, string friendlyUrl)
+        {
+            ArgumentNotNullValidator.Validate(name, nameof(name));
+            ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
+
+            this.Name = name;
+            this.FriendlyUrl = friendlyUrl;
+        }
+
         public StudioRoom CreateRoom(string name)
         {
             ArgumentNotNullValidator.Validate(name, nameof(name));
