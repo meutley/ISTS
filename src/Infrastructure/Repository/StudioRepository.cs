@@ -9,9 +9,26 @@ namespace ISTS.Infrastructure.Repository
 {
     public class StudioRepository : IStudioRepository
     {
-        public Studio Create(Studio entity)
+        private readonly Model.IstsContext _context;
+
+        public StudioRepository(
+            Model.IstsContext context)
         {
-            return entity;
+            _context = context;
+        }
+        
+        public Studio Create(Studio model)
+        {
+            var entity = new Model.Studio
+            {
+                Id = model.Id,
+                Name = model.Name,
+                FriendlyUrl = model.FriendlyUrl
+            };
+
+            _context.Studios.Add(entity);
+            _context.SaveChanges();
+            return model;
         }
         
         public IEnumerable<Studio> Get()
