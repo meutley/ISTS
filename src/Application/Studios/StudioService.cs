@@ -39,8 +39,7 @@ namespace ISTS.Application.Studios
 
         public StudioDto Get(Guid id)
         {
-            // var entity = _studioRepository.Get(id);
-            var entity = _studioRepository.Create("My Studio", "mystudio");
+            var entity = _studioRepository.Get(id);
             
             var result = _mapper.Map<StudioDto>(entity);
             return result;
