@@ -15,13 +15,13 @@ namespace ISTS.Api.Controllers
     {
         private readonly IStudioService _studioService;
 
-        public StudioController(
+        public StudiosController(
             IStudioService studioService)
         {
             _studioService = studioService;
         }
         
-        // GET api/studio/1
+        // GET api/studios/1
         [HttpGet("{id}")]
         public ApiModelResult<StudioDto> Get(Guid id)
         {
@@ -32,7 +32,7 @@ namespace ISTS.Api.Controllers
                 : ApiModelResult<StudioDto>.NotFound(null);
         }
         
-        // POST api/studio
+        // POST api/studios
         [HttpPost]
         public ApiModelResult<StudioDto> Post([FromBody]StudioDto model)
         {
@@ -40,7 +40,7 @@ namespace ISTS.Api.Controllers
             return ApiModelResult<StudioDto>.Ok(studio);
         }
 
-        // PUT api/studio/1
+        // PUT api/studios/1
         [HttpPut("{id}")]
         public ApiModelResult<StudioDto> Put([FromBody]StudioDto model)
         {
