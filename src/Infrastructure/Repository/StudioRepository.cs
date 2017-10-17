@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 using ISTS.Domain.Rooms;
@@ -18,45 +19,45 @@ namespace ISTS.Infrastructure.Repository
             _context = context;
         }
         
-        public Studio Create(string name, string friendlyUrl)
+        public async Task<Studio> CreateAsync(string name, string friendlyUrl)
         {
             var entity = Studio.Create(name, friendlyUrl);
 
-            _context.Studios.Add(entity);
-            _context.SaveChanges();
+            await _context.Studios.AddAsync(entity);
+            await _context.SaveChangesAsync();
             
             return entity;
         }
         
-        public IEnumerable<Studio> Get()
+        public async Task<IEnumerable<Studio>> GetAsync()
         {
-            return Enumerable.Empty<Studio>();
+            return Enumerable.Empty<Studio>().ToList();
         }
 
-        public Studio Get(Guid id)
+        public async Task<Studio> GetAsync(Guid id)
         {
-            var studio = _context.Studios
+            var studio = await _context.Studios
                 .Include(s => s.Rooms)
-                .FirstOrDefault(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == id);
 
             return studio;
         }
 
-        public Studio Update(Guid id, string name, string friendlyUrl)
+        public async Task<Studio> UpdateAsync(Guid id, string name, string friendlyUrl)
         {
-            var studio = Get(id);
+            var studio = await GetAsync(id);
             studio.Update(name, friendlyUrl);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return studio;
         }
 
-        public StudioRoom CreateRoom(Guid studioId, string name)
+        public async Task<StudioRoom> CreateRoomAsync(Guid studioId, string name)
         {
-            var studio = _context.Studios.Single(s => s.Id == studioId);
+            var studio = await _context.Studios.SingleAsync(s => s.Id == studioId);
             var entity = studio.CreateRoom(name);
             
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return entity;
         }

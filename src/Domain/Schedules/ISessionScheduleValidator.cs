@@ -1,9 +1,10 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ISTS.Domain.Schedules
 {
     public interface ISessionScheduleValidator
     {
-        SessionScheduleValidatorResult Validate(Guid roomId, Guid? sessionId, DateRange schedule);
+        Task<SessionScheduleValidatorResult> ValidateAsync(Guid roomId, Guid? sessionId, DateRange schedule);
     }
 }

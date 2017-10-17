@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using Moq;
 using Xunit;
@@ -21,8 +22,8 @@ namespace ISTS.Domain.Tests.Rooms
             _sessionScheduleValidator = new Mock<ISessionScheduleValidator>();
 
             _sessionScheduleValidator
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.Success);
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
+                .Returns(Task.FromResult(SessionScheduleValidatorResult.Success));
         }
         
         [Fact]

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ISTS.Domain.Exceptions;
 using ISTS.Domain.Schedules;
@@ -40,7 +41,9 @@ namespace ISTS.Domain.Rooms
 
         public RoomSession CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
         {
-            if (Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator))
+            var validatorTask = Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator);
+            Task.WaitAll(validatorTask);
+            if (validatorTask.Result)
             {
                 var session = RoomSession.Create(this.Id, scheduledTime);
                 _sessions.Add(session);
@@ -55,7 +58,9 @@ namespace ISTS.Domain.Rooms
             RoomSession result = null;
             DoWithSession(session.Id, (s) =>
             {
-                if (Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator))
+                var validatorTask = Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator);
+                Task.WaitAll(validatorTask);
+                if (validatorTask.Result)
                 {
                     var sessionModel = s.Reschedule(newSchedule);
                     result = sessionModel;
@@ -119,9 +124,9 @@ namespace ISTS.Domain.Rooms
             action(session);
         }
 
-        private static bool ValidateSchedule(Guid roomId, Guid? sessionId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)
+        private async static Task<bool> ValidateSchedule(Guid roomId, Guid? sessionId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var validatorResult = sessionScheduleValidator.Validate(roomId, sessionId, schedule);
+            var validatorResult = await sessionScheduleValidator.ValidateAsync(roomId, sessionId, schedule);
             if (validatorResult != SessionScheduleValidatorResult.Success)
             {
                 ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);

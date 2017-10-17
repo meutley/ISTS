@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using AutoMapper;
 using ISTS.Application.Schedules;
@@ -23,9 +24,9 @@ namespace ISTS.Application.Rooms
             _mapper = mapper;
         }
         
-        public RoomSessionDto CreateSession(RoomSessionDto session)
+        public async Task<RoomSessionDto> CreateSessionAsync(RoomSessionDto session)
         {
-            var room = _roomRepository.Get(session.RoomId);
+            var room = await _roomRepository.GetAsync(session.RoomId);
 
             var schedule =
                 session.Schedule == null
@@ -33,16 +34,16 @@ namespace ISTS.Application.Rooms
                 : DateRange.Create(session.Schedule.Start, session.Schedule.End);
 
             var model = room.CreateSession(schedule, _sessionScheduleValidator);
-            var entity = _roomRepository.CreateSession(room.Id, model);
+            var entity = await _roomRepository.CreateSessionAsync(room.Id, model);
 
             var result = _mapper.Map<RoomSessionDto>(entity);
             return result;
         }
 
-        public RoomSessionDto RescheduleSession(Guid sessionId, DateRangeDto newSchedule)
+        public async Task<RoomSessionDto> RescheduleSessionAsync(Guid sessionId, DateRangeDto newSchedule)
         {
-            var entity = _roomRepository.GetSession(sessionId);
-            var room = _roomRepository.Get(entity.RoomId);
+            var entity = await _roomRepository.GetSessionAsync(sessionId);
+            var room = await _roomRepository.GetAsync(entity.RoomId);
 
             var schedule =
                 newSchedule == null
@@ -50,33 +51,33 @@ namespace ISTS.Application.Rooms
                 : DateRange.Create(newSchedule.Start, newSchedule.End);
 
             var model = room.RescheduleSession(entity, schedule, _sessionScheduleValidator);
-            var updatedEntity = _roomRepository.RescheduleSession(model.Id, model.Schedule);
+            var updatedEntity = await _roomRepository.RescheduleSessionAsync(model.Id, model.Schedule);
 
             var result = _mapper.Map<RoomSessionDto>(updatedEntity);
             return result;
         }
 
-        public RoomSessionDto StartSession(Guid sessionId)
+        public async Task<RoomSessionDto> StartSession(Guid sessionId)
         {
-            var entity = _roomRepository.GetSession(sessionId);
-            var room = _roomRepository.Get(entity.RoomId);
+            var entity = await _roomRepository.GetSessionAsync(sessionId);
+            var room = await _roomRepository.GetAsync(entity.RoomId);
 
             var startTime = DateTime.Now;
             var model = room.StartSession(sessionId, startTime);
-            _roomRepository.StartSession(sessionId, startTime);
+            await _roomRepository.StartSessionAsync(sessionId, startTime);
 
             var result = _mapper.Map<RoomSessionDto>(model);
             return result;
         }
 
-        public RoomSessionDto EndSession(Guid sessionId)
+        public async Task<RoomSessionDto> EndSessionAsync(Guid sessionId)
         {
-            var entity = _roomRepository.GetSession(sessionId);
-            var room = _roomRepository.Get(entity.RoomId);
+            var entity = await _roomRepository.GetSessionAsync(sessionId);
+            var room = await _roomRepository.GetAsync(entity.RoomId);
 
             var time = DateTime.Now;
             var model = room.EndSession(sessionId, time);
-            _roomRepository.EndSession(sessionId, time);
+            await _roomRepository.EndSessionAsync(sessionId, time);
 
             var result = _mapper.Map<RoomSessionDto>(model);
             return result;

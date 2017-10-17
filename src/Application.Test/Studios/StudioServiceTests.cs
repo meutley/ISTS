@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using AutoMapper;
 using Moq;
@@ -60,18 +61,18 @@ namespace ISTS.Application.Test.Studios
         }
 
         [Fact]
-        public void Create_Returns_New_StudioDto()
+        public async void Create_Returns_New_StudioDto()
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";
             var model = Studio.Create(name, friendlyUrl);
             
             _studioRepository
-                .Setup(r => r.Create(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(model);
+                .Setup(r => r.CreateAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(model));
             
             var dto = new StudioDto { Name = name, FriendlyUrl = friendlyUrl };
-            var result = _studioService.Create(dto);
+            var result = await _studioService.CreateAsync(dto);
 
             Assert.NotNull(result);
             Assert.Equal(name, result.Name);
@@ -79,25 +80,25 @@ namespace ISTS.Application.Test.Studios
         }
 
         [Fact]
-        public void CreateRoom_Returns_New_StudioRoomDto()
+        public async void CreateRoom_Returns_New_StudioRoomDto()
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";
             var model = Studio.Create(name, friendlyUrl);
             
             _studioRepository
-                .Setup(r => r.Get(It.IsAny<Guid>()))
-                .Returns(model);
+                .Setup(r => r.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(model));
 
             var roomName = "RoomName";
             var roomModel = StudioRoom.Create(model.Id, roomName);
 
             _studioRepository
-                .Setup(r => r.CreateRoom(It.IsAny<Guid>(),It.IsAny<string>()))
-                .Returns(roomModel);
+                .Setup(r => r.CreateRoomAsync(It.IsAny<Guid>(),It.IsAny<string>()))
+                .Returns(Task.FromResult(roomModel));
             
             var dto = new StudioRoomDto { StudioId = model.Id, Name = roomName };
-            var result = _studioService.CreateRoom(dto);
+            var result = await _studioService.CreateRoomAsync(dto);
 
             Assert.NotNull(result);
             Assert.Equal(model.Id, result.StudioId);

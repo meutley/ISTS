@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using ISTS.Api.Model;
-
 using ISTS.Application.Studios;
 
 namespace ISTS.Api.Controllers
@@ -23,29 +21,31 @@ namespace ISTS.Api.Controllers
         
         // GET api/studios/1
         [HttpGet("{id}")]
-        public ApiModelResult<StudioDto> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            var studio = _studioService.Get(id);
+            var studio = await _studioService.GetAsync(id);
+            if (studio == null)
+            {
+                return NotFound();
+            }
             
-            return studio != null
-                ? ApiModelResult<StudioDto>.Ok(studio)
-                : ApiModelResult<StudioDto>.NotFound(null);
+            return Ok(studio);
         }
         
         // POST api/studios
         [HttpPost]
-        public ApiModelResult<StudioDto> Post([FromBody]StudioDto model)
+        public async Task<IActionResult> Post([FromBody]StudioDto model)
         {
-            var studio = _studioService.Create(model);
-            return ApiModelResult<StudioDto>.Ok(studio);
+            var studio = await _studioService.CreateAsync(model);
+            return Ok(studio);
         }
 
         // PUT api/studios/1
         [HttpPut("{id}")]
-        public ApiModelResult<StudioDto> Put([FromBody]StudioDto model)
+        public async Task<IActionResult> Put([FromBody]StudioDto model)
         {
-            var studio = _studioService.Update(model);
-            return ApiModelResult<StudioDto>.Ok(studio);
+            var studio = await _studioService.UpdateAsync(model);
+            return Ok(studio);
         }
     }
 }

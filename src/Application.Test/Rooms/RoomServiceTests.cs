@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using AutoMapper;
 using Moq;
@@ -44,27 +45,27 @@ namespace ISTS.Application.Test.Rooms
         }
         
         [Fact]
-        public void CreateSession_Returns_New_RoomSessionDto_Without_Schedule()
+        public async void CreateSession_Returns_New_RoomSessionDto_Without_Schedule()
         {
             var studioId = Guid.NewGuid();
             var room = Room.Create(studioId, "Room");
             
             _roomRepository
-                .Setup(r => r.Get(It.IsAny<Guid>()))
-                .Returns(room);
+                .Setup(r => r.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
 
             var entity = RoomSession.Create(room.Id, null);
 
             _roomRepository
-                .Setup(r => r.CreateSession(It.IsAny<Guid>(), It.IsAny<RoomSession>()))
-                .Returns(entity);
+                .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<RoomSession>()))
+                .Returns(Task.FromResult(entity));
 
             var dto = new RoomSessionDto
             {
                 RoomId = room.Id
             };
 
-            var result = _roomService.CreateSession(dto);
+            var result = await _roomService.CreateSessionAsync(dto);
 
             Assert.NotNull(dto);
             Assert.Equal(room.Id, dto.RoomId);
@@ -72,25 +73,25 @@ namespace ISTS.Application.Test.Rooms
         }
 
         [Fact]
-        public void CreateSession_Returns_New_RoomSessionDto_With_Schedule()
+        public async void CreateSession_Returns_New_RoomSessionDto_With_Schedule()
         {
             var studioId = Guid.NewGuid();
             var room = Room.Create(studioId, "Room");
             
             _roomRepository
-                .Setup(r => r.Get(It.IsAny<Guid>()))
-                .Returns(room);
+                .Setup(r => r.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
 
             var schedule = DateRange.Create(DateTime.Now, DateTime.Now.AddHours(2));
             var entity = RoomSession.Create(room.Id, null);
 
             _roomRepository
-                .Setup(r => r.CreateSession(It.IsAny<Guid>(), It.IsAny<RoomSession>()))
-                .Returns(entity);
+                .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<RoomSession>()))
+                .Returns(Task.FromResult(entity));
 
             _sessionScheduleValidator
-                .Setup(v => v.Validate(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
-                .Returns(SessionScheduleValidatorResult.Success);
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
+                .Returns(Task.FromResult(SessionScheduleValidatorResult.Success));
 
             var dto = new RoomSessionDto
             {
@@ -98,7 +99,7 @@ namespace ISTS.Application.Test.Rooms
                 Schedule = new DateRangeDto { Start = schedule.Start, End = schedule.End }
             };
 
-            var result = _roomService.CreateSession(dto);
+            var result = await _roomService.CreateSessionAsync(dto);
 
             Assert.NotNull(dto);
             Assert.Equal(room.Id, dto.RoomId);

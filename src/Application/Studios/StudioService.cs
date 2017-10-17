@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
 
@@ -21,41 +23,41 @@ namespace ISTS.Application.Studios
             _mapper = mapper;
         }
 
-        public StudioDto Create(StudioDto model)
+        public async Task<StudioDto> CreateAsync(StudioDto model)
         {
-            var entity = _studioRepository.Create(model.Name, model.FriendlyUrl);
+            var entity = await _studioRepository.CreateAsync(model.Name, model.FriendlyUrl);
 
             var result = _mapper.Map<StudioDto>(entity);
             return result;
         }
 
-        public List<StudioDto> GetAll()
+        public async Task<List<StudioDto>> GetAllAsync()
         {
-            var entities = _studioRepository.Get().ToList();
+            var entities = await _studioRepository.GetAsync();
 
             var result = _mapper.Map<List<StudioDto>>(entities);
             return result;
         }
 
-        public StudioDto Get(Guid id)
+        public async Task<StudioDto> GetAsync(Guid id)
         {
-            var entity = _studioRepository.Get(id);
+            var entity = await _studioRepository.GetAsync(id);
             
             var result = _mapper.Map<StudioDto>(entity);
             return result;
         }
 
-        public StudioDto Update(StudioDto model)
+        public async Task<StudioDto> UpdateAsync(StudioDto model)
         {
-            var entity = _studioRepository.Update(model.Id, model.Name, model.FriendlyUrl);
+            var entity = await _studioRepository.UpdateAsync(model.Id, model.Name, model.FriendlyUrl);
 
             var result = _mapper.Map<StudioDto>(entity);
             return result;
         }
         
-        public StudioRoomDto CreateRoom(StudioRoomDto model)
+        public async Task<StudioRoomDto> CreateRoomAsync(StudioRoomDto model)
         {
-            var result = _studioRepository.CreateRoom(model.StudioId, model.Name);
+            var result = await _studioRepository.CreateRoomAsync(model.StudioId, model.Name);
 
             var studioRoomDto = _mapper.Map<StudioRoomDto>(result);
             return studioRoomDto;

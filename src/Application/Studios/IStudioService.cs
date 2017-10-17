@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ISTS.Domain.Studios;
 
@@ -7,11 +8,11 @@ namespace ISTS.Application.Studios
 {
     public interface IStudioService
     {
-        StudioDto Create(StudioDto model);
-        List<StudioDto> GetAll();
-        StudioDto Get(Guid id);
-        StudioDto Update(StudioDto model);
+        Task<StudioDto> CreateAsync(StudioDto model);
+        Task<List<StudioDto>> GetAllAsync();
+        Task<StudioDto> GetAsync(Guid id);
+        Task<StudioDto> UpdateAsync(StudioDto model);
         
-        StudioRoomDto CreateRoom(StudioRoomDto model);
+        Task<StudioRoomDto> CreateRoomAsync(StudioRoomDto model);
     }
 }

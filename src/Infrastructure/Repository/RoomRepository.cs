@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
@@ -18,44 +20,43 @@ namespace ISTS.Infrastructure.Repository
             _context = context;
         }
         
-        public Room Get(Guid id)
+        public async Task<Room> GetAsync(Guid id)
         {
             return null;
         }
 
-        public RoomSession GetSession(Guid id)
+        public async Task<RoomSession> GetSessionAsync(Guid id)
         {
             return null;
         }
 
-        public RoomSession CreateSession(Guid roomId, RoomSession entity)
+        public async Task<RoomSession> CreateSessionAsync(Guid roomId, RoomSession entity)
         {
             return null;
         }
 
-        public RoomSession RescheduleSession(Guid id, DateRange schedule)
+        public async Task<RoomSession> RescheduleSessionAsync(Guid id, DateRange schedule)
         {
             return null;
         }
 
-        public RoomSession StartSession(Guid id, DateTime time)
+        public async Task<RoomSession> StartSessionAsync(Guid id, DateTime time)
         {
             return null;
         }
 
-        public RoomSession EndSession(Guid id, DateTime time)
+        public async Task<RoomSession> EndSessionAsync(Guid id, DateTime time)
         {
             return null;
         }
 
-        public IEnumerable<RoomSessionSchedule> GetSchedule(Guid id, DateRange range)
+        public async Task<IEnumerable<RoomSessionSchedule>> GetScheduleAsync(Guid id, DateRange range)
         {
-            var sessions = _context.Sessions
+            var sessions = await _context.Sessions
                 .Where(s => s.RoomId == id)
-                .ToList();
+                .ToListAsync();
 
-            var schedule = sessions
-                .Select(s => RoomSessionSchedule.Create(s.Id, s.Schedule));
+            var schedule = sessions.Select(s => RoomSessionSchedule.Create(s.Id, s.Schedule));
 
             return schedule;
         }

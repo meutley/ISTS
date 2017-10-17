@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ISTS.Domain.Schedules;
 
@@ -7,14 +8,14 @@ namespace ISTS.Domain.Rooms
 {
     public interface IRoomRepository
     {
-        Room Get(Guid id);
+        Task<Room> GetAsync(Guid id);
         
-        RoomSession GetSession(Guid id);
-        RoomSession CreateSession(Guid roomId, RoomSession entity);
-        RoomSession RescheduleSession(Guid id, DateRange schedule);
-        RoomSession StartSession(Guid id, DateTime time);
-        RoomSession EndSession(Guid id, DateTime time);
+        Task<RoomSession> GetSessionAsync(Guid id);
+        Task<RoomSession> CreateSessionAsync(Guid roomId, RoomSession entity);
+        Task<RoomSession> RescheduleSessionAsync(Guid id, DateRange schedule);
+        Task<RoomSession> StartSessionAsync(Guid id, DateTime time);
+        Task<RoomSession> EndSessionAsync(Guid id, DateTime time);
 
-        IEnumerable<RoomSessionSchedule> GetSchedule(Guid id, DateRange range);
+        Task<IEnumerable<RoomSessionSchedule>> GetScheduleAsync(Guid id, DateRange range);
     }
 }

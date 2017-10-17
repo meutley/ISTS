@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ISTS.Domain.Exceptions;
 using ISTS.Domain.Rooms;
@@ -18,7 +19,7 @@ namespace ISTS.Application.Schedules
             _roomRepository = roomRepository;
         }
 
-        public SessionScheduleValidatorResult Validate(Guid roomId, Guid? sessionId, DateRange schedule)
+        public async Task<SessionScheduleValidatorResult> ValidateAsync(Guid roomId, Guid? sessionId, DateRange schedule)
         {
             if (schedule != null)
             {
@@ -27,9 +28,9 @@ namespace ISTS.Application.Schedules
                     throw new ScheduleEndMustBeGreaterThanStartException();
                 }
 
+                var roomScheduleEntities = await _roomRepository.GetScheduleAsync(roomId, schedule);
                 var roomSchedule =
-                    _roomRepository
-                    .GetSchedule(roomId, schedule)
+                    roomScheduleEntities
                     .Where(s => s.SessionId != sessionId)
                     .ToList();
 
