@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ISTS.Domain.Exceptions;
 using ISTS.Domain.Schedules;
 using ISTS.Domain.Studios;
+using ISTS.Helpers.Async;
 
 namespace ISTS.Domain.Rooms
 {
@@ -41,9 +42,8 @@ namespace ISTS.Domain.Rooms
 
         public RoomSession CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var validatorTask = Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator);
-            Task.WaitAll(validatorTask);
-            if (validatorTask.Result)
+            var result = AsyncHelper.RunSync(() => Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator));
+            if (result)
             {
                 var session = RoomSession.Create(this.Id, scheduledTime);
                 _sessions.Add(session);
@@ -58,9 +58,8 @@ namespace ISTS.Domain.Rooms
             RoomSession result = null;
             DoWithSession(session.Id, (s) =>
             {
-                var validatorTask = Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator);
-                Task.WaitAll(validatorTask);
-                if (validatorTask.Result)
+                var validatorResult = AsyncHelper.RunSync(() => Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator));
+                if (validatorResult)
                 {
                     var sessionModel = s.Reschedule(newSchedule);
                     result = sessionModel;
