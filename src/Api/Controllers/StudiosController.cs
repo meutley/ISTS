@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,15 +35,28 @@ namespace ISTS.Api.Controllers
         public async Task<IActionResult> Post([FromBody]StudioDto model)
         {
             var studio = await _studioService.CreateAsync(model);
-            return Ok(studio);
+            var studioUri = ApiHelper.GetResourceUri("studios", studio.Id);
+            
+            return Created(studioUri, studio);
         }
 
-        // PUT api/studios/1
-        [HttpPut("{id}")]
+        // PUT api/studios
+        [HttpPut]
         public async Task<IActionResult> Put([FromBody]StudioDto model)
         {
             var studio = await _studioService.UpdateAsync(model);
             return Ok(studio);
+        }
+
+        // POST api/studios/1/rooms
+        [HttpPost("{id}/rooms")]
+        public async Task<IActionResult> CreateRoom(Guid id, [FromBody]StudioRoomDto model)
+        {
+            model.StudioId = id;
+            var room = await _studioService.CreateRoomAsync(model);
+            var roomUri = ApiHelper.GetResourceUri("studios", id, "rooms", room.Id);
+            
+            return Created(roomUri, room);
         }
     }
 }
