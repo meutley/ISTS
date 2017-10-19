@@ -19,7 +19,7 @@ namespace ISTS.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAction(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             var room = await _roomService.GetAsync(id);
             if (room == null)
