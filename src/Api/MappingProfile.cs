@@ -12,10 +12,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<DateRange, DateRangeDto>();
-        
         CreateMap<Studio, StudioDto>();
-        CreateMap<StudioRoom, StudioRoomDto>();
-
         CreateMap<Room, RoomDto>();
         CreateMap<RoomSession, RoomSessionDto>();
     }
