@@ -8,7 +8,7 @@ using ISTS.Domain.Studios;
 
 namespace ISTS.Application.Studios
 {
-    public class StudioUrlValidator : IStudioUrlValidator
+    public class StudioValidator : IStudioValidator
     {
         private readonly IStudioRepository _studioRepository;
 
@@ -16,13 +16,13 @@ namespace ISTS.Application.Studios
         private static readonly int MaxLength = 25;
         private static readonly string ValidCharactersRegexPattern = @"^[a-zA-Z]([a-zA-Z0-9\-_]+)?$";
 
-        public StudioUrlValidator(
+        public StudioValidator(
             IStudioRepository studioRepository)
         {
             _studioRepository = studioRepository;
         }
         
-        public async Task<StudioUrlValidatorResult> ValidateAsync(Guid? studioId, string url)
+        public async Task<StudioValidatorResult> ValidateAsync(Guid? studioId, string url)
         {
             if (string.IsNullOrWhiteSpace(url))
             {
@@ -56,7 +56,7 @@ namespace ISTS.Application.Studios
                 throw new UriFormatException(message);
             }
 
-            return StudioUrlValidatorResult.Success;
+            return StudioValidatorResult.Success;
         }
     }
 }

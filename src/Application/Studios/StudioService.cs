@@ -13,12 +13,12 @@ namespace ISTS.Application.Studios
 {
     public class StudioService : IStudioService
     {
-        private readonly IStudioUrlValidator _studioUrlValidator;
+        private readonly IStudioValidator _studioUrlValidator;
         private readonly IStudioRepository _studioRepository;
         private readonly IMapper _mapper;
 
         public StudioService(
-            IStudioUrlValidator studioUrlValidator,
+            IStudioValidator studioUrlValidator,
             IStudioRepository studioRepository,
             IMapper mapper)
         {

@@ -18,13 +18,13 @@ namespace ISTS.Domain.Studios
 
         public virtual ICollection<Room> Rooms { get; set; }
 
-        public static Studio Create(string name, string friendlyUrl, IStudioUrlValidator studioUrlValidator)
+        public static Studio Create(string name, string friendlyUrl, IStudioValidator studioValidator)
         {
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
 
-            var validationResult = AsyncHelper.RunSync(() => studioUrlValidator.ValidateAsync(null, friendlyUrl));
-            if (validationResult == StudioUrlValidatorResult.Success)
+            var validationResult = AsyncHelper.RunSync(() => studioValidator.ValidateAsync(null, friendlyUrl));
+            if (validationResult == StudioValidatorResult.Success)
             {
                 var result = new Studio
                 {
@@ -40,13 +40,13 @@ namespace ISTS.Domain.Studios
             throw new InvalidOperationException();
         }
 
-        public void Update(string name, string friendlyUrl, IStudioUrlValidator studioUrlValidator)
+        public void Update(string name, string friendlyUrl, IStudioValidator studioValidator)
         {
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
 
-            var validationResult = AsyncHelper.RunSync(() => studioUrlValidator.ValidateAsync(this.Id, friendlyUrl));
-            if (validationResult == StudioUrlValidatorResult.Success)
+            var validationResult = AsyncHelper.RunSync(() => studioValidator.ValidateAsync(this.Id, friendlyUrl));
+            if (validationResult == StudioValidatorResult.Success)
             {
                 this.Name = name;
                 this.FriendlyUrl = friendlyUrl;
