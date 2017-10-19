@@ -24,11 +24,7 @@ namespace ISTS.Domain.Rooms
 
         public virtual Studio Studio { get; protected set; }
 
-        public ReadOnlyCollection<Session> Sessions
-        {
-            get { return _sessions.AsReadOnly(); }
-            private set { _sessions = value.ToList(); }
-        }
+        public virtual ICollection<Session> Sessions { get; set; }
 
         public static Room Create(Guid studioId, string name)
         {
@@ -48,7 +44,7 @@ namespace ISTS.Domain.Rooms
             if (result)
             {
                 var session = Session.Create(this.Id, scheduledTime);
-                _sessions.Add(session);
+                Sessions.Add(session);
                 return session; 
             }
 
@@ -116,7 +112,7 @@ namespace ISTS.Domain.Rooms
 
         private void DoWithSession(Guid sessionId, Action<Session> action)
         {
-            var session = _sessions.SingleOrDefault(s => s.Id == sessionId);
+            var session = Sessions.SingleOrDefault(s => s.Id == sessionId);
             if (session == null)
             {
                 throw new ArgumentException($"Session Id {sessionId} not found in Room {this.Id}");

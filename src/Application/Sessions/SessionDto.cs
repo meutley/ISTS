@@ -11,8 +11,6 @@ namespace ISTS.Application.Sessions
 
         public Guid RoomId { get; set; }
 
-        public RoomDto Room { get; set; }
-
         public DateRangeDto Schedule { get; set; }
 
         public DateTime? ActualStartTime { get; set; }

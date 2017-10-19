@@ -24,6 +24,14 @@ namespace ISTS.Application.Rooms
             _roomRepository = roomRepository;
             _mapper = mapper;
         }
+
+        public async Task<RoomDto> GetAsync(Guid id)
+        {
+            var entity = await _roomRepository.GetAsync(id);
+
+            var result = _mapper.Map<RoomDto>(entity);
+            return result;
+        }
         
         public async Task<SessionDto> CreateSessionAsync(Guid roomId, SessionDto session)
         {

@@ -10,9 +10,7 @@ namespace ISTS.Domain.Sessions
         public Guid Id { get; protected set; }
 
         public Guid RoomId { get; protected set; }
-
-        public virtual Room Room { get; protected set; }
-
+        
         public DateTime? ScheduledStartTime { get; protected set; }
 
         public DateTime? ScheduledEndTime { get; protected set; }

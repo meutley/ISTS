@@ -37,7 +37,18 @@ namespace ISTS.Infrastructure.Repository
 
         public async Task<Session> CreateSessionAsync(Guid roomId, Session entity)
         {
-            return null;
+            var room = await _context.Rooms
+                .SingleAsync(r => r.Id == roomId);
+            
+            if (room == null)
+            {
+                return null;
+            }
+            
+            await _context.Sessions.AddAsync(entity);
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task<Session> RescheduleSessionAsync(Guid id, DateRange schedule)

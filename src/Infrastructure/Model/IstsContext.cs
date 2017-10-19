@@ -36,11 +36,6 @@ namespace ISTS.Infrastructure.Model
                 .Entity<Room>(room =>
                 {
                     room.ToTable("Room");
-
-                    room
-                        .HasMany(x => x.Sessions)
-                        .WithOne(x => x.Room)
-                        .HasForeignKey(x => x.RoomId);
                 });
 
             modelBuilder

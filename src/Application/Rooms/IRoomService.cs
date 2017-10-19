@@ -8,6 +8,8 @@ namespace ISTS.Application.Rooms
 {
     public interface IRoomService
     {
+        Task<RoomDto> GetAsync(Guid id);
+        
         Task<SessionDto> CreateSessionAsync(Guid roomId, SessionDto session);
         Task<SessionDto> RescheduleSessionAsync(Guid sessionId, DateRangeDto newSchedule);
         Task<SessionDto> StartSessionAsync(Guid sessionId);
