@@ -13,20 +13,24 @@ namespace ISTS.Application.Studios
 {
     public class StudioService : IStudioService
     {
+        private readonly IStudioUrlValidator _studioUrlValidator;
         private readonly IStudioRepository _studioRepository;
         private readonly IMapper _mapper;
 
         public StudioService(
+            IStudioUrlValidator studioUrlValidator,
             IStudioRepository studioRepository,
             IMapper mapper)
         {
+            _studioUrlValidator = studioUrlValidator;
             _studioRepository = studioRepository;
             _mapper = mapper;
         }
 
         public async Task<StudioDto> CreateAsync(StudioDto model)
         {
-            var entity = await _studioRepository.CreateAsync(model.Name, model.FriendlyUrl);
+            var newEntity = Studio.Create(model.Name, model.FriendlyUrl, _studioUrlValidator);
+            var entity = await _studioRepository.CreateAsync(newEntity);
 
             var result = _mapper.Map<StudioDto>(entity);
             return result;
@@ -50,7 +54,14 @@ namespace ISTS.Application.Studios
 
         public async Task<StudioDto> UpdateAsync(StudioDto model)
         {
-            var entity = await _studioRepository.UpdateAsync(model.Id, model.Name, model.FriendlyUrl);
+            var studio = await _studioRepository.GetAsync(model.Id);
+            if (studio == null)
+            {
+                return null;
+            }
+
+            studio.Update(model.Name, model.FriendlyUrl, _studioUrlValidator);
+            var entity = await _studioRepository.UpdateAsync(studio);
 
             var result = _mapper.Map<StudioDto>(entity);
             return result;

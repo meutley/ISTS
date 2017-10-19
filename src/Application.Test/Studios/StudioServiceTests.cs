@@ -18,6 +18,7 @@ namespace ISTS.Application.Test.Studios
 {
     public class StudioServiceTests
     {
+        private readonly Mock<IStudioUrlValidator> _studioUrlValidator;
         private readonly Mock<IStudioRepository>  _studioRepository;
         private readonly Mock<IMapper> _mapper;
 
@@ -25,10 +26,15 @@ namespace ISTS.Application.Test.Studios
 
         public StudioServiceTests()
         {
+            _studioUrlValidator = new Mock<IStudioUrlValidator>();
             _studioRepository = new Mock<IStudioRepository>();
             _mapper = new Mock<IMapper>();
 
-            _studioService = new StudioService(_studioRepository.Object, _mapper.Object);
+            _studioService = new StudioService(_studioUrlValidator.Object, _studioRepository.Object, _mapper.Object);
+
+            _studioUrlValidator
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(StudioUrlValidatorResult.Success));
 
             _mapper
                 .Setup(x => x.Map<StudioDto>(It.IsAny<Studio>()))
@@ -67,10 +73,10 @@ namespace ISTS.Application.Test.Studios
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";
-            var model = Studio.Create(name, friendlyUrl);
+            var model = Studio.Create(name, friendlyUrl, _studioUrlValidator.Object);
             
             _studioRepository
-                .Setup(r => r.CreateAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(r => r.CreateAsync(It.IsAny<Studio>()))
                 .Returns(Task.FromResult(model));
             
             var dto = new StudioDto { Name = name, FriendlyUrl = friendlyUrl };
@@ -86,7 +92,7 @@ namespace ISTS.Application.Test.Studios
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";
-            var model = Studio.Create(name, friendlyUrl);
+            var model = Studio.Create(name, friendlyUrl, _studioUrlValidator.Object);
             
             _studioRepository
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))

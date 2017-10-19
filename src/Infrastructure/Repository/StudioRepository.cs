@@ -19,10 +19,8 @@ namespace ISTS.Infrastructure.Repository
             _context = context;
         }
         
-        public async Task<Studio> CreateAsync(string name, string friendlyUrl)
+        public async Task<Studio> CreateAsync(Studio entity)
         {
-            var entity = Studio.Create(name, friendlyUrl);
-
             await _context.Studios.AddAsync(entity);
             await _context.SaveChangesAsync();
             
@@ -43,13 +41,12 @@ namespace ISTS.Infrastructure.Repository
             return studio;
         }
 
-        public async Task<Studio> UpdateAsync(Guid id, string name, string friendlyUrl)
+        public async Task<Studio> UpdateAsync(Studio entity)
         {
-            var studio = await GetAsync(id);
-            studio.Update(name, friendlyUrl);
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return studio;
+            return entity;
         }
 
         public async Task<Room> CreateRoomAsync(Guid studioId, string name)

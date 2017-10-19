@@ -30,7 +30,8 @@ namespace ISTS.Domain.Studios
                 {
                     Id = Guid.NewGuid(),
                     Name = name,
-                    FriendlyUrl = friendlyUrl
+                    FriendlyUrl = friendlyUrl,
+                    Rooms = new List<Room>()
                 };
 
                 return result;

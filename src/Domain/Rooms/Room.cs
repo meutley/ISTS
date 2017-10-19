@@ -30,7 +30,8 @@ namespace ISTS.Domain.Rooms
             {
                 Id = Guid.NewGuid(),
                 StudioId = studioId,
-                Name = name
+                Name = name,
+                Sessions = new List<Session>()
             };
 
             return room;
