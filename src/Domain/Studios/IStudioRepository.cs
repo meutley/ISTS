@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 
 namespace ISTS.Domain.Studios
@@ -13,6 +14,6 @@ namespace ISTS.Domain.Studios
         Task<Studio> GetAsync(Guid id);
         Task<Studio> UpdateAsync(Guid id, string name, string friendlyUrl);
         
-        Task<StudioRoom> CreateRoomAsync(Guid studioId, string name);
+        Task<Room> CreateRoomAsync(Guid studioId, string name);
     }
 }

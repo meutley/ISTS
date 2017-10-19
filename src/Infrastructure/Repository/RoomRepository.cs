@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
+using ISTS.Domain.Sessions;
 using ISTS.Infrastructure.Model;
 
 namespace ISTS.Infrastructure.Repository
@@ -22,30 +23,34 @@ namespace ISTS.Infrastructure.Repository
         
         public async Task<Room> GetAsync(Guid id)
         {
-            return null;
+            var room = await _context.Rooms
+                .Include(r => r.Sessions)
+                .SingleOrDefaultAsync(r => r.Id == id);
+
+            return room;
         }
 
-        public async Task<RoomSession> GetSessionAsync(Guid id)
+        public async Task<Session> GetSessionAsync(Guid id)
         {
             return null;
         }
 
-        public async Task<RoomSession> CreateSessionAsync(Guid roomId, RoomSession entity)
+        public async Task<Session> CreateSessionAsync(Guid roomId, Session entity)
         {
             return null;
         }
 
-        public async Task<RoomSession> RescheduleSessionAsync(Guid id, DateRange schedule)
+        public async Task<Session> RescheduleSessionAsync(Guid id, DateRange schedule)
         {
             return null;
         }
 
-        public async Task<RoomSession> StartSessionAsync(Guid id, DateTime time)
+        public async Task<Session> StartSessionAsync(Guid id, DateTime time)
         {
             return null;
         }
 
-        public async Task<RoomSession> EndSessionAsync(Guid id, DateTime time)
+        public async Task<Session> EndSessionAsync(Guid id, DateTime time)
         {
             return null;
         }

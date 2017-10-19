@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
 
+using ISTS.Application.Rooms;
 using ISTS.Domain.Studios;
 
 namespace ISTS.Application.Studios
@@ -55,12 +56,12 @@ namespace ISTS.Application.Studios
             return result;
         }
         
-        public async Task<StudioRoomDto> CreateRoomAsync(StudioRoomDto model)
+        public async Task<RoomDto> CreateRoomAsync(Guid studioId, RoomDto model)
         {
-            var result = await _studioRepository.CreateRoomAsync(model.StudioId, model.Name);
+            var result = await _studioRepository.CreateRoomAsync(studioId, model.Name);
 
-            var studioRoomDto = _mapper.Map<StudioRoomDto>(result);
-            return studioRoomDto;
+            var roomDto = _mapper.Map<RoomDto>(result);
+            return roomDto;
         }
     }
 }

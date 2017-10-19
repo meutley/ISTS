@@ -52,7 +52,7 @@ namespace ISTS.Infrastructure.Repository
             return studio;
         }
 
-        public async Task<StudioRoom> CreateRoomAsync(Guid studioId, string name)
+        public async Task<Room> CreateRoomAsync(Guid studioId, string name)
         {
             var studio = await _context.Studios.SingleAsync(s => s.Id == studioId);
             var entity = studio.CreateRoom(name);

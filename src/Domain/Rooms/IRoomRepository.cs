@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using ISTS.Domain.Schedules;
+using ISTS.Domain.Sessions;
 
 namespace ISTS.Domain.Rooms
 {
@@ -10,11 +11,11 @@ namespace ISTS.Domain.Rooms
     {
         Task<Room> GetAsync(Guid id);
         
-        Task<RoomSession> GetSessionAsync(Guid id);
-        Task<RoomSession> CreateSessionAsync(Guid roomId, RoomSession entity);
-        Task<RoomSession> RescheduleSessionAsync(Guid id, DateRange schedule);
-        Task<RoomSession> StartSessionAsync(Guid id, DateTime time);
-        Task<RoomSession> EndSessionAsync(Guid id, DateTime time);
+        Task<Session> GetSessionAsync(Guid id);
+        Task<Session> CreateSessionAsync(Guid roomId, Session entity);
+        Task<Session> RescheduleSessionAsync(Guid id, DateRange schedule);
+        Task<Session> StartSessionAsync(Guid id, DateTime time);
+        Task<Session> EndSessionAsync(Guid id, DateTime time);
 
         Task<IEnumerable<RoomSessionSchedule>> GetScheduleAsync(Guid id, DateRange range);
     }

@@ -7,8 +7,10 @@ using Xunit;
 
 using ISTS.Application.Rooms;
 using ISTS.Application.Schedules;
+using ISTS.Application.Sessions;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
+using ISTS.Domain.Sessions;
 
 namespace ISTS.Application.Test.Rooms
 {
@@ -29,10 +31,10 @@ namespace ISTS.Application.Test.Rooms
             _roomService = new RoomService(_sessionScheduleValidator.Object, _roomRepository.Object, _mapper.Object);
 
             _mapper
-                .Setup(x => x.Map<RoomSessionDto>(It.IsAny<RoomSession>()))
-                .Returns((RoomSession source) =>
+                .Setup(x => x.Map<SessionDto>(It.IsAny<Session>()))
+                .Returns((Session source) =>
                 {
-                    return new RoomSessionDto
+                    return new SessionDto
                     {
                         Id = source.Id,
                         RoomId = source.RoomId,
@@ -54,18 +56,18 @@ namespace ISTS.Application.Test.Rooms
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(room));
 
-            var entity = RoomSession.Create(room.Id, null);
+            var entity = Session.Create(room.Id, null);
 
             _roomRepository
-                .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<RoomSession>()))
+                .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<Session>()))
                 .Returns(Task.FromResult(entity));
 
-            var dto = new RoomSessionDto
+            var dto = new SessionDto
             {
                 RoomId = room.Id
             };
 
-            var result = await _roomService.CreateSessionAsync(dto);
+            var result = await _roomService.CreateSessionAsync(room.Id, dto);
 
             Assert.NotNull(dto);
             Assert.Equal(room.Id, dto.RoomId);
@@ -83,23 +85,23 @@ namespace ISTS.Application.Test.Rooms
                 .Returns(Task.FromResult(room));
 
             var schedule = DateRange.Create(DateTime.Now, DateTime.Now.AddHours(2));
-            var entity = RoomSession.Create(room.Id, null);
+            var entity = Session.Create(room.Id, null);
 
             _roomRepository
-                .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<RoomSession>()))
+                .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<Session>()))
                 .Returns(Task.FromResult(entity));
 
             _sessionScheduleValidator
                 .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
                 .Returns(Task.FromResult(SessionScheduleValidatorResult.Success));
 
-            var dto = new RoomSessionDto
+            var dto = new SessionDto
             {
                 RoomId = room.Id,
                 Schedule = new DateRangeDto { Start = schedule.Start, End = schedule.End }
             };
 
-            var result = await _roomService.CreateSessionAsync(dto);
+            var result = await _roomService.CreateSessionAsync(room.Id, dto);
 
             Assert.NotNull(dto);
             Assert.Equal(room.Id, dto.RoomId);

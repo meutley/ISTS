@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using ISTS.Domain.Exceptions;
 using ISTS.Domain.Schedules;
+using ISTS.Domain.Sessions;
 using ISTS.Domain.Studios;
 using ISTS.Helpers.Async;
 
@@ -13,7 +14,7 @@ namespace ISTS.Domain.Rooms
 {
     public class Room : IAggregateRoot
     {
-        private List<RoomSession> _sessions = new List<RoomSession>();
+        private List<Session> _sessions = new List<Session>();
         
         public Guid Id { get; protected set; }
 
@@ -23,9 +24,10 @@ namespace ISTS.Domain.Rooms
 
         public virtual Studio Studio { get; protected set; }
 
-        public ReadOnlyCollection<RoomSession> Sessions
+        public ReadOnlyCollection<Session> Sessions
         {
             get { return _sessions.AsReadOnly(); }
+            private set { _sessions = value.ToList(); }
         }
 
         public static Room Create(Guid studioId, string name)
@@ -40,12 +42,12 @@ namespace ISTS.Domain.Rooms
             return room;
         }
 
-        public RoomSession CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
+        public Session CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
         {
             var result = AsyncHelper.RunSync(() => Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator));
             if (result)
             {
-                var session = RoomSession.Create(this.Id, scheduledTime);
+                var session = Session.Create(this.Id, scheduledTime);
                 _sessions.Add(session);
                 return session; 
             }
@@ -53,9 +55,9 @@ namespace ISTS.Domain.Rooms
             throw new InvalidOperationException();
         }
 
-        public RoomSession RescheduleSession(RoomSession session, DateRange newSchedule, ISessionScheduleValidator sessionScheduleValidator)
+        public Session RescheduleSession(Session session, DateRange newSchedule, ISessionScheduleValidator sessionScheduleValidator)
         {
-            RoomSession result = null;
+            Session result = null;
             DoWithSession(session.Id, (s) =>
             {
                 var validatorResult = AsyncHelper.RunSync(() => Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator));
@@ -69,9 +71,9 @@ namespace ISTS.Domain.Rooms
             return result;
         }
 
-        public RoomSession StartSession(Guid sessionId, DateTime time)
+        public Session StartSession(Guid sessionId, DateTime time)
         {
-            RoomSession result = null;
+            Session result = null;
             DoWithSession(sessionId, (session) =>
             {
                 if (session.ActualStartTime.HasValue)
@@ -85,9 +87,9 @@ namespace ISTS.Domain.Rooms
             return result;
         }
 
-        public RoomSession EndSession(Guid sessionId, DateTime time)
+        public Session EndSession(Guid sessionId, DateTime time)
         {
-            RoomSession result = null;
+            Session result = null;
             DoWithSession(sessionId, (session) =>
             {
                 if (!session.ActualStartTime.HasValue)
@@ -101,9 +103,9 @@ namespace ISTS.Domain.Rooms
             return result;
         }
 
-        public RoomSession ResetActualTime(Guid sessionId)
+        public Session ResetActualTime(Guid sessionId)
         {
-            RoomSession result = null;
+            Session result = null;
             DoWithSession(sessionId, (session) =>
             {
                 result = session.ResetActualTime();
@@ -112,7 +114,7 @@ namespace ISTS.Domain.Rooms
             return result;
         }
 
-        private void DoWithSession(Guid sessionId, Action<RoomSession> action)
+        private void DoWithSession(Guid sessionId, Action<Session> action)
         {
             var session = _sessions.SingleOrDefault(s => s.Id == sessionId);
             if (session == null)

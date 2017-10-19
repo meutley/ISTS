@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using ISTS.Application.Rooms;
+
 namespace ISTS.Application.Studios
 {
     public class StudioDto
@@ -11,6 +13,6 @@ namespace ISTS.Application.Studios
 
         public string FriendlyUrl { get; set; }
 
-        public List<StudioRoomDto> Rooms { get; set; }
+        public List<RoomDto> Rooms { get; set; }
     }
 }

@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
+using ISTS.Domain.Rooms;
 using ISTS.Helpers.Validation;
 
 namespace ISTS.Domain.Studios
 {
     public class Studio : IAggregateRoot
     {
-        private List<StudioRoom> _rooms = new List<StudioRoom>();
+        private List<Room> _rooms = new List<Room>();
 
         public Guid Id { get; private set; }
 
@@ -16,9 +18,10 @@ namespace ISTS.Domain.Studios
 
         public string FriendlyUrl { get; private set; }
 
-        public virtual ReadOnlyCollection<StudioRoom> Rooms
+        public virtual ReadOnlyCollection<Room> Rooms
         {
             get { return _rooms.AsReadOnly(); }
+            private set { _rooms = value.ToList(); }
         }
 
         public static Studio Create(string name, string friendlyUrl)
@@ -45,11 +48,11 @@ namespace ISTS.Domain.Studios
             this.FriendlyUrl = friendlyUrl;
         }
 
-        public StudioRoom CreateRoom(string name)
+        public Room CreateRoom(string name)
         {
             ArgumentNotNullValidator.Validate(name, nameof(name));
 
-            var room = StudioRoom.Create(this.Id, name);
+            var room = Room.Create(this.Id, name);
             _rooms.Add(room);
 
             return room;

@@ -1,10 +1,11 @@
 using System;
 
+using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 
-namespace ISTS.Domain.Rooms
+namespace ISTS.Domain.Sessions
 {
-    public class RoomSession
+    public class Session
     {
         public Guid Id { get; protected set; }
 
@@ -31,9 +32,9 @@ namespace ISTS.Domain.Rooms
 
         public DateTime? ActualEndTime { get; protected set; }
 
-        public static RoomSession Create(Guid roomId, DateRange schedule)
+        public static Session Create(Guid roomId, DateRange schedule)
         {
-            var roomSession = new RoomSession
+            var roomSession = new Session
             {
                 Id = Guid.NewGuid(),
                 RoomId = roomId,
@@ -44,26 +45,26 @@ namespace ISTS.Domain.Rooms
             return roomSession;
         }
 
-        public RoomSession Reschedule(DateRange schedule)
+        public Session Reschedule(DateRange schedule)
         {
             this.ScheduledStartTime = schedule?.Start;
             this.ScheduledEndTime = schedule?.End;
             return this;
         }
 
-        public RoomSession SetActualStartTime(DateTime? time)
+        public Session SetActualStartTime(DateTime? time)
         {
             this.ActualStartTime = time;
             return this;
         }
 
-        public RoomSession SetActualEndTime(DateTime? time)
+        public Session SetActualEndTime(DateTime? time)
         {
             this.ActualEndTime = time;
             return this;
         }
 
-        public RoomSession ResetActualTime()
+        public Session ResetActualTime()
         {
             this.ActualStartTime = null;
             this.ActualEndTime = null;

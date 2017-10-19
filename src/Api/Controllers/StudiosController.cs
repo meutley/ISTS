@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
+using ISTS.Application.Rooms;
 using ISTS.Application.Studios;
 
 namespace ISTS.Api.Controllers
@@ -50,10 +51,9 @@ namespace ISTS.Api.Controllers
 
         // POST api/studios/1/rooms
         [HttpPost("{id}/rooms")]
-        public async Task<IActionResult> CreateRoom(Guid id, [FromBody]StudioRoomDto model)
+        public async Task<IActionResult> CreateRoom(Guid id, [FromBody]RoomDto model)
         {
-            model.StudioId = id;
-            var room = await _studioService.CreateRoomAsync(model);
+            var room = await _studioService.CreateRoomAsync(id, model);
             var roomUri = ApiHelper.GetResourceUri("studios", id, "rooms", room.Id);
             
             return Created(roomUri, room);

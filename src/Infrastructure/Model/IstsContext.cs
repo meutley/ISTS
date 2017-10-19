@@ -2,6 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 
 using ISTS.Domain.Rooms;
+using ISTS.Domain.Sessions;
 using ISTS.Domain.Studios;
 
 namespace ISTS.Infrastructure.Model
@@ -12,7 +13,7 @@ namespace ISTS.Infrastructure.Model
 
         public DbSet<Room> Rooms { get; set; }
 
-        public DbSet<RoomSession> Sessions { get; set; }
+        public DbSet<Session> Sessions { get; set; }
         
         public IstsContext(DbContextOptions<IstsContext> options)
             : base(options) { }
@@ -43,7 +44,7 @@ namespace ISTS.Infrastructure.Model
                 });
 
             modelBuilder
-                .Entity<RoomSession>(session =>
+                .Entity<Session>(session =>
                 {
                     session.ToTable("Session");
                     

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using ISTS.Application.Sessions;
+
 namespace ISTS.Application.Rooms
 {
     public class RoomDto
@@ -11,6 +13,6 @@ namespace ISTS.Application.Rooms
 
         public string Name { get; set; }
 
-        public List<RoomSessionDto> Sessions { get; set; }
+        public List<SessionDto> Sessions { get; set; }
     }
 }

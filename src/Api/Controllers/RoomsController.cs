@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using ISTS.Application.Rooms;
+using ISTS.Application.Sessions;
 
 namespace ISTS.Api.Controllers
 {
@@ -18,11 +19,10 @@ namespace ISTS.Api.Controllers
         }
 
         // POST api/rooms/1/sessions
-        [HttpGet("{id}/sessions")]
-        public async Task<IActionResult> CreateSession(Guid id, [FromBody]RoomSessionDto model)
+        [HttpPost("{id}/sessions")]
+        public async Task<IActionResult> CreateSession(Guid id, [FromBody]SessionDto model)
         {
-            model.RoomId = id;
-            var session = await _roomService.CreateSessionAsync(model);
+            var session = await _roomService.CreateSessionAsync(id, model);
             var sessionUri = ApiHelper.GetResourceUri("rooms", id, "sessions", session.Id);
 
             return Created(sessionUri, session);

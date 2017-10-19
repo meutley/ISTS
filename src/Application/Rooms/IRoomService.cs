@@ -1,13 +1,16 @@
 using System;
 using System.Threading.Tasks;
 
+using ISTS.Application.Sessions;
 using ISTS.Application.Schedules;
 
 namespace ISTS.Application.Rooms
 {
     public interface IRoomService
     {
-        Task<RoomSessionDto> CreateSessionAsync(RoomSessionDto session);
-        Task<RoomSessionDto> RescheduleSessionAsync(Guid sessionId, DateRangeDto newSchedule);
+        Task<SessionDto> CreateSessionAsync(Guid roomId, SessionDto session);
+        Task<SessionDto> RescheduleSessionAsync(Guid sessionId, DateRangeDto newSchedule);
+        Task<SessionDto> StartSessionAsync(Guid sessionId);
+        Task<SessionDto> EndSessionAsync(Guid sessionId);
     }
 }
