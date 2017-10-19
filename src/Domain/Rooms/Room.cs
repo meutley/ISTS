@@ -14,8 +14,6 @@ namespace ISTS.Domain.Rooms
 {
     public class Room : IAggregateRoot
     {
-        private List<Session> _sessions = new List<Session>();
-        
         public Guid Id { get; protected set; }
 
         public Guid StudioId { get; protected set; }
@@ -40,7 +38,7 @@ namespace ISTS.Domain.Rooms
 
         public Session CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var result = AsyncHelper.RunSync(() => Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator));
+            var result = Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator);
             if (result)
             {
                 var session = Session.Create(this.Id, scheduledTime);
@@ -56,7 +54,7 @@ namespace ISTS.Domain.Rooms
             Session result = null;
             DoWithSession(session.Id, (s) =>
             {
-                var validatorResult = AsyncHelper.RunSync(() => Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator));
+                var validatorResult = Room.ValidateSchedule(this.Id, session.Id, newSchedule, sessionScheduleValidator);
                 if (validatorResult)
                 {
                     var sessionModel = s.Reschedule(newSchedule);
@@ -121,9 +119,9 @@ namespace ISTS.Domain.Rooms
             action(session);
         }
 
-        private async static Task<bool> ValidateSchedule(Guid roomId, Guid? sessionId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)
+        private static bool ValidateSchedule(Guid roomId, Guid? sessionId, DateRange schedule, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var validatorResult = await sessionScheduleValidator.ValidateAsync(roomId, sessionId, schedule);
+            var validatorResult = AsyncHelper.RunSync(() => sessionScheduleValidator.ValidateAsync(roomId, sessionId, schedule));
             if (validatorResult != SessionScheduleValidatorResult.Success)
             {
                 ScheduleValidatorHelper.HandleSessionScheduleValidatorError(validatorResult);

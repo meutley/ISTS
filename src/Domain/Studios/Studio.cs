@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ISTS.Domain.Rooms;
+using ISTS.Helpers.Async;
 using ISTS.Helpers.Validation;
 
 namespace ISTS.Domain.Studios
@@ -17,28 +18,38 @@ namespace ISTS.Domain.Studios
 
         public virtual ICollection<Room> Rooms { get; set; }
 
-        public static Studio Create(string name, string friendlyUrl)
+        public static Studio Create(string name, string friendlyUrl, IStudioUrlValidator studioUrlValidator)
         {
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
 
-            var result = new Studio
+            var validationResult = AsyncHelper.RunSync(() => studioUrlValidator.ValidateAsync(null, friendlyUrl));
+            if (validationResult == StudioUrlValidatorResult.Success)
             {
-                Id = Guid.NewGuid(),
-                Name = name,
-                FriendlyUrl = friendlyUrl
-            };
+                var result = new Studio
+                {
+                    Id = Guid.NewGuid(),
+                    Name = name,
+                    FriendlyUrl = friendlyUrl
+                };
 
-            return result;
+                return result;
+            }
+
+            throw new InvalidOperationException();
         }
 
-        public void Update(string name, string friendlyUrl)
+        public void Update(string name, string friendlyUrl, IStudioUrlValidator studioUrlValidator)
         {
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
 
-            this.Name = name;
-            this.FriendlyUrl = friendlyUrl;
+            var validationResult = AsyncHelper.RunSync(() => studioUrlValidator.ValidateAsync(this.Id, friendlyUrl));
+            if (validationResult == StudioUrlValidatorResult.Success)
+            {
+                this.Name = name;
+                this.FriendlyUrl = friendlyUrl;
+            }
         }
 
         public Room CreateRoom(string name)
