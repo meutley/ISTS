@@ -18,6 +18,18 @@ namespace ISTS.Api.Controllers
             _roomService = roomService;
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAction(Guid id)
+        {
+            var room = await _roomService.GetAsync(id);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(room);
+        }
+
         // POST api/rooms/1/sessions
         [HttpPost("{id}/sessions")]
         public async Task<IActionResult> CreateSession(Guid id, [FromBody]SessionDto model)
