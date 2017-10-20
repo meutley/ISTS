@@ -32,7 +32,10 @@ namespace ISTS.Infrastructure.Repository
 
         public async Task<Session> GetSessionAsync(Guid id)
         {
-            return null;
+            var entity = await _context.Sessions
+                .SingleOrDefaultAsync(s => s.Id == id);
+
+            return entity;
         }
 
         public async Task<Session> CreateSessionAsync(Guid roomId, Session entity)
@@ -53,17 +56,38 @@ namespace ISTS.Infrastructure.Repository
 
         public async Task<Session> RescheduleSessionAsync(Guid id, DateRange schedule)
         {
-            return null;
+            var session = await _context.Sessions
+                .SingleAsync(s => s.Id == id);
+
+            session.Reschedule(schedule);
+
+            await _context.SaveChangesAsync();
+
+            return session;
         }
 
         public async Task<Session> StartSessionAsync(Guid id, DateTime time)
         {
-            return null;
+            var session = await _context.Sessions
+                .SingleAsync(s => s.Id == id);
+
+            session.SetActualStartTime(time);
+
+            await _context.SaveChangesAsync();
+
+            return session;
         }
 
         public async Task<Session> EndSessionAsync(Guid id, DateTime time)
         {
-            return null;
+            var session = await _context.Sessions
+                .SingleAsync(s => s.Id == id);
+
+            session.SetActualEndTime(time);
+
+            await _context.SaveChangesAsync();
+
+            return session;
         }
 
         public async Task<IEnumerable<RoomSessionSchedule>> GetScheduleAsync(Guid id, DateRange range)

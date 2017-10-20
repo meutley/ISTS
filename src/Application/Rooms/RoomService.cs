@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -32,6 +34,20 @@ namespace ISTS.Application.Rooms
             var result = _mapper.Map<RoomDto>(entity);
             return result;
         }
+
+        public async Task<List<SessionDto>> GetSessions(Guid roomId)
+        {
+            var room = await _roomRepository.GetAsync(roomId);
+            if (room == null)
+            {
+                return null;
+            }
+            
+            var sessions = room.Sessions;
+
+            var result = sessions.Select(_mapper.Map<SessionDto>).ToList();
+            return result;
+        }
         
         public async Task<SessionDto> CreateSessionAsync(Guid roomId, SessionDto session)
         {
@@ -49,10 +65,10 @@ namespace ISTS.Application.Rooms
             return result;
         }
 
-        public async Task<SessionDto> RescheduleSessionAsync(Guid sessionId, DateRangeDto newSchedule)
+        public async Task<SessionDto> RescheduleSessionAsync(Guid roomId, Guid sessionId, DateRangeDto newSchedule)
         {
-            var entity = await _roomRepository.GetSessionAsync(sessionId);
-            var room = await _roomRepository.GetAsync(entity.RoomId);
+            var room = await _roomRepository.GetAsync(roomId);
+            var entity = room.Sessions.Single(s => s.Id == sessionId);
 
             var schedule =
                 newSchedule == null
@@ -66,10 +82,10 @@ namespace ISTS.Application.Rooms
             return result;
         }
 
-        public async Task<SessionDto> StartSessionAsync(Guid sessionId)
+        public async Task<SessionDto> StartSessionAsync(Guid roomId, Guid sessionId)
         {
-            var entity = await _roomRepository.GetSessionAsync(sessionId);
-            var room = await _roomRepository.GetAsync(entity.RoomId);
+            var room = await _roomRepository.GetAsync(roomId);
+            var entity = room.Sessions.Single(s => s.Id == sessionId);
 
             var startTime = DateTime.Now;
             var model = room.StartSession(sessionId, startTime);
@@ -79,10 +95,10 @@ namespace ISTS.Application.Rooms
             return result;
         }
 
-        public async Task<SessionDto> EndSessionAsync(Guid sessionId)
+        public async Task<SessionDto> EndSessionAsync(Guid roomId, Guid sessionId)
         {
-            var entity = await _roomRepository.GetSessionAsync(sessionId);
-            var room = await _roomRepository.GetAsync(entity.RoomId);
+            var room = await _roomRepository.GetAsync(roomId);
+            var entity = room.Sessions.Single(s => s.Id == sessionId);
 
             var time = DateTime.Now;
             var model = room.EndSession(sessionId, time);

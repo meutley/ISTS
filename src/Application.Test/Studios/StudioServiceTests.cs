@@ -33,7 +33,7 @@ namespace ISTS.Application.Test.Studios
             _studioService = new StudioService(_studioValidator.Object, _studioRepository.Object, _mapper.Object);
 
             _studioValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>()))
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(StudioValidatorResult.Success));
 
             _mapper

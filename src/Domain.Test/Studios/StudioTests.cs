@@ -37,7 +37,7 @@ namespace ISTS.Domain.Tests.Studios
         public void Create_Returns_New_Studio()
         {
             _studioValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>()))
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(StudioValidatorResult.Success));
             
             var studio = Studio.Create("StudioName", "StudioFriendlyUrl", _studioValidator.Object);
@@ -51,7 +51,7 @@ namespace ISTS.Domain.Tests.Studios
         public void Create_Throws_ArgumentException()
         {
             _studioValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>()))
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new ArgumentException());
 
             var ex = Assert.Throws<ArgumentException>(() => Studio.Create("StudioName", "A", _studioValidator.Object));
@@ -63,7 +63,7 @@ namespace ISTS.Domain.Tests.Studios
         public void Create_Throws_UriFormatException()
         {
             _studioValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>()))
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new UriFormatException());
 
             var ex = Assert.Throws<UriFormatException>(() => Studio.Create("StudioName", "%", _studioValidator.Object));
@@ -75,7 +75,7 @@ namespace ISTS.Domain.Tests.Studios
         public void CreateRoom_Returns_New_StudioRoom_With_StudioId()
         {
             _studioValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>()))
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(StudioValidatorResult.Success));
             
             var studio = Studio.Create("StudioName", "StudioFriendlyUrl", _studioValidator.Object);

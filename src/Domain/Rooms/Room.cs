@@ -71,6 +71,11 @@ namespace ISTS.Domain.Rooms
             Session result = null;
             DoWithSession(sessionId, (session) =>
             {
+                if (session.ActualEndTime.HasValue)
+                {
+                    throw new SessionAlreadyEndedException();
+                }
+                
                 if (session.ActualStartTime.HasValue)
                 {
                     throw new SessionAlreadyStartedException();
@@ -87,6 +92,11 @@ namespace ISTS.Domain.Rooms
             Session result = null;
             DoWithSession(sessionId, (session) =>
             {
+                if (session.ActualEndTime.HasValue)
+                {
+                    throw new SessionAlreadyEndedException();
+                }
+                
                 if (!session.ActualStartTime.HasValue)
                 {
                     throw new SessionNotStartedException();

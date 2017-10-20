@@ -12,9 +12,11 @@ namespace ISTS.Application.Studios
     {
         private readonly IStudioRepository _studioRepository;
 
-        private static readonly int MinLength = 5;
-        private static readonly int MaxLength = 25;
-        private static readonly string ValidCharactersRegexPattern = @"^[a-zA-Z]([a-zA-Z0-9\-_]+)?$";
+        private static readonly int NameMinLength = 5;
+        private static readonly int NameMaxLength = 50;
+        private static readonly int UrlMinLength = 5;
+        private static readonly int UrlMaxLength = 25;
+        private static readonly string ValidUrlCharactersRegexPattern = @"^[a-zA-Z]([a-zA-Z0-9\-_]+)?$";
 
         public StudioValidator(
             IStudioRepository studioRepository)
@@ -22,16 +24,39 @@ namespace ISTS.Application.Studios
             _studioRepository = studioRepository;
         }
         
-        public async Task<StudioValidatorResult> ValidateAsync(Guid? studioId, string url)
+        public async Task<StudioValidatorResult> ValidateAsync(Guid? studioId, string name, string url)
+        {
+            var urlValidationResult = await ValidateUrlAsync(studioId, url);
+            var nameValidationResult = ValidateName(name);
+
+            return StudioValidatorResult.Success;
+        }
+
+        private bool ValidateName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException(string.Format("{0} is required", nameof(name)));
+            }
+
+            if (name.Length < NameMinLength || name.Length > NameMaxLength)
+            {
+                throw new ArgumentException($"Name must be between {NameMinLength} and {NameMaxLength} characters in length");
+            }
+
+            return true;
+        }
+
+        private async Task<bool> ValidateUrlAsync(Guid? studioId, string url)
         {
             if (string.IsNullOrWhiteSpace(url))
             {
-                throw new ArgumentNullException(nameof(url));
+                throw new ArgumentException(string.Format("{0} is required", nameof(url)));
             }
 
-            if (url.Length < MinLength || url.Length > MaxLength)
+            if (url.Length < UrlMinLength || url.Length > UrlMaxLength)
             {
-                throw new ArgumentException($"URL must be between {MinLength} and {MaxLength} characters in length");
+                throw new ArgumentException($"URL must be between {UrlMinLength} and {UrlMaxLength} characters in length");
             }
             
             var entities = await _studioRepository.GetAsync();
@@ -45,7 +70,7 @@ namespace ISTS.Application.Studios
                 throw new StudioUrlInUseException(string.Format("The given url is already in use: {0}", url));
             }
 
-            var doesUrlMatchPattern = Regex.IsMatch(url, ValidCharactersRegexPattern);
+            var doesUrlMatchPattern = Regex.IsMatch(url, ValidUrlCharactersRegexPattern);
             if (!doesUrlMatchPattern)
             {
                 var message =
@@ -56,7 +81,7 @@ namespace ISTS.Application.Studios
                 throw new UriFormatException(message);
             }
 
-            return StudioValidatorResult.Success;
+            return true;
         }
     }
 }

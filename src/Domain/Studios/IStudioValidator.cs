@@ -5,6 +5,6 @@ namespace ISTS.Domain.Studios
 {
     public interface IStudioValidator
     {
-        Task<StudioValidatorResult> ValidateAsync(Guid? studioId, string url);
+        Task<StudioValidatorResult> ValidateAsync(Guid? studioId, string name, string url);
     }
 }

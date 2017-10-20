@@ -23,7 +23,7 @@ namespace ISTS.Domain.Studios
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
 
-            var validationResult = AsyncHelper.RunSync(() => studioValidator.ValidateAsync(null, friendlyUrl));
+            var validationResult = AsyncHelper.RunSync(() => studioValidator.ValidateAsync(null, name, friendlyUrl));
             if (validationResult == StudioValidatorResult.Success)
             {
                 var result = new Studio
@@ -45,7 +45,7 @@ namespace ISTS.Domain.Studios
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
 
-            var validationResult = AsyncHelper.RunSync(() => studioValidator.ValidateAsync(this.Id, friendlyUrl));
+            var validationResult = AsyncHelper.RunSync(() => studioValidator.ValidateAsync(this.Id, name, friendlyUrl));
             if (validationResult == StudioValidatorResult.Success)
             {
                 this.Name = name;

@@ -26,7 +26,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public async void ValidateAsync_Returns_Success_With_Alpha_Characters()
         {
-            var result = await _studioValidator.ValidateAsync(null, "FriendlyUrl");
+            var result = await _studioValidator.ValidateAsync(null, "StudioName", "FriendlyUrl");
 
             Assert.Equal(StudioValidatorResult.Success, result);
         }
@@ -34,7 +34,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public async void ValidateAsync_Returns_Success_With_Alphanumeric_Characters_Hyphen_And_Underscore()
         {
-            var result = await _studioValidator.ValidateAsync(null, "Url-123_45");
+            var result = await _studioValidator.ValidateAsync(null, "StudioName", "Url-123_45");
 
             Assert.Equal(StudioValidatorResult.Success, result);
         }
@@ -42,7 +42,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public void ValidateAsync_Throws_ArgumentException_When_Url_Less_Than_Min_Length()
         {
-            var ex = Assert.ThrowsAsync<ArgumentException>(() => _studioValidator.ValidateAsync(null, "A"));
+            var ex = Assert.ThrowsAsync<ArgumentException>(() => _studioValidator.ValidateAsync(null, "StudioName", "A"));
 
             Assert.NotNull(ex);
         }
@@ -50,7 +50,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public void ValidateAsync_Throws_ArgumentException_When_Url_Longer_Than_Max_Length()
         {
-            var ex = Assert.ThrowsAsync<ArgumentException>(() => _studioValidator.ValidateAsync(null, "111111111111111111111111111111"));
+            var ex = Assert.ThrowsAsync<ArgumentException>(() => _studioValidator.ValidateAsync(null, "StudioName", "111111111111111111111111111111"));
 
             Assert.NotNull(ex);
         }
@@ -58,7 +58,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public void ValidateAsync_Throws_UriFormatException_When_Url_Contains_Invalid_Characters()
         {
-            var ex = Assert.ThrowsAsync<UriFormatException>(() => _studioValidator.ValidateAsync(null, "StudioUrl%^"));
+            var ex = Assert.ThrowsAsync<UriFormatException>(() => _studioValidator.ValidateAsync(null, "StudioName", "StudioUrl%^"));
 
             Assert.NotNull(ex);
         }
@@ -66,7 +66,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public void ValidateAsync_Throws_UriFormatException_When_Url_Does_Not_Start_With_Letter()
         {
-            var ex = Assert.ThrowsAsync<UriFormatException>(() => _studioValidator.ValidateAsync(null, "-InvalidUrl"));
+            var ex = Assert.ThrowsAsync<UriFormatException>(() => _studioValidator.ValidateAsync(null, "StudioName", "-InvalidUrl"));
 
             Assert.NotNull(ex);
         }
@@ -80,7 +80,7 @@ namespace ISTS.Application.Test.Studios
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(studio));
 
-            var result = await _studioValidator.ValidateAsync(studio.Id, "NewUrl");
+            var result = await _studioValidator.ValidateAsync(studio.Id, "StudioName", "NewUrl");
 
             Assert.Equal(StudioValidatorResult.Success, result);
         }
@@ -94,7 +94,7 @@ namespace ISTS.Application.Test.Studios
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(studio));
 
-            var ex = Assert.ThrowsAsync<StudioUrlInUseException>(() => _studioValidator.ValidateAsync(null, "FriendlyUrl"));
+            var ex = Assert.ThrowsAsync<StudioUrlInUseException>(() => _studioValidator.ValidateAsync(null, "StudioName", "FriendlyUrl"));
 
             Assert.NotNull(ex);
         }
@@ -108,7 +108,7 @@ namespace ISTS.Application.Test.Studios
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(studio));
 
-            var ex = Assert.ThrowsAsync<StudioUrlInUseException>(() => _studioValidator.ValidateAsync(Guid.NewGuid(), "FriendlyUrl"));
+            var ex = Assert.ThrowsAsync<StudioUrlInUseException>(() => _studioValidator.ValidateAsync(Guid.NewGuid(), "StudioName", "FriendlyUrl"));
 
             Assert.NotNull(ex);
         }

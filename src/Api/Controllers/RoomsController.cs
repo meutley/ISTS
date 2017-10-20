@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using ISTS.Application.Rooms;
+using ISTS.Application.Schedules;
 using ISTS.Application.Sessions;
 
 namespace ISTS.Api.Controllers
@@ -30,6 +31,19 @@ namespace ISTS.Api.Controllers
             return Ok(room);
         }
 
+        // GET api/rooms/1/sessions
+        [HttpGet("{id}/sessions")]
+        public async Task<IActionResult> GetSessions(Guid id)
+        {
+            var sessions = await _roomService.GetSessions(id);
+            if (sessions == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(sessions);
+        }
+
         // POST api/rooms/1/sessions
         [HttpPost("{id}/sessions")]
         public async Task<IActionResult> CreateSession(Guid id, [FromBody]SessionDto model)
@@ -38,6 +52,24 @@ namespace ISTS.Api.Controllers
             var sessionUri = ApiHelper.GetResourceUri("rooms", id, "sessions", session.Id);
 
             return Created(sessionUri, session);
+        }
+
+        // PUT api/rooms/1/sessions/1/start
+        [HttpPut("{id}/sessions/{sessionId}/start")]
+        public async Task<IActionResult> StartSession(Guid id, Guid sessionId)
+        {
+            var session = await _roomService.StartSessionAsync(id, sessionId);
+
+            return Ok(session);
+        }
+
+        // PUT api/rooms/1/sessions/1/end
+        [HttpPut("{id}/sessions/{sessionId}/end")]
+        public async Task<IActionResult> EndSession(Guid id, Guid sessionId)
+        {
+            var session = await _roomService.EndSessionAsync(id, sessionId);
+
+            return Ok(session);
         }
     }
 }

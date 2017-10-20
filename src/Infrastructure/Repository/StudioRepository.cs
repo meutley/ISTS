@@ -29,7 +29,8 @@ namespace ISTS.Infrastructure.Repository
         
         public async Task<IEnumerable<Studio>> GetAsync()
         {
-            return Enumerable.Empty<Studio>().ToList();
+            var studios = await _context.Studios.ToListAsync();
+            return studios;
         }
 
         public async Task<Studio> GetAsync(Guid id)
