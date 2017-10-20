@@ -22,11 +22,14 @@ namespace ISTS.Domain.Users
         public byte[] PasswordSalt { get; protected set; }
 
         public static User Create(
+            IUserValidator userValidator,
             string email,
             string displayName,
             string postalCode,
             string plainPassword)
         {
+            userValidator.Validate(email, displayName, postalCode, plainPassword);
+            
             byte[] passwordHash;
             byte[] passwordSalt;
             CreatePasswordHash(plainPassword, out passwordHash, out passwordSalt);
