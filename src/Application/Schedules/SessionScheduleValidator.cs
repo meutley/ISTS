@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using ISTS.Domain.Exceptions;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 

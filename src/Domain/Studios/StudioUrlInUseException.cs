@@ -1,6 +1,6 @@
 using System;
 
-namespace ISTS.Domain.Exceptions
+namespace ISTS.Domain.Studios
 {
     public class StudioUrlInUseException : Exception
     {

@@ -1,7 +1,5 @@
 using System;
 
-using ISTS.Domain.Exceptions;
-
 namespace ISTS.Domain.Schedules
 {
     internal static class ScheduleValidatorHelper

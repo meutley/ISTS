@@ -1,6 +1,6 @@
 using System;
 
-namespace ISTS.Domain.Exceptions
+namespace ISTS.Domain.Schedules
 {
     public class OverlappingScheduleException : Exception
     {

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-using ISTS.Domain.Exceptions;
 using ISTS.Domain.Studios;
 
 namespace ISTS.Application.Studios

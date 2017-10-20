@@ -4,6 +4,6 @@ namespace ISTS.Domain.Users
 {
     public interface IUserValidator
     {
-        void Validate(string email, string displayName, string postalCode, string password);
+        void Validate(Guid? userId, string email, string displayName, string postalCode, string password);
     }
 }

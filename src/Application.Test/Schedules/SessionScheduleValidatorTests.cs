@@ -7,7 +7,6 @@ using Moq;
 using Xunit;
 
 using ISTS.Application.Schedules;
-using ISTS.Domain.Exceptions;
 using ISTS.Domain.Schedules;
 using ISTS.Domain.Rooms;
 

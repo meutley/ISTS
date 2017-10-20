@@ -5,7 +5,6 @@ using Moq;
 using Xunit;
 
 using ISTS.Application.Studios;
-using ISTS.Domain.Exceptions;
 using ISTS.Domain.Studios;
 
 namespace ISTS.Application.Test.Studios
