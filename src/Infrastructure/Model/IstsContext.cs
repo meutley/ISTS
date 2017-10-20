@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Sessions;
 using ISTS.Domain.Studios;
+using ISTS.Domain.Users;
 
 namespace ISTS.Infrastructure.Model
 {
@@ -14,6 +15,8 @@ namespace ISTS.Infrastructure.Model
         public DbSet<Room> Rooms { get; set; }
 
         public DbSet<Session> Sessions { get; set; }
+
+        public DbSet<User> Users { get; set; }
         
         public IstsContext(DbContextOptions<IstsContext> options)
             : base(options) { }
@@ -45,6 +48,14 @@ namespace ISTS.Infrastructure.Model
                     
                     session.HasKey(x => x.Id);
                     session.Ignore(x => x.Schedule);
+                });
+
+            modelBuilder
+                .Entity<User>(user =>
+                {
+                    user.ToTable("User");
+
+                    user.HasKey(x => x.Id);
                 });
 
             base.OnModelCreating(modelBuilder);
