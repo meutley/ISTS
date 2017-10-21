@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using AutoMapper;
 
+using ISTS.Api.Helpers;
 using ISTS.Infrastructure.Model;
 
 namespace ISTS.Api
@@ -37,13 +38,16 @@ namespace ISTS.Api
 
             services.AddDbContext<IstsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IstsDb")));
 
-            ConfigureAuthentication(services);            
+            var appSettings = Configuration.GetSection("ApplicationSettings");
+            services.Configure<ApplicationSettings>(appSettings);
+            
+            ConfigureAuthentication(services, appSettings["AuthenticationSecret"]);
             DependencyInjectionConfiguration.Configure(services);
         }
 
-        private void ConfigureAuthentication(IServiceCollection services)
+        private void ConfigureAuthentication(IServiceCollection services, string secret)
         {
-            var key = System.Text.Encoding.Default.GetBytes("supersecretkeythatisreallyimportant");
+            var key = System.Text.Encoding.Default.GetBytes(secret);
 
             services.AddAuthentication(x =>
             {

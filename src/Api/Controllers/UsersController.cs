@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 
+using ISTS.Api.Helpers;
 using ISTS.Application.Users;
+using Microsoft.Extensions.Options;
 
 namespace ISTS.Api.Controllers
 {
@@ -14,11 +16,14 @@ namespace ISTS.Api.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
+        private readonly ApplicationSettings _applicationSettings;
         private readonly IUserService _userService;
         
         public UsersController(
+            IOptions<ApplicationSettings> applicationSettings,
             IUserService userService)
         {
+            _applicationSettings = applicationSettings.Value;
             _userService = userService;
         }
 
@@ -43,7 +48,7 @@ namespace ISTS.Api.Controllers
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = System.Text.Encoding.Default.GetBytes("supersecretkeythatisreallyimportant");
+            var key = System.Text.Encoding.Default.GetBytes(_applicationSettings.AuthenticationSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

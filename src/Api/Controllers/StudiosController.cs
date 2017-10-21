@@ -8,7 +8,7 @@ using ISTS.Application.Studios;
 
 namespace ISTS.Api.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     public class StudiosController : Controller
     {
