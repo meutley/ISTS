@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using ISTS.Domain.Studios;
+using ISTS.Helpers.Validation;
 
 namespace ISTS.Domain.Users
 {
@@ -28,7 +29,7 @@ namespace ISTS.Domain.Users
             string postalCode,
             string plainPassword)
         {
-            userValidator.Validate(email, displayName, postalCode, plainPassword);
+            userValidator.Validate(null, email, displayName, postalCode, plainPassword);
             
             byte[] passwordHash;
             byte[] passwordSalt;
@@ -46,16 +47,50 @@ namespace ISTS.Domain.Users
             return user;
         }
 
+        public bool ValidatePasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            ArgumentNotNullValidator.Validate(password, nameof(password));
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException("Value cannot be empty or whitespace", nameof(password));
+            }
+
+            if (passwordHash.Length != 64)
+            {
+                throw new ArgumentException("Expected 64-byte password hash", nameof(passwordHash));
+            }
+
+            if (passwordSalt.Length != 128)
+            {
+                throw new ArgumentException("Expected 128-byte password salt", nameof(passwordSalt));
+            }
+
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (var x = 0; x < computedHash.Length; x++)
+                {
+                    if (computedHash[x] != passwordHash[x])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null)
             {
-                throw new ArgumentNullException("password");
+                throw new ArgumentNullException(nameof(password));
             }
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
+                throw new ArgumentException("Value cannot be empty or whitespace", nameof(password));
             }
  
             using (var hmac = new System.Security.Cryptography.HMACSHA512())

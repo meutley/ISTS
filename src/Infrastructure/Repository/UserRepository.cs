@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 using ISTS.Domain.Users;
 using ISTS.Infrastructure.Model;
 
@@ -21,6 +26,17 @@ namespace ISTS.Infrastructure.Repository
             await _context.SaveChangesAsync();
 
             return entity;
+        }
+
+        public async Task<IEnumerable<User>> GetAsync(Func<User, bool> filter = null)
+        {
+            var users = _context.Users;
+            if (filter != null)
+            {
+                return users.Where(filter);
+            }
+
+            return await users.ToListAsync();
         }
     }
 }

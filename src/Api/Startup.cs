@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 using AutoMapper;
 
@@ -33,7 +36,31 @@ namespace ISTS.Api
 
             services.AddDbContext<IstsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IstsDb")));
 
+            ConfigureAuthentication(services);
+
             DependencyInjectionConfiguration.Configure(services);
+        }
+
+        private void ConfigureAuthentication(IServiceCollection services)
+        {
+            var key = System.Text.Encoding.Default.GetBytes("supersecretkeythatisreallyimportant");
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +72,7 @@ namespace ISTS.Api
             }
 
             app.UseMvc();
+            app.UseAuthentication();
         }
     }
 }
