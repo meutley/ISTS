@@ -16,8 +16,6 @@ namespace ISTS.Domain.Users
 
         public string PostalCode { get; protected set; }
 
-        public virtual ICollection<Studio> Studios { get; set; }
-
         public byte[] PasswordHash { get; protected set; }
 
         public byte[] PasswordSalt { get; protected set; }
@@ -37,6 +35,7 @@ namespace ISTS.Domain.Users
             
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Email = email,
                 DisplayName = displayName,
                 PostalCode = postalCode,

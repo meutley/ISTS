@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using ISTS.Application.Rooms;
@@ -7,6 +8,7 @@ using ISTS.Application.Studios;
 
 namespace ISTS.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class StudiosController : Controller
     {

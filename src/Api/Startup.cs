@@ -30,14 +30,14 @@ namespace ISTS.Api
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {            
+            services.AddCors();
             services.AddMvc();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddDbContext<IstsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IstsDb")));
 
-            ConfigureAuthentication(services);
-
+            ConfigureAuthentication(services);            
             DependencyInjectionConfiguration.Configure(services);
         }
 
@@ -71,8 +71,16 @@ namespace ISTS.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseCors(
+                x => x
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+            );
+
             app.UseAuthentication();
+            app.UseMvc();
         }
     }
 }

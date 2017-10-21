@@ -21,6 +21,7 @@ namespace ISTS.Api
             services.AddSingleton<ISessionScheduleValidator, SessionScheduleValidator>();
             services.AddSingleton<IEmailValidator, EmailValidator>();
             services.AddSingleton<IUserValidator, UserValidator>();
+            services.AddSingleton<IStudioValidator, StudioValidator>();
             
             services.AddSingleton<IStudioRepository, StudioRepository>();
             services.AddSingleton<IRoomRepository, RoomRepository>();

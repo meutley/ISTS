@@ -25,7 +25,7 @@ namespace ISTS.Api.Controllers
         [AllowAnonymous]
         [HttpPost]
         // POST api/users
-        public async Task<IActionResult> Create([FromBody]UserPasswordDto model)
+        public async Task<IActionResult> Register([FromBody]UserPasswordDto model)
         {
             var user = await _userService.CreateAsync(model);
 
@@ -51,7 +51,7 @@ namespace ISTS.Api.Controllers
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -63,7 +63,7 @@ namespace ISTS.Api.Controllers
                 Email = user.Email,
                 DisplayName = user.DisplayName,
                 PostalCode = user.PostalCode,
-                TokenString = tokenString
+                Token = tokenString
             });
         }
     }
