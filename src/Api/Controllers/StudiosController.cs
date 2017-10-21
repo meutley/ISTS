@@ -13,6 +13,7 @@ namespace ISTS.Api.Controllers
 {
     [Authorize(AuthenticationSchemes = "Bearer")]
     [HandleUnauthorizedAccessException]
+    [HandleGenericException]
     [Route("api/[controller]")]
     public class StudiosController : AuthControllerBase
     {

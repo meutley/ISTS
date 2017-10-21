@@ -37,6 +37,7 @@ namespace ISTS.Api
             services.AddMvc(options =>
             {
                 options.Filters.Add(typeof(HandleUnauthorizedAccessExceptionAttribute));
+                options.Filters.Add(typeof(HandleGenericExceptionAttribute));
             });
 
             services.AddAutoMapper(typeof(Startup));
