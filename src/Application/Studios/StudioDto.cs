@@ -14,5 +14,7 @@ namespace ISTS.Application.Studios
         public string FriendlyUrl { get; set; }
 
         public List<RoomDto> Rooms { get; set; }
+
+        public Guid OwnerUserId { get; set; }
     }
 }

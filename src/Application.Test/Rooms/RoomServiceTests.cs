@@ -72,6 +72,7 @@ namespace ISTS.Application.Test.Rooms
             Assert.NotNull(dto);
             Assert.Equal(room.Id, dto.RoomId);
             Assert.Null(dto.Schedule);
+            Assert.Equal(studioId, room.StudioId);
         }
 
         [Fact]
@@ -108,6 +109,7 @@ namespace ISTS.Application.Test.Rooms
             Assert.NotNull(dto.Schedule);
             Assert.Equal(dto.Schedule.Start, schedule.Start);
             Assert.Equal(dto.Schedule.End, schedule.End);
+            Assert.Equal(studioId, room.StudioId);
         }
     }
 }

@@ -3,14 +3,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using ISTS.Api.Filters;
+using ISTS.Api.Helpers;
 using ISTS.Application.Rooms;
 using ISTS.Application.Studios;
+using ISTS.Helpers.Validation;
 
 namespace ISTS.Api.Controllers
 {
     [Authorize(AuthenticationSchemes = "Bearer")]
+    [HandleUnauthorizedAccessException]
     [Route("api/[controller]")]
-    public class StudiosController : Controller
+    public class StudiosController : AuthControllerBase
     {
         private readonly IStudioService _studioService;
 
@@ -21,6 +25,7 @@ namespace ISTS.Api.Controllers
         }
         
         // GET api/studios/1
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -37,6 +42,9 @@ namespace ISTS.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]StudioDto model)
         {
+            ArgumentNotNullValidator.Validate(model, nameof(model));
+            ValidateUserIdMatchesAuthenticatedUser(model.OwnerUserId);
+            
             var studio = await _studioService.CreateAsync(model);
             var studioUri = ApiHelper.GetResourceUri("studios", studio.Id);
             
@@ -47,6 +55,9 @@ namespace ISTS.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]StudioDto model)
         {
+            ArgumentNotNullValidator.Validate(model, nameof(model));
+            ValidateUserIdMatchesAuthenticatedUser(model.OwnerUserId);
+            
             var studio = await _studioService.UpdateAsync(model);
             return Ok(studio);
         }

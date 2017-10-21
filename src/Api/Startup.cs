@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using AutoMapper;
 
+using ISTS.Api.Filters;
 using ISTS.Api.Helpers;
 using ISTS.Infrastructure.Model;
 
@@ -33,7 +34,11 @@ namespace ISTS.Api
         public void ConfigureServices(IServiceCollection services)
         {            
             services.AddCors();
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(HandleUnauthorizedAccessExceptionAttribute));
+            });
+
             services.AddAutoMapper(typeof(Startup));
 
             services.AddDbContext<IstsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IstsDb")));

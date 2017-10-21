@@ -73,7 +73,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public async void ValidateAsync_Returns_Success_When_Existing_Url_Belongs_To_Same_StudioId()
         {
-            var studio = Studio.Create("StudioName", "FriendlyUrl", _studioValidator);
+            var studio = Studio.Create("StudioName", "FriendlyUrl", Guid.NewGuid(), _studioValidator);
             
             _studioRepository
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
@@ -87,7 +87,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public void ValidateAsync_Throws_StudioUrlInUseException_When_New_Studio()
         {
-            var studio = Studio.Create("StudioName", "FriendlyUrl", _studioValidator);
+            var studio = Studio.Create("StudioName", "FriendlyUrl", Guid.NewGuid(), _studioValidator);
 
             _studioRepository
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
@@ -101,7 +101,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public void ValidateAsync_Throws_StudioUrlInUseException_When_Existing_Studio()
         {
-            var studio = Studio.Create("StudioName", "FriendlyUrl", _studioValidator);
+            var studio = Studio.Create("StudioName", "FriendlyUrl", Guid.NewGuid(), _studioValidator);
 
             _studioRepository
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))

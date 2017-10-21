@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ISTS.Domain.Rooms;
+using ISTS.Domain.Users;
 using ISTS.Helpers.Async;
 using ISTS.Helpers.Validation;
 
@@ -18,7 +19,11 @@ namespace ISTS.Domain.Studios
 
         public virtual ICollection<Room> Rooms { get; set; }
 
-        public static Studio Create(string name, string friendlyUrl, IStudioValidator studioValidator)
+        public virtual User OwnerUser { get; protected set; }
+
+        public Guid OwnerUserId { get; protected set; }
+
+        public static Studio Create(string name, string friendlyUrl, Guid ownerUserId, IStudioValidator studioValidator)
         {
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
@@ -31,7 +36,8 @@ namespace ISTS.Domain.Studios
                     Id = Guid.NewGuid(),
                     Name = name,
                     FriendlyUrl = friendlyUrl,
-                    Rooms = new List<Room>()
+                    Rooms = new List<Room>(),
+                    OwnerUserId = ownerUserId
                 };
 
                 return result;

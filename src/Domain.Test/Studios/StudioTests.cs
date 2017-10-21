@@ -20,7 +20,7 @@ namespace ISTS.Domain.Tests.Studios
         [Fact]
         public void Create_Throws_ArgumentNullException_When_Name_Is_Null()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => Studio.Create(null, "FriendlyUrl", _studioValidator.Object));
+            var ex = Assert.Throws<ArgumentNullException>(() => Studio.Create(null, "FriendlyUrl", Guid.NewGuid(), _studioValidator.Object));
 
             Assert.NotNull(ex);
         }
@@ -28,7 +28,7 @@ namespace ISTS.Domain.Tests.Studios
         [Fact]
         public void Create_Throws_ArgumentNullException_When_FriendlyUrl_Is_Null()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => Studio.Create("Name", null, _studioValidator.Object));
+            var ex = Assert.Throws<ArgumentNullException>(() => Studio.Create("Name", null, Guid.NewGuid(), _studioValidator.Object));
 
             Assert.NotNull(ex);
         }
@@ -40,11 +40,13 @@ namespace ISTS.Domain.Tests.Studios
                 .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(StudioValidatorResult.Success));
             
-            var studio = Studio.Create("StudioName", "StudioFriendlyUrl", _studioValidator.Object);
+            var ownerUserId = Guid.NewGuid();
+            var studio = Studio.Create("StudioName", "StudioFriendlyUrl", ownerUserId, _studioValidator.Object);
 
             Assert.NotNull(studio);
             Assert.Equal("StudioName", studio.Name);
             Assert.Equal("StudioFriendlyUrl", studio.FriendlyUrl);
+            Assert.Equal(ownerUserId, studio.OwnerUserId);
         }
 
         [Fact]
@@ -54,7 +56,7 @@ namespace ISTS.Domain.Tests.Studios
                 .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new ArgumentException());
 
-            var ex = Assert.Throws<ArgumentException>(() => Studio.Create("StudioName", "A", _studioValidator.Object));
+            var ex = Assert.Throws<ArgumentException>(() => Studio.Create("StudioName", "A", Guid.NewGuid(), _studioValidator.Object));
 
             Assert.NotNull(ex);
         }
@@ -66,7 +68,7 @@ namespace ISTS.Domain.Tests.Studios
                 .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new UriFormatException());
 
-            var ex = Assert.Throws<UriFormatException>(() => Studio.Create("StudioName", "%", _studioValidator.Object));
+            var ex = Assert.Throws<UriFormatException>(() => Studio.Create("StudioName", "%", Guid.NewGuid(), _studioValidator.Object));
 
             Assert.NotNull(ex);
         }
@@ -78,7 +80,7 @@ namespace ISTS.Domain.Tests.Studios
                 .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(StudioValidatorResult.Success));
             
-            var studio = Studio.Create("StudioName", "StudioFriendlyUrl", _studioValidator.Object);
+            var studio = Studio.Create("StudioName", "StudioFriendlyUrl", Guid.NewGuid(), _studioValidator.Object);
             var room = studio.CreateRoom("RoomName");
 
             Assert.NotNull(room);

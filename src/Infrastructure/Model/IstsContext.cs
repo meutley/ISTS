@@ -26,13 +26,13 @@ namespace ISTS.Infrastructure.Model
             modelBuilder
                 .Entity<Studio>(studio =>
                 {                    
+                    studio.HasKey(x => x.Id);
+                    
                     studio
                         .ToTable("Studio")
                         .HasMany(x => x.Rooms)
                         .WithOne(x => x.Studio)
                         .HasForeignKey(x => x.StudioId);
-
-                    studio.HasKey(x => x.Id);           
                 });
 
             modelBuilder
@@ -55,7 +55,11 @@ namespace ISTS.Infrastructure.Model
             modelBuilder
                 .Entity<User>(user =>
                 {                    
-                    user.ToTable("User");
+                    user
+                        .ToTable("User")
+                        .HasMany(x => x.Studios)
+                        .WithOne(x => x.OwnerUser)
+                        .HasForeignKey(x => x.OwnerUserId);
                     
                     user.HasKey(x => x.Id);
                 });

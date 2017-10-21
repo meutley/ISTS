@@ -50,7 +50,8 @@ namespace ISTS.Application.Test.Studios
                         Id = source.Id,
                         Name = source.Name,
                         FriendlyUrl = source.FriendlyUrl,
-                        Rooms = rooms
+                        Rooms = rooms,
+                        OwnerUserId = source.OwnerUserId
                     };
                 });
 
@@ -72,18 +73,20 @@ namespace ISTS.Application.Test.Studios
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";
-            var model = Studio.Create(name, friendlyUrl, _studioValidator.Object);
+            var ownerUserId = Guid.NewGuid();
+            var model = Studio.Create(name, friendlyUrl, ownerUserId, _studioValidator.Object);
             
             _studioRepository
                 .Setup(r => r.CreateAsync(It.IsAny<Studio>()))
                 .Returns(Task.FromResult(model));
             
-            var dto = new StudioDto { Name = name, FriendlyUrl = friendlyUrl };
+            var dto = new StudioDto { Name = name, FriendlyUrl = friendlyUrl, OwnerUserId = ownerUserId };
             var result = await _studioService.CreateAsync(dto);
 
             Assert.NotNull(result);
             Assert.Equal(name, result.Name);
             Assert.Equal(friendlyUrl, result.FriendlyUrl);
+            Assert.Equal(ownerUserId, result.OwnerUserId);
         }
 
         [Fact]
@@ -91,7 +94,8 @@ namespace ISTS.Application.Test.Studios
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";
-            var model = Studio.Create(name, friendlyUrl, _studioValidator.Object);
+            var ownerUserId = Guid.NewGuid();
+            var model = Studio.Create(name, friendlyUrl, ownerUserId, _studioValidator.Object);
             
             _studioRepository
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
@@ -101,7 +105,7 @@ namespace ISTS.Application.Test.Studios
             var roomModel = Room.Create(model.Id, roomName);
 
             _studioRepository
-                .Setup(r => r.CreateRoomAsync(It.IsAny<Guid>(),It.IsAny<string>()))
+                .Setup(r => r.CreateRoomAsync(It.IsAny<Guid>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(roomModel));
             
             var dto = new RoomDto { StudioId = model.Id, Name = roomName };

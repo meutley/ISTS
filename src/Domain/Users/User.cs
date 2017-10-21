@@ -20,6 +20,8 @@ namespace ISTS.Domain.Users
 
         public byte[] PasswordSalt { get; protected set; }
 
+        public virtual ICollection<Studio> Studios { get; set; }
+
         public static User Create(
             IUserValidator userValidator,
             string email,
