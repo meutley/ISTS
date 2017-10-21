@@ -57,7 +57,6 @@ namespace ISTS.Infrastructure.Model
                 {                    
                     user.ToTable("User");
                     
-                    user.Property(x => x.Id).HasColumnName("UserId");
                     user.HasKey(x => x.Id);
                 });
 
