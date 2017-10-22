@@ -12,6 +12,12 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "test",
+            "command": "dotnet test ${workspaceRoot}/src",
+            "type": "shell",
+            "group": "test"
         }
     ]
 }
