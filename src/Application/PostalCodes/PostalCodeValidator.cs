@@ -21,20 +21,23 @@ namespace ISTS.Application.PostalCodes
         
         public async Task ValidateAsync(string postalCode, PostalCodeValidatorTypes validationTypes = PostalCodeValidatorTypes.Format)
         {
-            if (validationTypes.HasFlag(PostalCodeValidatorTypes.Format))
+            if (!string.IsNullOrEmpty(postalCode))
             {
-                if (!Regex.IsMatch(postalCode, FiveDigitPattern) && !Regex.IsMatch(postalCode, FivePlusFourPattern))
+                if (validationTypes.HasFlag(PostalCodeValidatorTypes.Format))
                 {
-                    throw new FormatException("Postal Code must be a 5-digit (#####) or 5-plus-4 value (#####-####)");
+                    if (!Regex.IsMatch(postalCode, FiveDigitPattern) && !Regex.IsMatch(postalCode, FivePlusFourPattern))
+                    {
+                        throw new FormatException("Postal Code must be a 5-digit (#####) or 5-plus-4 value (#####-####)");
+                    }
                 }
-            }
 
-            if (validationTypes.HasFlag(PostalCodeValidatorTypes.Exists))
-            {
-                var entity = await _postalCodeRepository.Get(postalCode);
-                if (entity == null)
+                if (validationTypes.HasFlag(PostalCodeValidatorTypes.Exists))
                 {
-                    throw new PostalCodeNotFoundException();
+                    var entity = await _postalCodeRepository.Get(postalCode);
+                    if (entity == null)
+                    {
+                        throw new PostalCodeNotFoundException();
+                    }
                 }
             }
         }
