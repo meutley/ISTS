@@ -14,8 +14,6 @@ namespace ISTS.Domain.Users
 
         public string DisplayName { get; protected set; }
 
-        public string PostalCode { get; protected set; }
-
         public byte[] PasswordHash { get; protected set; }
 
         public byte[] PasswordSalt { get; protected set; }
@@ -26,10 +24,9 @@ namespace ISTS.Domain.Users
             IUserValidator userValidator,
             string email,
             string displayName,
-            string postalCode,
             string plainPassword)
         {
-            userValidator.Validate(null, email, displayName, postalCode, plainPassword);
+            userValidator.Validate(null, email, displayName, plainPassword);
             
             byte[] passwordHash;
             byte[] passwordSalt;
@@ -40,7 +37,6 @@ namespace ISTS.Domain.Users
                 Id = Guid.NewGuid(),
                 Email = email,
                 DisplayName = displayName,
-                PostalCode = postalCode,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
             };

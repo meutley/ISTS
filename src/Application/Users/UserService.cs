@@ -53,7 +53,6 @@ namespace ISTS.Application.Users
                 _userValidator,
                 model.Email,
                 model.DisplayName,
-                model.PostalCode,
                 model.Password);
 
             var entity = await _userRepository.CreateAsync(user);

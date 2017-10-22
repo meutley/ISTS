@@ -67,7 +67,12 @@ namespace ISTS.Api.Controllers
         [HttpPost("{id}/rooms")]
         public async Task<IActionResult> CreateRoom(Guid id, [FromBody]RoomDto model)
         {
-            var room = await _studioService.CreateRoomAsync(id, model);
+            var room = await _studioService.CreateRoomAsync(UserId.Value, id, model);
+            if (room == null)
+            {
+                return NotFound();
+            }
+            
             var roomUri = ApiHelper.GetResourceUri("studios", id, "rooms", room.Id);
             
             return Created(roomUri, room);

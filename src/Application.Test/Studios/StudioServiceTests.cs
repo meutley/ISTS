@@ -109,7 +109,7 @@ namespace ISTS.Application.Test.Studios
                 .Returns(Task.FromResult(roomModel));
             
             var dto = new RoomDto { StudioId = model.Id, Name = roomName };
-            var result = await _studioService.CreateRoomAsync(model.Id, dto);
+            var result = await _studioService.CreateRoomAsync(ownerUserId, model.Id, dto);
 
             Assert.NotNull(result);
             Assert.Equal(model.Id, result.StudioId);

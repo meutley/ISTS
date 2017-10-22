@@ -3,13 +3,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using ISTS.Api.Filters;
+using ISTS.Api.Helpers;
 using ISTS.Application.Rooms;
 using ISTS.Application.Schedules;
 using ISTS.Application.Sessions;
 
 namespace ISTS.Api.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [HandleUnauthorizedAccessException]
+    [HandleGenericException]
     [Route("api/[controller]")]
     public class RoomsController : Controller
     {
@@ -21,6 +25,7 @@ namespace ISTS.Api.Controllers
             _roomService = roomService;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -33,6 +38,7 @@ namespace ISTS.Api.Controllers
             return Ok(room);
         }
 
+        [AllowAnonymous]
         // GET api/rooms/1/sessions
         [HttpGet("{id}/sessions")]
         public async Task<IActionResult> GetSessions(Guid id)

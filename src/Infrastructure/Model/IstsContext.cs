@@ -1,6 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 
+using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Sessions;
 using ISTS.Domain.Studios;
@@ -10,13 +11,16 @@ namespace ISTS.Infrastructure.Model
 {
     public class IstsContext : DbContext
     {
-        public DbSet<Studio> Studios { get; set; }
+        public DbSet<PostalCode> PostalCodes { get; set; }
 
         public DbSet<Room> Rooms { get; set; }
 
         public DbSet<Session> Sessions { get; set; }
 
+        public DbSet<Studio> Studios { get; set; }
+
         public DbSet<User> Users { get; set; }
+
         
         public IstsContext(DbContextOptions<IstsContext> options)
             : base(options) { }
@@ -24,17 +28,13 @@ namespace ISTS.Infrastructure.Model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .Entity<Studio>(studio =>
-                {                    
-                    studio.HasKey(x => x.Id);
-                    
-                    studio
-                        .ToTable("Studio")
-                        .HasMany(x => x.Rooms)
-                        .WithOne(x => x.Studio)
-                        .HasForeignKey(x => x.StudioId);
-                });
+                .Entity<PostalCode>(postalCode =>
+                {
+                    postalCode.ToTable("PostalCode");
 
+                    postalCode.HasKey(x => x.Id);
+                });
+            
             modelBuilder
                 .Entity<Room>(room =>
                 {                    
@@ -50,6 +50,18 @@ namespace ISTS.Infrastructure.Model
                     
                     session.HasKey(x => x.Id);
                     session.Ignore(x => x.Schedule);
+                });
+
+            modelBuilder
+                .Entity<Studio>(studio =>
+                {                    
+                    studio.HasKey(x => x.Id);
+                    
+                    studio
+                        .ToTable("Studio")
+                        .HasMany(x => x.Rooms)
+                        .WithOne(x => x.Studio)
+                        .HasForeignKey(x => x.StudioId);
                 });
 
             modelBuilder

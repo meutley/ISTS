@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace ISTS.Api.Controllers
+namespace ISTS.Api.Helpers
 {
     public static class ApiHelper
     {

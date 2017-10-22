@@ -1,14 +1,14 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 using ISTS.Api.Helpers;
 using ISTS.Application.Users;
-using Microsoft.Extensions.Options;
 
 namespace ISTS.Api.Controllers
 {
@@ -67,7 +67,6 @@ namespace ISTS.Api.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 DisplayName = user.DisplayName,
-                PostalCode = user.PostalCode,
                 Token = tokenString
             });
         }

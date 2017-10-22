@@ -72,10 +72,7 @@ namespace ISTS.Application.Studios
             var doesUrlMatchPattern = Regex.IsMatch(url, ValidUrlCharactersRegexPattern);
             if (!doesUrlMatchPattern)
             {
-                var message =
-                    string.Format(
-                        "URL must start with a letter, and can only contain letters, numbers, hyphens and underscores",
-                        url);
+                var message = "URL must start with a letter, and can only contain letters, numbers, hyphens and underscores";
 
                 throw new UriFormatException(message);
             }
