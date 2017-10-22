@@ -3,12 +3,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Studios;
 
 namespace ISTS.Application.Studios
 {
     public class StudioValidator : IStudioValidator
     {
+        private readonly IPostalCodeValidator _postalCodeValidator;
         private readonly IStudioRepository _studioRepository;
 
         private static readonly int NameMinLength = 5;
@@ -18,13 +20,19 @@ namespace ISTS.Application.Studios
         private static readonly string ValidUrlCharactersRegexPattern = @"^[a-zA-Z]([a-zA-Z0-9\-_]+)?$";
 
         public StudioValidator(
+            IPostalCodeValidator postalCodeValidator,
             IStudioRepository studioRepository)
         {
+            _postalCodeValidator = postalCodeValidator;
             _studioRepository = studioRepository;
         }
         
-        public async Task<StudioValidatorResult> ValidateAsync(Guid? studioId, string name, string url)
+        public async Task<StudioValidatorResult> ValidateAsync(Guid? studioId, string name, string url, string postalCode)
         {
+            await _postalCodeValidator.ValidateAsync(
+                postalCode,
+                PostalCodeValidatorTypes.Format | PostalCodeValidatorTypes.Exists);
+                
             var urlValidationResult = await ValidateUrlAsync(studioId, url);
             var nameValidationResult = ValidateName(name);
 

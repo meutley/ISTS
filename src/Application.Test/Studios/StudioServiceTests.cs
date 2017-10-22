@@ -32,7 +32,7 @@ namespace ISTS.Application.Test.Studios
             _studioService = new StudioService(_studioValidator.Object, _studioRepository.Object, _mapper.Object);
 
             _studioValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(StudioValidatorResult.Success));
 
             _mapper
@@ -51,7 +51,8 @@ namespace ISTS.Application.Test.Studios
                         Name = source.Name,
                         FriendlyUrl = source.FriendlyUrl,
                         Rooms = rooms,
-                        OwnerUserId = source.OwnerUserId
+                        OwnerUserId = source.OwnerUserId,
+                        PostalCode = source.PostalCode
                     };
                 });
 
@@ -73,8 +74,9 @@ namespace ISTS.Application.Test.Studios
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";
+            var postalCode = "12345";
             var ownerUserId = Guid.NewGuid();
-            var model = Studio.Create(name, friendlyUrl, ownerUserId, _studioValidator.Object);
+            var model = Studio.Create(name, friendlyUrl, postalCode, ownerUserId, _studioValidator.Object);
             
             _studioRepository
                 .Setup(r => r.CreateAsync(It.IsAny<Studio>()))
@@ -87,6 +89,7 @@ namespace ISTS.Application.Test.Studios
             Assert.Equal(name, result.Name);
             Assert.Equal(friendlyUrl, result.FriendlyUrl);
             Assert.Equal(ownerUserId, result.OwnerUserId);
+            Assert.Equal(postalCode, result.PostalCode);
         }
 
         [Fact]
@@ -94,8 +97,9 @@ namespace ISTS.Application.Test.Studios
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";
+            var postalCode = "12345";
             var ownerUserId = Guid.NewGuid();
-            var model = Studio.Create(name, friendlyUrl, ownerUserId, _studioValidator.Object);
+            var model = Studio.Create(name, friendlyUrl, postalCode, ownerUserId, _studioValidator.Object);
             
             _studioRepository
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))

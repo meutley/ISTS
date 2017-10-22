@@ -13,6 +13,8 @@ namespace ISTS.Application.Studios
 
         public string FriendlyUrl { get; set; }
 
+        public string PostalCode { get; set; }
+
         public List<RoomDto> Rooms { get; set; }
 
         public Guid OwnerUserId { get; set; }

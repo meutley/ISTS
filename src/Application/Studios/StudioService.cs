@@ -29,7 +29,13 @@ namespace ISTS.Application.Studios
 
         public async Task<StudioDto> CreateAsync(StudioDto model)
         {
-            var newEntity = Studio.Create(model.Name, model.FriendlyUrl, model.OwnerUserId, _studioUrlValidator);
+            var newEntity = Studio.Create(
+                model.Name,
+                model.FriendlyUrl,
+                model.PostalCode,
+                model.OwnerUserId,
+                _studioUrlValidator);
+                
             var entity = await _studioRepository.CreateAsync(newEntity);
 
             var result = _mapper.Map<StudioDto>(entity);
@@ -65,7 +71,7 @@ namespace ISTS.Application.Studios
                 throw new UnauthorizedAccessException();
             }
 
-            studio.Update(model.Name, model.FriendlyUrl, _studioUrlValidator);
+            studio.Update(model.Name, model.FriendlyUrl, model.PostalCode, _studioUrlValidator);
             var entity = await _studioRepository.UpdateAsync(studio);
 
             var result = _mapper.Map<StudioDto>(entity);

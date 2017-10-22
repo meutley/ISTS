@@ -42,6 +42,21 @@ namespace ISTS.Application.Test.PostalCodes
         }
 
         [Fact]
-        
+        public void ValidateAsync_Throws_FormatException_When_Code_Contains_Letters()
+        {
+            string postalCode = "A1234";
+            var ex = Assert.ThrowsAsync<FormatException>(() => _postalCodeValidator.ValidateAsync(postalCode));
+
+            Assert.NotNull(ex);
+        }
+
+        [Fact]
+        public void ValidateAsync_Throws_FormatException_When_Code_Format_Invalid()
+        {
+            string postalCode = "12";
+            var ex = Assert.ThrowsAsync<FormatException>(() => _postalCodeValidator.ValidateAsync(postalCode));
+
+            Assert.NotNull(ex);
+        }
     }
 }
