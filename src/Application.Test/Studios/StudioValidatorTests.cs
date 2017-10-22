@@ -116,13 +116,13 @@ namespace ISTS.Application.Test.Studios
         }
 
         [Fact]
-        public void ValidateAsync_Throws_FormatException_When_PostalCode_Format_Invalid()
+        public void ValidateAsync_Throws_PostalCodeFormatException_When_PostalCode_Format_Invalid()
         {
             _postalCodeValidator
                 .Setup(v => v.ValidateAsync(It.IsAny<string>(), It.IsAny<PostalCodeValidatorTypes>()))
-                .Throws<FormatException>();
+                .Throws<PostalCodeFormatException>();
 
-            var ex = Assert.ThrowsAsync<FormatException>(
+            var ex = Assert.ThrowsAsync<PostalCodeFormatException>(
                 () =>
                     _studioValidator.ValidateAsync(Guid.NewGuid(), "StudioName", "FriendlyUrl", "12"));
 
