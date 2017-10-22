@@ -25,9 +25,9 @@ namespace ISTS.Application.PostalCodes
             {
                 if (validationTypes.HasFlag(PostalCodeValidatorTypes.Format))
                 {
-                    if (!Regex.IsMatch(postalCode, FiveDigitPattern) && !Regex.IsMatch(postalCode, FivePlusFourPattern))
+                    if (!Regex.IsMatch(postalCode, FiveDigitPattern))
                     {
-                        throw new PostalCodeFormatException("Postal Code must be a 5-digit (#####) or 5-plus-4 value (#####-####)");
+                        throw new PostalCodeFormatException("Postal Code must be a 5-digit (#####) value");
                     }
                 }
 

@@ -37,7 +37,16 @@ namespace ISTS.Infrastructure.Repository
         {
             var studio = await _context.Studios
                 .Include(s => s.Rooms)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .SingleOrDefaultAsync(s => s.Id == id);
+
+            return studio;
+        }
+
+        public async Task<Studio> GetByUrlAsync(string url)
+        {
+            var studio = await _context.Studios
+                .Include(s => s.Rooms)
+                .SingleOrDefaultAsync(s => s.FriendlyUrl == url);
 
             return studio;
         }

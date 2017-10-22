@@ -5,15 +5,25 @@ using ISTS.Helpers.Validation;
 
 namespace ISTS.Domain.PostalCodes
 {
-    public class PostalCode : IAggregateRoot
+    public class PostalCode
     {
-        public Guid Id { get; protected set; }
-
         public string Code { get; protected set; }
+
+        public string City { get; protected set; }
+        
+        public string State { get; protected set; }
+
+        public decimal Latitude { get; protected set; }
+
+        public decimal Longitude { get; protected set; }
 
         public static PostalCode Create(
             IPostalCodeValidator postalCodeValidator,
-            string code)
+            string code,
+            string city,
+            string state,
+            decimal latitude,
+            decimal longitude)
         {
             ArgumentNotNullValidator.Validate(code, nameof(code));
 
@@ -26,8 +36,11 @@ namespace ISTS.Domain.PostalCodes
             
             var result = new PostalCode
             {
-                Id = Guid.NewGuid(),
-                Code = code
+                Code = code,
+                City = city,
+                State = state,
+                Latitude = latitude,
+                Longitude = longitude
             };
 
             return result;

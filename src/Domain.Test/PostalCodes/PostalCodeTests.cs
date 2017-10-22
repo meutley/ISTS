@@ -19,7 +19,7 @@ namespace ISTS.Domain.Tests.PostalCodes
         [Fact]
         public void Create_Returns_New_PostalCode()
         {
-            var result = PostalCode.Create(_postalCodeValidator.Object, "12345");
+            var result = PostalCode.Create(_postalCodeValidator.Object, "12345", "Smalltown", "US", 1.0m, 1.0m);
 
             Assert.NotNull(result);
             Assert.Equal("12345", result.Code);

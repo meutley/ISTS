@@ -35,13 +35,6 @@ namespace ISTS.Application.Test.PostalCodes
         }
 
         [Fact]
-        public async void ValidateAsync_Is_Successful_When_FivePlusFour_Code()
-        {
-            string postalCode = "12345-0001";
-            await _postalCodeValidator.ValidateAsync(postalCode);
-        }
-
-        [Fact]
         public void ValidateAsync_Throws_PostalCodeFormatException_When_Code_Contains_Letters()
         {
             string postalCode = "A1234";

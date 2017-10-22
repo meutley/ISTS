@@ -27,7 +27,7 @@ namespace ISTS.Application.Studios
             _studioRepository = studioRepository;
         }
         
-        public async Task<StudioValidatorResult> ValidateAsync(Guid? studioId, string name, string url, string postalCode)
+        public async Task ValidateAsync(Guid? studioId, string name, string url, string postalCode)
         {
             await _postalCodeValidator.ValidateAsync(
                 postalCode,
@@ -35,15 +35,13 @@ namespace ISTS.Application.Studios
                 
             var urlValidationResult = await ValidateUrlAsync(studioId, url);
             var nameValidationResult = ValidateName(name);
-
-            return StudioValidatorResult.Success;
         }
 
         private bool ValidateName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException(string.Format("{0} is required", nameof(name)));
+                throw new ArgumentException("Name cannot be empty or whitespace");
             }
 
             if (name.Length < NameMinLength || name.Length > NameMaxLength)
@@ -66,11 +64,8 @@ namespace ISTS.Application.Studios
                 throw new ArgumentException($"URL must be between {UrlMinLength} and {UrlMaxLength} characters in length");
             }
             
-            var entities = await _studioRepository.GetAsync();
-            var urlAlreadyExists =
-                studioId == null
-                ? entities.Any(s => s.FriendlyUrl == url)
-                : entities.Any(s => s.Id != studioId && s.FriendlyUrl == url);
+            var entity = await _studioRepository.GetByUrlAsync(url);
+            var urlAlreadyExists = entity != null && entity.Id != studioId;
                 
             if (urlAlreadyExists)
             {

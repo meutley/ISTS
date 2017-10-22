@@ -32,7 +32,12 @@ namespace ISTS.Infrastructure.Model
                 {
                     postalCode.ToTable("PostalCode");
 
-                    postalCode.HasKey(x => x.Id);
+                    postalCode.HasKey(x => new
+                    {
+                        x.Code,
+                        x.City,
+                        x.State
+                    });
                 });
             
             modelBuilder

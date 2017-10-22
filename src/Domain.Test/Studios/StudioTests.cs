@@ -36,10 +36,6 @@ namespace ISTS.Domain.Tests.Studios
         [Fact]
         public void Create_Returns_New_Studio()
         {
-            _studioValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(StudioValidatorResult.Success));
-            
             var ownerUserId = Guid.NewGuid();
             var studio = Studio.Create("StudioName", "StudioFriendlyUrl", "12345", ownerUserId, _studioValidator.Object);
 
@@ -77,10 +73,6 @@ namespace ISTS.Domain.Tests.Studios
         [Fact]
         public void CreateRoom_Returns_New_StudioRoom_With_StudioId()
         {
-            _studioValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(StudioValidatorResult.Success));
-            
             var studio = Studio.Create("StudioName", "StudioFriendlyUrl", "12345", Guid.NewGuid(), _studioValidator.Object);
             var room = studio.CreateRoom("RoomName");
 

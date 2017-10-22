@@ -35,21 +35,19 @@ namespace ISTS.Domain.Studios
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
 
-            var validationResult = AsyncHelper.RunSync(() => studioValidator.ValidateAsync(null, name, friendlyUrl, postalCode));
-            if (validationResult == StudioValidatorResult.Success)
+            AsyncHelper.RunSync(() => studioValidator.ValidateAsync(null, name, friendlyUrl, postalCode));
+            
+            var result = new Studio
             {
-                var result = new Studio
-                {
-                    Id = Guid.NewGuid(),
-                    Name = name,
-                    FriendlyUrl = friendlyUrl,
-                    Rooms = new List<Room>(),
-                    OwnerUserId = ownerUserId,
-                    PostalCode = postalCode
-                };
+                Id = Guid.NewGuid(),
+                Name = name,
+                FriendlyUrl = friendlyUrl,
+                Rooms = new List<Room>(),
+                OwnerUserId = ownerUserId,
+                PostalCode = postalCode
+            };
 
-                return result;
-            }
+            return result;
 
             throw new InvalidOperationException();
         }
@@ -59,13 +57,11 @@ namespace ISTS.Domain.Studios
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
 
-            var validationResult = AsyncHelper.RunSync(() => studioValidator.ValidateAsync(this.Id, name, friendlyUrl, postalCode));
-            if (validationResult == StudioValidatorResult.Success)
-            {
-                this.Name = name;
-                this.FriendlyUrl = friendlyUrl;
-                this.PostalCode = postalCode;
-            }
+            AsyncHelper.RunSync(() => studioValidator.ValidateAsync(this.Id, name, friendlyUrl, postalCode));
+            
+            this.Name = name;
+            this.FriendlyUrl = friendlyUrl;
+            this.PostalCode = postalCode;
         }
 
         public Room CreateRoom(string name)

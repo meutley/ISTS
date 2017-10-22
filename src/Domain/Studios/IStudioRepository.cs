@@ -12,6 +12,7 @@ namespace ISTS.Domain.Studios
         Task<Studio> CreateAsync(Studio entity);
         Task<IEnumerable<Studio>> GetAsync();
         Task<Studio> GetAsync(Guid id);
+        Task<Studio> GetByUrlAsync(string url);
         Task<Studio> UpdateAsync(Studio entity);
         
         Task<Room> CreateRoomAsync(Guid studioId, string name);
