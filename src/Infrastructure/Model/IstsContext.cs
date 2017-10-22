@@ -13,6 +13,8 @@ namespace ISTS.Infrastructure.Model
     {
         public DbSet<PostalCode> PostalCodes { get; set; }
 
+        public DbSet<PostalCodeDistance> PostalCodeDistances { get; set; }
+
         public DbSet<Room> Rooms { get; set; }
 
         public DbSet<Session> Sessions { get; set; }
@@ -20,7 +22,6 @@ namespace ISTS.Infrastructure.Model
         public DbSet<Studio> Studios { get; set; }
 
         public DbSet<User> Users { get; set; }
-
         
         public IstsContext(DbContextOptions<IstsContext> options)
             : base(options) { }
@@ -39,6 +40,8 @@ namespace ISTS.Infrastructure.Model
                         x.State
                     });
                 });
+
+            modelBuilder.Entity<PostalCodeDistance>();
             
             modelBuilder
                 .Entity<Room>(room =>

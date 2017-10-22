@@ -27,9 +27,14 @@ namespace ISTS.Infrastructure.Repository
             return entity;
         }
         
-        public async Task<IEnumerable<Studio>> GetAsync()
+        public async Task<IEnumerable<Studio>> GetAsync(Func<Studio, bool> filter)
         {
             var studios = await _context.Studios.ToListAsync();
+            if (filter != null)
+            {
+                return studios.Where(filter);
+            }
+            
             return studios;
         }
 

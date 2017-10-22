@@ -10,7 +10,7 @@ namespace ISTS.Domain.Studios
     public interface IStudioRepository
     {
         Task<Studio> CreateAsync(Studio entity);
-        Task<IEnumerable<Studio>> GetAsync();
+        Task<IEnumerable<Studio>> GetAsync(Func<Studio, bool> filter);
         Task<Studio> GetAsync(Guid id);
         Task<Studio> GetByUrlAsync(string url);
         Task<Studio> UpdateAsync(Studio entity);

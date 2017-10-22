@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using ISTS.Domain.PostalCodes;
+using ISTS.Helpers.Validation;
 
 namespace ISTS.Application.PostalCodes
 {
@@ -21,23 +22,27 @@ namespace ISTS.Application.PostalCodes
         
         public async Task ValidateAsync(string postalCode, PostalCodeValidatorTypes validationTypes = PostalCodeValidatorTypes.Format)
         {
-            if (!string.IsNullOrEmpty(postalCode))
+            ArgumentNotNullValidator.Validate(postalCode, nameof(postalCode));
+            
+            if (string.IsNullOrWhiteSpace(postalCode))
             {
-                if (validationTypes.HasFlag(PostalCodeValidatorTypes.Format))
+                throw new ArgumentException("Postal Code cannot be empty or whitespace");
+            }
+            
+            if (validationTypes.HasFlag(PostalCodeValidatorTypes.Format))
+            {
+                if (!Regex.IsMatch(postalCode, FiveDigitPattern))
                 {
-                    if (!Regex.IsMatch(postalCode, FiveDigitPattern))
-                    {
-                        throw new PostalCodeFormatException("Postal Code must be a 5-digit (#####) value");
-                    }
+                    throw new PostalCodeFormatException("Postal Code must be a 5-digit (#####) value");
                 }
+            }
 
-                if (validationTypes.HasFlag(PostalCodeValidatorTypes.Exists))
+            if (validationTypes.HasFlag(PostalCodeValidatorTypes.Exists))
+            {
+                var entity = await _postalCodeRepository.Get(postalCode);
+                if (entity == null)
                 {
-                    var entity = await _postalCodeRepository.Get(postalCode);
-                    if (entity == null)
-                    {
-                        throw new PostalCodeNotFoundException();
-                    }
+                    throw new PostalCodeNotFoundException();
                 }
             }
         }

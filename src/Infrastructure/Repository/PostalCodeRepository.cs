@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,15 @@ namespace ISTS.Infrastructure.Repository
                 .SingleOrDefaultAsync(c => c.Code == postalCode);
 
             return entity;
+        }
+
+        public async Task<IEnumerable<PostalCodeDistance>> GetPostalCodesWithinDistance(string fromPostalCode, decimal distance)
+        {
+            var results = _context.PostalCodeDistances.FromSql(
+                "[dbo].[usp_GetPostalCodesWithinMiles] @fromPostalCode, @distanceInMiles",
+                parameters: new object[] { fromPostalCode, distance });
+
+            return await results.ToListAsync();
         }
     }
 }
