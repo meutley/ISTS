@@ -25,14 +25,5 @@ namespace ISTS.Infrastructure.Repository
 
             return entity;
         }
-
-        public async Task<IEnumerable<PostalCodeDistance>> GetPostalCodesWithinDistance(string fromPostalCode, decimal distance)
-        {
-            var results = _context.PostalCodeDistances.FromSql(
-                "[dbo].[usp_GetPostalCodesWithinMiles] @fromPostalCode, @distanceInMiles",
-                parameters: new object[] { fromPostalCode, distance });
-
-            return await results.ToListAsync();
-        }
     }
 }

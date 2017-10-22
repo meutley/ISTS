@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using ISTS.Api.Filters;
 using ISTS.Api.Helpers;
+using ISTS.Api.Models;
 using ISTS.Application.Rooms;
 using ISTS.Application.Studios;
 using ISTS.Helpers.Validation;
@@ -37,6 +38,16 @@ namespace ISTS.Api.Controllers
             }
             
             return Ok(studio);
+        }
+
+        // POST api/studios/search
+        [AllowAnonymous]
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromBody]StudioSearchModel model)
+        {
+            var results = await _studioService.SearchAsync(model.PostalCode, model.Distance);
+
+            return Ok(results);
         }
         
         // POST api/studios

@@ -21,20 +21,20 @@ namespace ISTS.Api
     {
         public static void Configure(IServiceCollection services)
         {
-            services.AddSingleton<IEmailValidator, EmailValidator>();
-            services.AddSingleton<IPostalCodeValidator, PostalCodeValidator>();
-            services.AddSingleton<ISessionScheduleValidator, SessionScheduleValidator>();
-            services.AddSingleton<IStudioValidator, StudioValidator>();
-            services.AddSingleton<IUserValidator, UserValidator>();
+            services.AddScoped<IEmailValidator, EmailValidator>();
+            services.AddScoped<IPostalCodeValidator, PostalCodeValidator>();
+            services.AddScoped<ISessionScheduleValidator, SessionScheduleValidator>();
+            services.AddScoped<IStudioValidator, StudioValidator>();
+            services.AddScoped<IUserValidator, UserValidator>();
             
-            services.AddSingleton<IPostalCodeRepository, PostalCodeRepository>();
-            services.AddSingleton<IRoomRepository, RoomRepository>();
-            services.AddSingleton<IStudioRepository, StudioRepository>();
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddScoped<IPostalCodeRepository, PostalCodeRepository>();
+            services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IStudioRepository, StudioRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             
-            services.AddSingleton<IStudioService, StudioService>();
-            services.AddSingleton<IRoomService, RoomService>();
-            services.AddSingleton<IUserService, UserService>();
+            services.AddScoped<IStudioService, StudioService>();
+            services.AddScoped<IRoomService, RoomService>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }

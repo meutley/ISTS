@@ -77,6 +77,14 @@ namespace ISTS.Application.Studios
             var result = _mapper.Map<StudioDto>(entity);
             return result;
         }
+
+        public async Task<List<StudioSearchResultDto>> SearchAsync(string postalCode, int distance)
+        {
+            var results = await _studioRepository.SearchAsync(postalCode, distance);
+
+            var result = results.Select(_mapper.Map<StudioSearchResultDto>).ToList();
+            return result;
+        }
         
         public async Task<RoomDto> CreateRoomAsync(Guid userId, Guid studioId, RoomDto model)
         {

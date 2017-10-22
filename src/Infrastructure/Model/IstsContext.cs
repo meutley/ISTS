@@ -13,7 +13,7 @@ namespace ISTS.Infrastructure.Model
     {
         public DbSet<PostalCode> PostalCodes { get; set; }
 
-        public DbSet<PostalCodeDistance> PostalCodeDistances { get; set; }
+        public DbSet<StudioSearchResult> StudioSearchResults { get; set; }
 
         public DbSet<Room> Rooms { get; set; }
 
@@ -40,8 +40,6 @@ namespace ISTS.Infrastructure.Model
                         x.State
                     });
                 });
-
-            modelBuilder.Entity<PostalCodeDistance>();
             
             modelBuilder
                 .Entity<Room>(room =>
@@ -71,6 +69,8 @@ namespace ISTS.Infrastructure.Model
                         .WithOne(x => x.Studio)
                         .HasForeignKey(x => x.StudioId);
                 });
+
+            modelBuilder.Entity<StudioSearchResult>();            
 
             modelBuilder
                 .Entity<User>(user =>

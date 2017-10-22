@@ -27,7 +27,7 @@ namespace ISTS.Infrastructure.Repository
             return entity;
         }
         
-        public async Task<IEnumerable<Studio>> GetAsync(Func<Studio, bool> filter)
+        public async Task<IEnumerable<Studio>> GetAsync(Func<Studio, bool> filter = null)
         {
             var studios = await _context.Studios.ToListAsync();
             if (filter != null)
@@ -62,6 +62,15 @@ namespace ISTS.Infrastructure.Repository
             await _context.SaveChangesAsync();
 
             return entity;
+        }
+
+        public async Task<IEnumerable<StudioSearchResult>> SearchAsync(string postalCode, int distance)
+        {
+            var results = _context.StudioSearchResults.FromSql(
+                "[dbo].[usp_SearchStudios] @p0, @p1",
+                postalCode, distance);
+
+            return await results.AsNoTracking().ToListAsync();
         }
 
         public async Task<Room> CreateRoomAsync(Guid studioId, string name)

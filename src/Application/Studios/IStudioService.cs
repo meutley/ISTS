@@ -13,6 +13,7 @@ namespace ISTS.Application.Studios
         Task<List<StudioDto>> GetAllAsync();
         Task<StudioDto> GetAsync(Guid id);
         Task<StudioDto> UpdateAsync(StudioDto model);
+        Task<List<StudioSearchResultDto>> SearchAsync(string postalCode, int distance);
         
         Task<RoomDto> CreateRoomAsync(Guid userId, Guid studioId, RoomDto model);
     }
