@@ -34,6 +34,7 @@ namespace ISTS.Domain.Studios
         {
             ArgumentNotNullValidator.Validate(name, nameof(name));
             ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
+            ArgumentNotNullValidator.Validate(postalCode, nameof(postalCode));
 
             AsyncHelper.RunSync(() => studioValidator.ValidateAsync(null, name, friendlyUrl, postalCode));
             

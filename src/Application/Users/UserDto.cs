@@ -13,6 +13,8 @@ namespace ISTS.Application.Users
 
         public string DisplayName { get; set; }
 
+        public string PostalCode { get; set; }
+
         public List<StudioDto> Studios { get; set; }
     }
 }

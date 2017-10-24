@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using ISTS.Domain.Common;
+using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Users;
 using ISTS.Helpers.Async;
 using ISTS.Helpers.Validation;
@@ -13,6 +14,7 @@ namespace ISTS.Application.Users
     {
         private readonly IEmailValidator _emailValidator;
         private readonly IUserRepository _userRepository;
+        private readonly IPostalCodeValidator _postalCodeValidator;
 
         private static readonly string DisplayNameRegexPattern = @"^[^\s][\s\S]+$";
         private static readonly int DisplayNameMinLength = 5;
@@ -20,18 +22,26 @@ namespace ISTS.Application.Users
 
         public UserValidator(
             IEmailValidator emailValidator,
+            IPostalCodeValidator postalCodeValidator,
             IUserRepository userRepository)
         {
             _emailValidator = emailValidator;
+            _postalCodeValidator = postalCodeValidator;
             _userRepository = userRepository;
         }
 
-        public void Validate(Guid? userId, string email, string displayName, string password)
+        public void Validate(Guid? userId, string email, string displayName, string password, string postalCode)
         {
             ArgumentNotNullValidator.Validate(email, nameof(email));
             ArgumentNotNullValidator.Validate(displayName, nameof(displayName));
+            ArgumentNotNullValidator.Validate(postalCode, nameof(postalCode));
             
             _emailValidator.Validate(email);
+            
+            AsyncHelper.RunSync(() =>
+                _postalCodeValidator.ValidateAsync(
+                    postalCode,
+                    PostalCodeValidatorTypes.Format | PostalCodeValidatorTypes.Exists));
             
             CheckIfEmailInUse(userId, email);
             ValidateDisplayName(displayName);

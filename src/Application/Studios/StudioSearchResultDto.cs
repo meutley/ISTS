@@ -17,6 +17,6 @@ namespace ISTS.Application.Studios
 
         public string PostalCode { get; set; }
 
-        public double? Distance { get; set; }
+        public double Distance { get; set; }
     }
 }

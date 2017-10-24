@@ -10,6 +10,7 @@ using ISTS.Application.Rooms;
 using ISTS.Application.Studios.Search;
 using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Studios;
+using ISTS.Helpers.Validation;
 
 namespace ISTS.Application.Studios
 {
@@ -85,23 +86,12 @@ namespace ISTS.Application.Studios
 
         public async Task<List<StudioSearchResultDto>> SearchAsync(StudioSearchModel searchModel)
         {
+            ArgumentNotNullValidator.Validate(searchModel, nameof(searchModel));
+            
             var studios = await _studioRepository.GetAsync();
-            var postalCodes = new List<PostalCodeDistance>();
 
-            var postalCodeCriteria = searchModel.PostalCodeSearchCriteria;
-            if (postalCodeCriteria != null)
-            {
-                var postalCodesWithinDistance =
-                    (await _postalCodeRepository.GetPostalCodesWithinDistance(
-                        postalCodeCriteria.FromPostalCode,
-                        postalCodeCriteria.Distance)).ToList();
-
-                studios = studios
-                    .Where(s =>
-                        postalCodes.Any(p => p.Code == s.PostalCode));
-
-                postalCodes = postalCodesWithinDistance;
-            }
+            var postalCodes = await GetPostalCodes(searchModel);
+            studios = studios.Where(s => postalCodes.Any(p => p.Code == s.PostalCode));
 
             var inMemoryStudios = studios.ToList();
             var result = inMemoryStudios.Select(s =>
@@ -112,7 +102,7 @@ namespace ISTS.Application.Studios
                     FriendlyUrl = s.FriendlyUrl,
                     OwnerUserId = s.OwnerUserId,
                     PostalCode = s.PostalCode,
-                    Distance = (double?)postalCodes.FirstOrDefault(p => p.Code == s.PostalCode)?.Distance
+                    Distance = (double)postalCodes.First(p => p.Code == s.PostalCode).Distance
                 })
                 .OrderBy(s => s.Distance)
                 .ToList();
@@ -137,6 +127,21 @@ namespace ISTS.Application.Studios
 
             var roomDto = _mapper.Map<RoomDto>(result);
             return roomDto;
+        }
+
+        private async Task<List<PostalCodeDistance>> GetPostalCodes(
+            StudioSearchModel searchModel)
+        {
+            ArgumentNotNullValidator.Validate(searchModel.PostalCodeSearchCriteria, nameof(searchModel.PostalCodeSearchCriteria));
+
+            var criteria = searchModel.PostalCodeSearchCriteria;
+            
+            var postalCodesWithinDistance =
+                (await _postalCodeRepository.GetPostalCodesWithinDistance(
+                    criteria.FromPostalCode,
+                    criteria.Distance)).ToList();
+
+            return postalCodesWithinDistance;
         }
     }
 }

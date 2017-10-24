@@ -29,13 +29,10 @@ namespace ISTS.Application.Studios
         
         public async Task ValidateAsync(Guid? studioId, string name, string url, string postalCode)
         {
-            if (!string.IsNullOrWhiteSpace(postalCode))
-            {
-                await _postalCodeValidator.ValidateAsync(
-                    postalCode,
-                    PostalCodeValidatorTypes.Format | PostalCodeValidatorTypes.Exists);
-            }
-                
+            await _postalCodeValidator.ValidateAsync(
+                postalCode,
+                PostalCodeValidatorTypes.Format | PostalCodeValidatorTypes.Exists);
+        
             var urlValidationResult = await ValidateUrlAsync(studioId, url);
             var nameValidationResult = ValidateName(name);
         }

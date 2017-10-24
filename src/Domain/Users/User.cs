@@ -20,13 +20,16 @@ namespace ISTS.Domain.Users
 
         public virtual ICollection<Studio> Studios { get; set; }
 
+        public string PostalCode { get; protected set; }
+
         public static User Create(
             IUserValidator userValidator,
             string email,
             string displayName,
-            string plainPassword)
+            string plainPassword,
+            string postalCode)
         {
-            userValidator.Validate(null, email, displayName, plainPassword);
+            userValidator.Validate(null, email, displayName, plainPassword, postalCode);
             
             byte[] passwordHash;
             byte[] passwordSalt;
@@ -38,7 +41,8 @@ namespace ISTS.Domain.Users
                 Email = email,
                 DisplayName = displayName,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
+                PasswordSalt = passwordSalt,
+                PostalCode = postalCode
             };
 
             return user;

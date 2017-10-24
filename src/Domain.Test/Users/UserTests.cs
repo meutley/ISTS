@@ -20,7 +20,7 @@ namespace ISTS.Domain.Tests.Users
         [Fact]
         public void Create_Returns_New_User()
         {
-            var user = User.Create(_userValidator.Object, "myemail@company.com", "Person", "password1");
+            var user = User.Create(_userValidator.Object, "myemail@company.com", "Person", "password1", "00000");
 
             Assert.NotNull(user);
             Assert.Equal("myemail@company.com", user.Email);
@@ -32,7 +32,7 @@ namespace ISTS.Domain.Tests.Users
         [Fact]
         public void Create_Throws_ArgumentNullException_When_Password_Is_Null()
         {
-            var ex = Assert.Throws<ArgumentNullException>(() => User.Create(_userValidator.Object, "myemail@company.com", "Person", null));
+            var ex = Assert.Throws<ArgumentNullException>(() => User.Create(_userValidator.Object, "myemail@company.com", "Person", null, "00000"));
 
             Assert.NotNull(ex);
         }
@@ -40,7 +40,7 @@ namespace ISTS.Domain.Tests.Users
         [Fact]
         public void Create_Throws_ArgumentException_When_Password_Is_WhiteSpace()
         {
-            var ex = Assert.Throws<ArgumentException>(() => User.Create(_userValidator.Object, "myemail@company.com", "Person", "    "));
+            var ex = Assert.Throws<ArgumentException>(() => User.Create(_userValidator.Object, "myemail@company.com", "Person", "    ", "00000"));
 
             Assert.NotNull(ex);
         }
