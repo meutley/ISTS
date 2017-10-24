@@ -39,7 +39,7 @@ namespace ISTS.Application.PostalCodes
 
             if (validationTypes.HasFlag(PostalCodeValidatorTypes.Exists))
             {
-                var entity = await _postalCodeRepository.Get(postalCode);
+                var entity = await _postalCodeRepository.GetAsync(postalCode);
                 if (entity == null)
                 {
                     throw new PostalCodeNotFoundException();

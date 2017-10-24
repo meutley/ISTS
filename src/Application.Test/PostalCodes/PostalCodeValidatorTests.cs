@@ -21,13 +21,6 @@ namespace ISTS.Application.Test.PostalCodes
         }
 
         [Fact]
-        public async void ValidateAsync_Is_Successful_When_PostalCode_Is_Null()
-        {
-            string postalCode = null;
-            await _postalCodeValidator.ValidateAsync(postalCode);
-        }
-
-        [Fact]
         public async void ValidateAsync_Is_Successful_When_FiveDigit_Code()
         {
             string postalCode = "12345";

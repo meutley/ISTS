@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
 using ISTS.Application.Rooms;
+using ISTS.Application.Studios.Search;
+using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Studios;
 
 namespace ISTS.Application.Studios
@@ -15,15 +17,18 @@ namespace ISTS.Application.Studios
     {
         private readonly IStudioValidator _studioUrlValidator;
         private readonly IStudioRepository _studioRepository;
+        private readonly IPostalCodeRepository _postalCodeRepository;
         private readonly IMapper _mapper;
 
         public StudioService(
             IStudioValidator studioUrlValidator,
             IStudioRepository studioRepository,
+            IPostalCodeRepository postalCodeRepository,
             IMapper mapper)
         {
             _studioUrlValidator = studioUrlValidator;
             _studioRepository = studioRepository;
+            _postalCodeRepository = postalCodeRepository;
             _mapper = mapper;
         }
 
@@ -78,11 +83,40 @@ namespace ISTS.Application.Studios
             return result;
         }
 
-        public async Task<List<StudioSearchResultDto>> SearchAsync(string postalCode, int distance)
+        public async Task<List<StudioSearchResultDto>> SearchAsync(StudioSearchModel searchModel)
         {
-            var results = await _studioRepository.SearchAsync(postalCode, distance);
+            var studios = await _studioRepository.GetAsync();
+            var postalCodes = new List<PostalCodeDistance>();
 
-            var result = results.Select(_mapper.Map<StudioSearchResultDto>).ToList();
+            var postalCodeCriteria = searchModel.PostalCodeSearchCriteria;
+            if (postalCodeCriteria != null)
+            {
+                var postalCodesWithinDistance =
+                    (await _postalCodeRepository.GetPostalCodesWithinDistance(
+                        postalCodeCriteria.FromPostalCode,
+                        postalCodeCriteria.Distance)).ToList();
+
+                studios = studios
+                    .Where(s =>
+                        postalCodes.Any(p => p.Code == s.PostalCode));
+
+                postalCodes = postalCodesWithinDistance;
+            }
+
+            var inMemoryStudios = studios.ToList();
+            var result = inMemoryStudios.Select(s =>
+                new StudioSearchResultDto
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    FriendlyUrl = s.FriendlyUrl,
+                    OwnerUserId = s.OwnerUserId,
+                    PostalCode = s.PostalCode,
+                    Distance = (double?)postalCodes.FirstOrDefault(p => p.Code == s.PostalCode)?.Distance
+                })
+                .OrderBy(s => s.Distance)
+                .ToList();
+
             return result;
         }
         

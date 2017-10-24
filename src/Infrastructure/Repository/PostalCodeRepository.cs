@@ -18,12 +18,29 @@ namespace ISTS.Infrastructure.Repository
             _context = context;
         }
         
-        public async Task<PostalCode> Get(string postalCode)
+        public async Task<IEnumerable<PostalCode>> GetAsync()
+        {
+            var entities = await _context.PostalCodes
+                .ToListAsync();
+
+            return entities;
+        }
+        
+        public async Task<PostalCode> GetAsync(string postalCode)
         {
             var entity = await _context.PostalCodes
                 .SingleOrDefaultAsync(c => c.Code == postalCode);
 
             return entity;
+        }
+
+        public async Task<IEnumerable<PostalCodeDistance>> GetPostalCodesWithinDistance(string postalCode, decimal distance)
+        {
+            var entities = _context.PostalCodeDistances.FromSql(
+                "[dbo].[usp_GetPostalCodesWithinMiles] @p0, @p1",
+                postalCode, distance);
+
+            return await entities.ToListAsync();
         }
     }
 }

@@ -6,6 +6,8 @@ namespace ISTS.Domain.PostalCodes
 {
     public interface IPostalCodeRepository
     {
-        Task<PostalCode> Get(string postalCode);
+        Task<IEnumerable<PostalCode>> GetAsync();
+        Task<PostalCode> GetAsync(string postalCode);
+        Task<IEnumerable<PostalCodeDistance>> GetPostalCodesWithinDistance(string postalCode, decimal distance);
     }
 }

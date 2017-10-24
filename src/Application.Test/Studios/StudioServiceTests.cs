@@ -9,6 +9,7 @@ using Xunit;
 using ISTS.Application.Rooms;
 using ISTS.Application.Schedules;
 using ISTS.Application.Studios;
+using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 using ISTS.Domain.Studios;
@@ -19,6 +20,7 @@ namespace ISTS.Application.Test.Studios
     {
         private readonly Mock<IStudioValidator> _studioValidator;
         private readonly Mock<IStudioRepository>  _studioRepository;
+        private readonly Mock<IPostalCodeRepository> _postalCodeRepository;
         private readonly Mock<IMapper> _mapper;
 
         private readonly IStudioService _studioService;
@@ -27,9 +29,14 @@ namespace ISTS.Application.Test.Studios
         {
             _studioValidator = new Mock<IStudioValidator>();
             _studioRepository = new Mock<IStudioRepository>();
+            _postalCodeRepository = new Mock<IPostalCodeRepository>();
             _mapper = new Mock<IMapper>();
 
-            _studioService = new StudioService(_studioValidator.Object, _studioRepository.Object, _mapper.Object);
+            _studioService = new StudioService(
+                _studioValidator.Object,
+                _studioRepository.Object,
+                _postalCodeRepository.Object,
+                _mapper.Object);
 
             _mapper
                 .Setup(x => x.Map<StudioDto>(It.IsAny<Studio>()))
