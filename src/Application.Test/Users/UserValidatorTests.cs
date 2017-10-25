@@ -41,7 +41,7 @@ namespace ISTS.Application.Test.Users
         [Fact]
         public void Validate_Is_Successful()
         {
-            _userValidator.Validate(Guid.NewGuid(), "email@company.com", "DisplayName", "Password", "00000");
+            _userValidator.ValidateAsync(Guid.NewGuid(), "email@company.com", "DisplayName", "Password", "00000");
         }
 
         [Fact]
@@ -51,9 +51,9 @@ namespace ISTS.Application.Test.Users
                 .Setup(v => v.Validate(It.IsAny<string>()))
                 .Throws<FormatException>();
 
-            var ex = Assert.Throws<FormatException>(
+            var ex = Assert.ThrowsAsync<FormatException>(
                 () =>
-                    _userValidator.Validate(Guid.NewGuid(), "bad.email", "DisplayName", "Password", "00000"));
+                    _userValidator.ValidateAsync(Guid.NewGuid(), "bad.email", "DisplayName", "Password", "00000"));
 
             Assert.NotNull(ex);
         }
@@ -65,9 +65,9 @@ namespace ISTS.Application.Test.Users
                 .Setup(v => v.ValidateAsync(It.IsAny<string>(), It.IsAny<PostalCodeValidatorTypes>()))
                 .Throws<PostalCodeFormatException>();
 
-            var ex = Assert.Throws<PostalCodeFormatException>(
+            var ex = Assert.ThrowsAsync<PostalCodeFormatException>(
                 () =>
-                    _userValidator.Validate(Guid.NewGuid(), "a@b.com", "DisplayName", "Password", "abcd"));
+                    _userValidator.ValidateAsync(Guid.NewGuid(), "a@b.com", "DisplayName", "Password", "abcd"));
 
             Assert.NotNull(ex);
         }
@@ -79,9 +79,9 @@ namespace ISTS.Application.Test.Users
                 .Setup(v => v.ValidateAsync(It.IsAny<string>(), It.IsAny<PostalCodeValidatorTypes>()))
                 .Throws<PostalCodeNotFoundException>();
 
-            var ex = Assert.Throws<PostalCodeNotFoundException>(
+            var ex = Assert.ThrowsAsync<PostalCodeNotFoundException>(
                 () =>
-                    _userValidator.Validate(Guid.NewGuid(), "a@b.com", "DisplayName", "Password", "00000"));
+                    _userValidator.ValidateAsync(Guid.NewGuid(), "a@b.com", "DisplayName", "Password", "00000"));
 
             Assert.NotNull(ex);
         }
@@ -103,9 +103,9 @@ namespace ISTS.Application.Test.Users
                 .Setup(r => r.GetAsync(It.IsAny<Expression<Func<User, bool>>>()))
                 .Returns((Expression<Func<User, bool>> predicate) => Task.FromResult(existingUsers.Where(predicate).ToList()));
 
-            var ex = Assert.Throws<EmailInUseException>(
+            var ex = Assert.ThrowsAsync<EmailInUseException>(
                 () =>
-                    _userValidator.Validate(Guid.NewGuid(), "existing@email.com", "DisplayName", "Password", "00000"));
+                    _userValidator.ValidateAsync(Guid.NewGuid(), "existing@email.com", "DisplayName", "Password", "00000"));
 
             Assert.NotNull(ex);
         }
@@ -127,7 +127,7 @@ namespace ISTS.Application.Test.Users
                 .Setup(r => r.GetAsync(It.IsAny<Expression<Func<User, bool>>>()))
                 .Returns((Expression<Func<User, bool>> predicate) => Task.FromResult(existingUsers.Where(predicate).ToList()));
 
-            _userValidator.Validate(Guid.NewGuid(), "new@email.com", "DisplayName", "Password", "00000");
+            _userValidator.ValidateAsync(Guid.NewGuid(), "new@email.com", "DisplayName", "Password", "00000");
         }
     }
 }

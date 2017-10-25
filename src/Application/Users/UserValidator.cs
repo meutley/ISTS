@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ISTS.Domain.Common;
 using ISTS.Domain.PostalCodes;
@@ -30,7 +31,7 @@ namespace ISTS.Application.Users
             _userRepository = userRepository;
         }
 
-        public void Validate(Guid? userId, string email, string displayName, string password, string postalCode)
+        public async Task ValidateAsync(Guid? userId, string email, string displayName, string password, string postalCode)
         {
             ArgumentNotNullValidator.Validate(email, nameof(email));
             ArgumentNotNullValidator.Validate(displayName, nameof(displayName));
@@ -38,22 +39,20 @@ namespace ISTS.Application.Users
             
             _emailValidator.Validate(email);
             
-            AsyncHelper.RunSync(() =>
-                _postalCodeValidator.ValidateAsync(
-                    postalCode,
-                    PostalCodeValidatorTypes.Format | PostalCodeValidatorTypes.Exists));
+            await _postalCodeValidator.ValidateAsync(
+                postalCode,
+                PostalCodeValidatorTypes.Format | PostalCodeValidatorTypes.Exists);
             
-            CheckIfEmailInUse(userId, email);
+            await CheckIfEmailInUse(userId, email);
             ValidateDisplayName(displayName);
         }
 
-        private void CheckIfEmailInUse(Guid? userId, string email)
+        private async Task CheckIfEmailInUse(Guid? userId, string email)
         {
-            var existingEmail =
-                AsyncHelper.RunSync(
-                    async () => await _userRepository.GetAsync(
-                        u =>
-                        u.Email == email && (userId == null || u.Id != userId)));
+            var existingEmail = await _userRepository.GetAsync(
+                u =>
+                u.Email == email
+                && (userId == null || u.Id != userId));
 
             if (existingEmail.Any())
             {

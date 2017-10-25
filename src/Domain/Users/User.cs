@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using ISTS.Domain.Studios;
+using ISTS.Helpers.Async;
 using ISTS.Helpers.Validation;
 
 namespace ISTS.Domain.Users
@@ -29,7 +30,7 @@ namespace ISTS.Domain.Users
             string plainPassword,
             string postalCode)
         {
-            userValidator.Validate(null, email, displayName, plainPassword, postalCode);
+            AsyncHelper.RunSync(() => userValidator.ValidateAsync(null, email, displayName, plainPassword, postalCode));
             
             byte[] passwordHash;
             byte[] passwordSalt;
