@@ -10,6 +10,8 @@ namespace ISTS.Application.Studios
 {
     public interface IStudioService
     {
+        Task<StudioSearchModel> BuildSearchModelAsync(Guid? userId, StudioSearchModel model);
+        
         Task<StudioDto> CreateAsync(StudioDto model);
         Task<List<StudioDto>> GetAllAsync();
         Task<StudioDto> GetAsync(Guid id);

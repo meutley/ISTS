@@ -10,6 +10,7 @@ using ISTS.Application.Rooms;
 using ISTS.Application.Studios.Search;
 using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Studios;
+using ISTS.Domain.Users;
 using ISTS.Helpers.Validation;
 
 namespace ISTS.Application.Studios
@@ -19,18 +20,66 @@ namespace ISTS.Application.Studios
         private readonly IStudioValidator _studioUrlValidator;
         private readonly IStudioRepository _studioRepository;
         private readonly IPostalCodeRepository _postalCodeRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+
+        private static readonly int DefaultDistance = 100;
 
         public StudioService(
             IStudioValidator studioUrlValidator,
             IStudioRepository studioRepository,
             IPostalCodeRepository postalCodeRepository,
+            IUserRepository userRepository,
             IMapper mapper)
         {
             _studioUrlValidator = studioUrlValidator;
             _studioRepository = studioRepository;
             _postalCodeRepository = postalCodeRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
+        }
+
+        public async Task<StudioSearchModel> BuildSearchModelAsync(Guid? userId, StudioSearchModel model)
+        {
+            if (model == null)
+            {
+                model = new StudioSearchModel();
+            }
+            
+            var isAnonymous = !userId.HasValue;
+            var hasPostalCodeCriteria = model.PostalCodeSearchCriteria != null;
+            var isPostalCodeCriteriaRequired = isAnonymous && !hasPostalCodeCriteria;
+
+            if (isPostalCodeCriteriaRequired)
+            {
+                throw new ArgumentException("Postal Code and Distance are required");
+            }
+
+            var postalCode = string.Empty;
+            var distance = 0;
+            if (userId.HasValue && !hasPostalCodeCriteria)
+            {
+                var user =
+                    (await _userRepository.GetAsync(
+                        u =>
+                        u.Id == userId.Value))
+                        .SingleOrDefault();
+
+                if (user == null)
+                {
+                    throw new ArgumentException("User Id is invalid");  
+                }
+
+                postalCode = user.PostalCode;
+                distance = DefaultDistance;
+            }
+
+            if (!hasPostalCodeCriteria)
+            {
+                model.PostalCodeSearchCriteria = new PostalCodeSearchCriteria(postalCode, distance);
+            }
+
+            return model;
         }
 
         public async Task<StudioDto> CreateAsync(StudioDto model)
@@ -88,13 +137,15 @@ namespace ISTS.Application.Studios
         {
             ArgumentNotNullValidator.Validate(searchModel, nameof(searchModel));
             
-            var studios = await _studioRepository.GetAsync();
-
             var postalCodes = await GetPostalCodes(searchModel);
-            studios = studios.Where(s => postalCodes.Any(p => p.Code == s.PostalCode));
 
-            var inMemoryStudios = studios.ToList();
-            var result = inMemoryStudios.Select(s =>
+            var studios = await _studioRepository.GetAsync();
+            var studiosWithPostalCodes = studios
+                .Where(
+                    s =>
+                    postalCodes.Any(p => p.Code == s.PostalCode));
+
+            var result = studiosWithPostalCodes.Select(s =>
                 new StudioSearchResultDto
                 {
                     Id = s.Id,
@@ -132,9 +183,9 @@ namespace ISTS.Application.Studios
         private async Task<List<PostalCodeDistance>> GetPostalCodes(
             StudioSearchModel searchModel)
         {
-            ArgumentNotNullValidator.Validate(searchModel.PostalCodeSearchCriteria, nameof(searchModel.PostalCodeSearchCriteria));
-
             var criteria = searchModel.PostalCodeSearchCriteria;
+            
+            ArgumentNotNullValidator.Validate(criteria, nameof(criteria));
             
             var postalCodesWithinDistance =
                 (await _postalCodeRepository.GetPostalCodesWithinDistance(

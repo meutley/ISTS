@@ -51,7 +51,9 @@ namespace ISTS.Application.Users
         {
             var existingEmail =
                 AsyncHelper.RunSync(
-                    () => _userRepository.GetAsync(u => u.Email == email && (userId == null || u.Id == userId)));
+                    async () => await _userRepository.GetAsync(
+                        u =>
+                        u.Email == email && (userId == null || u.Id != userId)));
 
             if (existingEmail.Any())
             {

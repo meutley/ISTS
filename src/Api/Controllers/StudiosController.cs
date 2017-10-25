@@ -45,6 +45,8 @@ namespace ISTS.Api.Controllers
         [HttpPost("search")]
         public async Task<IActionResult> Search([FromBody]StudioSearchModel model)
         {
+            model = await _studioService.BuildSearchModelAsync(UserId, model);
+            
             var results = await _studioService.SearchAsync(model);
 
             return Ok(results);

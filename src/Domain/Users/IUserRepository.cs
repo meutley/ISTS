@@ -8,6 +8,7 @@ namespace ISTS.Domain.Users
     public interface IUserRepository
     {
         Task<User> CreateAsync(User entity);
-        Task<IEnumerable<User>> GetAsync(Func<User, bool> filter = null);
+        Task<List<User>> GetAsync(Expression<Func<User, bool>> filter = null);
+        Task<User> GetByEmailAsync(string email);
     }
 }

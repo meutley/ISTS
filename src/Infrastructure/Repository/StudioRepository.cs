@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,15 +28,15 @@ namespace ISTS.Infrastructure.Repository
             return entity;
         }
         
-        public async Task<IEnumerable<Studio>> GetAsync(Func<Studio, bool> filter = null)
+        public async Task<List<Studio>> GetAsync(Expression<Func<Studio, bool>> filter = null)
         {
-            var studios = await _context.Studios.ToListAsync();
+            var studios = _context.Studios as IQueryable<Studio>;
             if (filter != null)
             {
-                return studios.Where(filter);
+                studios = studios.Where(filter);
             }
             
-            return studios;
+            return await studios.ToListAsync();
         }
 
         public async Task<Studio> GetAsync(Guid id)

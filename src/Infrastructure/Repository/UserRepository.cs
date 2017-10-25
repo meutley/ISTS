@@ -28,15 +28,23 @@ namespace ISTS.Infrastructure.Repository
             return entity;
         }
 
-        public async Task<IEnumerable<User>> GetAsync(Func<User, bool> filter = null)
+        public async Task<List<User>> GetAsync(Expression<Func<User, bool>> filter = null)
         {
-            var users = _context.Users;
+            var users = _context.Users as IQueryable<User>;
             if (filter != null)
             {
-                return users.Where(filter);
+                users = users.Where(filter);
             }
-
+            
             return await users.ToListAsync();
+        }
+
+        public Task<User> GetByEmailAsync(string email)
+        {
+            var user = _context.Users
+                .Where(u => u.Email == email);
+
+            return user.SingleOrDefaultAsync();
         }
     }
 }
