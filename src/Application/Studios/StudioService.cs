@@ -180,6 +180,21 @@ namespace ISTS.Application.Studios
             return roomDto;
         }
 
+        public async Task<List<RoomDto>> GetRoomsAsync(Guid id)
+        {
+            var studio =
+                (await _studioRepository.GetAsync(s => s.Id == id))
+                .SingleOrDefault();
+
+            if (studio == null)
+            {
+                return null;
+            }
+
+            var roomDtos = studio.Rooms.Select(_mapper.Map<RoomDto>).ToList();
+            return roomDtos;
+        }
+
         private async Task<List<PostalCodeDistance>> GetPostalCodes(
             StudioSearchModel searchModel)
         {

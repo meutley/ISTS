@@ -19,5 +19,6 @@ namespace ISTS.Application.Studios
         Task<List<StudioSearchResultDto>> SearchAsync(StudioSearchModel searchModel);
         
         Task<RoomDto> CreateRoomAsync(Guid userId, Guid studioId, RoomDto model);
+        Task<List<RoomDto>> GetRoomsAsync(Guid id);
     }
 }
