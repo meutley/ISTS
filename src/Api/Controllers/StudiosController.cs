@@ -76,15 +76,6 @@ namespace ISTS.Api.Controllers
             return Ok(studio);
         }
 
-        // GET api/studios/1/rooms
-        [HttpGet("{id}/rooms")]
-        public async Task<IActionResult> GetRooms(Guid id)
-        {
-            var rooms = await _studioService.GetRoomsAsync(id);
-
-            return Ok(rooms);
-        }
-
         // POST api/studios/1/rooms
         [HttpPost("{id}/rooms")]
         public async Task<IActionResult> CreateRoom(Guid id, [FromBody]RoomDto model)
@@ -98,6 +89,16 @@ namespace ISTS.Api.Controllers
             var roomUri = ApiHelper.GetResourceUri("studios", id, "rooms", room.Id);
             
             return Created(roomUri, room);
+        }
+
+        // GET api/studios/1/rooms
+        [AllowAnonymous]
+        [HttpGet("{id}/rooms")]
+        public async Task<IActionResult> GetRooms(Guid id)
+        {
+            var rooms = await _studioService.GetRoomsAsync(id);
+
+            return Ok(rooms);
         }
     }
 }

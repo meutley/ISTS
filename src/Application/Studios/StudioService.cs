@@ -182,10 +182,7 @@ namespace ISTS.Application.Studios
 
         public async Task<List<RoomDto>> GetRoomsAsync(Guid id)
         {
-            var studio =
-                (await _studioRepository.GetAsync(s => s.Id == id))
-                .SingleOrDefault();
-
+            var studio = await _studioRepository.GetAsync(id);
             if (studio == null)
             {
                 return null;
