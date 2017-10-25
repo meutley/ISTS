@@ -13,15 +13,18 @@ namespace ISTS.Application.Users
         private readonly IMapper _mapper;
         private readonly IUserValidator _userValidator;
         private readonly IUserRepository _userRepository;
+        private readonly IUserPasswordService _userPasswordService;
 
         public UserService(
             IMapper mapper,
             IUserValidator userValidator,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IUserPasswordService userPasswordService)
         {
             _mapper = mapper;
             _userValidator = userValidator;
             _userRepository = userRepository;
+            _userPasswordService = userPasswordService;
         }
 
         public async Task<UserDto> AuthenticateAsync(string email, string password)
@@ -38,7 +41,7 @@ namespace ISTS.Application.Users
                 return null;
             }
 
-            if (!user.ValidatePasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            if (!_userPasswordService.ValidateHash(password, user.PasswordHash, user.PasswordSalt))
             {
                 return null;
             }
@@ -51,6 +54,7 @@ namespace ISTS.Application.Users
         {
             var user = User.Create(
                 _userValidator,
+                _userPasswordService,
                 model.Email,
                 model.DisplayName,
                 model.Password,

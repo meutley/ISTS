@@ -19,6 +19,7 @@ namespace ISTS.Application.Test.Users
         private readonly Mock<IEmailValidator> _emailValidator;
         private readonly Mock<IPostalCodeValidator> _postalCodeValidator;
         private readonly Mock<IUserRepository> _userRepository;
+        private readonly Mock<IUserPasswordService> _userPasswordService;
 
         private readonly IUserValidator _userValidator;
 
@@ -27,6 +28,7 @@ namespace ISTS.Application.Test.Users
             _emailValidator = new Mock<IEmailValidator>();
             _postalCodeValidator = new Mock<IPostalCodeValidator>();
             _userRepository = new Mock<IUserRepository>();
+            _userPasswordService = new Mock<IUserPasswordService>();
 
             _userRepository
                 .Setup(r => r.GetAsync(It.IsAny<Expression<Func<User, bool>>>()))
@@ -93,6 +95,7 @@ namespace ISTS.Application.Test.Users
             {
                 User.Create(
                     _userValidator,
+                    _userPasswordService.Object,
                     "existing@email.com",
                     "DisplayName",
                     "Password",
@@ -117,6 +120,7 @@ namespace ISTS.Application.Test.Users
             {
                 User.Create(
                     _userValidator,
+                    _userPasswordService.Object,
                     "existing@email.com",
                     "DisplayName",
                     "Password",

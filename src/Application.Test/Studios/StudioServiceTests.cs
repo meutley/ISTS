@@ -26,6 +26,7 @@ namespace ISTS.Application.Test.Studios
         private readonly Mock<IStudioRepository>  _studioRepository;
         private readonly Mock<IPostalCodeRepository> _postalCodeRepository;
         private readonly Mock<IUserRepository> _userRepository;
+        private readonly Mock<IUserPasswordService> _userPasswordService;
         private readonly Mock<IMapper> _mapper;
 
         private readonly IStudioService _studioService;
@@ -38,6 +39,7 @@ namespace ISTS.Application.Test.Studios
             _studioRepository = new Mock<IStudioRepository>();
             _postalCodeRepository = new Mock<IPostalCodeRepository>();
             _userRepository = new Mock<IUserRepository>();
+            _userPasswordService = new Mock<IUserPasswordService>();
             _mapper = new Mock<IMapper>();
 
             _studioService = new StudioService(
@@ -150,6 +152,7 @@ namespace ISTS.Application.Test.Studios
             {
                 User.Create(
                     _userValidator.Object,
+                    _userPasswordService.Object,
                     "My@Email.com",
                     "DisplayName",
                     "Password",
@@ -183,7 +186,91 @@ namespace ISTS.Application.Test.Studios
         }
 
         [Fact]
-        public async void CreateRoomAsyn_Returns_New_StudioRoomDto()
+        public async void SearchAsync_Returns_Studio_When_In_Distance()
+        {
+            var name = "StudioName";
+            var friendlyUrl = "FriendlyUrl";
+            var postalCode = "12345";
+            var outOfRangePostalCode = "54321";
+            var ownerUserId = Guid.NewGuid();
+
+            var distance = 10;
+
+            var postalCodesInDistance = new List<PostalCodeDistance>
+            {
+                PostalCodeDistance.Create(postalCode, distance)
+            }.AsEnumerable();
+
+            var searchModel = new StudioSearchModel
+            {
+                PostalCodeSearchCriteria = new PostalCodeSearchCriteria(postalCode, distance)
+            };
+            
+            var studios = new List<Studio>
+            {
+                Studio.Create(name, friendlyUrl, postalCode, ownerUserId, _studioValidator.Object),
+                Studio.Create(name, friendlyUrl, outOfRangePostalCode, ownerUserId, _studioValidator.Object)
+            };
+            
+            _studioRepository
+                .Setup(r => r.GetAsync(It.IsAny<Expression<Func<Studio, bool>>>()))
+                .Returns(Task.FromResult(studios));
+
+            _postalCodeRepository
+                .Setup(r => r.GetPostalCodesWithinDistance(It.IsAny<string>(), It.IsAny<decimal>()))
+                .Returns(Task.FromResult(postalCodesInDistance));
+
+            var result = await _studioService.SearchAsync(searchModel);
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Count);
+            Assert.Equal(studios.First().Id, result.First().Id);
+            Assert.Equal(distance, result.First().Distance);
+        }
+
+        [Fact]
+        public async void SearchAsync_Returns_Empty_Collection_When_No_Studios_In_Distance()
+        {
+            var name = "StudioName";
+            var friendlyUrl = "FriendlyUrl";
+            var postalCode = "12345";
+            var outOfRangePostalCode = "54321";
+            var ownerUserId = Guid.NewGuid();
+
+            var distance = 10;
+
+            var postalCodesInDistance = new List<PostalCodeDistance>
+            {
+                PostalCodeDistance.Create(postalCode, distance)
+            }.AsEnumerable();
+
+            var searchModel = new StudioSearchModel
+            {
+                PostalCodeSearchCriteria = new PostalCodeSearchCriteria(postalCode, distance)
+            };
+            
+            var studios = new List<Studio>
+            {
+                Studio.Create(name, friendlyUrl, outOfRangePostalCode, ownerUserId, _studioValidator.Object),
+                Studio.Create(name, friendlyUrl, outOfRangePostalCode, ownerUserId, _studioValidator.Object)
+            };
+            
+            _studioRepository
+                .Setup(r => r.GetAsync(It.IsAny<Expression<Func<Studio, bool>>>()))
+                .Returns(Task.FromResult(studios));
+
+            _postalCodeRepository
+                .Setup(r => r.GetPostalCodesWithinDistance(It.IsAny<string>(), It.IsAny<decimal>()))
+                .Returns(Task.FromResult(postalCodesInDistance));
+
+            var result = await _studioService.SearchAsync(searchModel);
+
+            Assert.NotNull(result);
+            Assert.False(result.Any());
+        }
+
+        [Fact]
+        public async void CreateRoomAsync_Returns_New_StudioRoomDto()
         {
             var name = "StudioName";
             var friendlyUrl = "FriendlyUrl";

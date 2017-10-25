@@ -35,7 +35,13 @@ namespace ISTS.Application.Users
         {
             ArgumentNotNullValidator.Validate(email, nameof(email));
             ArgumentNotNullValidator.Validate(displayName, nameof(displayName));
+            ArgumentNotNullValidator.Validate(password, nameof(password));
             ArgumentNotNullValidator.Validate(postalCode, nameof(postalCode));
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new ArgumentException(string.Format("Password cannot be empty or whitespace"));
+            }
             
             _emailValidator.Validate(email);
             
