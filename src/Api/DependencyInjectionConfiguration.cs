@@ -35,6 +35,7 @@ namespace ISTS.Api
             services.AddScoped<IStudioService, StudioService>();
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserPasswordService, UserPasswordService>();
         }
     }
 }
