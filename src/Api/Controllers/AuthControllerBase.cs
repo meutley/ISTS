@@ -29,5 +29,7 @@ namespace ISTS.Api.Controllers
                 throw new UnauthorizedAccessException();
             }
         }
+
+        protected abstract void ValidateUserIsOwner(Guid entityId);
     }
 }

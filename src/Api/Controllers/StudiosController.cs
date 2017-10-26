@@ -57,7 +57,7 @@ namespace ISTS.Api.Controllers
         public async Task<IActionResult> Post([FromBody]StudioDto model)
         {
             ArgumentNotNullValidator.Validate(model, nameof(model));
-            ValidateUserIdMatchesAuthenticatedUser(model.OwnerUserId);
+            ValidateUserIsOwner(model.OwnerUserId);
             
             var studio = await _studioService.CreateAsync(model);
             var studioUri = ApiHelper.GetResourceUri("studios", studio.Id);
@@ -70,7 +70,7 @@ namespace ISTS.Api.Controllers
         public async Task<IActionResult> Put([FromBody]StudioDto model)
         {
             ArgumentNotNullValidator.Validate(model, nameof(model));
-            ValidateUserIdMatchesAuthenticatedUser(model.OwnerUserId);
+            ValidateUserIsOwner(model.OwnerUserId);
             
             var studio = await _studioService.UpdateAsync(model);
             return Ok(studio);
@@ -80,6 +80,8 @@ namespace ISTS.Api.Controllers
         [HttpPost("{id}/rooms")]
         public async Task<IActionResult> CreateRoom(Guid id, [FromBody]RoomDto model)
         {
+            ValidateUserIsOwner(id);
+            
             var room = await _studioService.CreateRoomAsync(UserId.Value, id, model);
             if (room == null)
             {
@@ -99,6 +101,11 @@ namespace ISTS.Api.Controllers
             var rooms = await _studioService.GetRoomsAsync(id);
 
             return Ok(rooms);
+        }
+
+        protected override void ValidateUserIsOwner(Guid entityId)
+        {
+            ValidateUserIdMatchesAuthenticatedUser(entityId);
         }
     }
 }

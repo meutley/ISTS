@@ -15,7 +15,7 @@ namespace ISTS.Api.Controllers
     [HandleUnauthorizedAccessException]
     [HandleGenericException]
     [Route("api/[controller]")]
-    public class RoomsController : Controller
+    public class RoomsController : AuthControllerBase
     {
         private readonly IRoomService _roomService;
 
@@ -56,6 +56,7 @@ namespace ISTS.Api.Controllers
         [HttpPost("{id}/sessions")]
         public async Task<IActionResult> CreateSession(Guid id, [FromBody]SessionDto model)
         {
+            ValidateUserIsOwner(id);
             var session = await _roomService.CreateSessionAsync(id, model);
             var sessionUri = ApiHelper.GetResourceUri("rooms", id, "sessions", session.Id);
 
@@ -66,6 +67,7 @@ namespace ISTS.Api.Controllers
         [HttpPut("{id}/sessions/{sessionId}/start")]
         public async Task<IActionResult> StartSession(Guid id, Guid sessionId)
         {
+            ValidateUserIsOwner(id);
             var session = await _roomService.StartSessionAsync(id, sessionId);
 
             return Ok(session);
@@ -75,9 +77,16 @@ namespace ISTS.Api.Controllers
         [HttpPut("{id}/sessions/{sessionId}/end")]
         public async Task<IActionResult> EndSession(Guid id, Guid sessionId)
         {
+            ValidateUserIsOwner(id);
             var session = await _roomService.EndSessionAsync(id, sessionId);
 
             return Ok(session);
+        }
+
+        protected override async void ValidateUserIsOwner(Guid roomId)
+        {
+            var room = await _roomService.GetAsync(roomId);
+            ValidateUserIdMatchesAuthenticatedUser(room.StudioId);
         }
     }
 }
