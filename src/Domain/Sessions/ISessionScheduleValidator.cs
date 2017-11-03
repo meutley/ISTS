@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ISTS.Domain.Schedules
+using ISTS.Domain.Common;
+
+namespace ISTS.Domain.Sessions
 {
     public interface ISessionScheduleValidator
     {

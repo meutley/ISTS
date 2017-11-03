@@ -1,6 +1,6 @@
 using System;
 
-using ISTS.Domain.Schedules;
+using ISTS.Domain.Common;
 
 namespace ISTS.Domain.Rooms
 {

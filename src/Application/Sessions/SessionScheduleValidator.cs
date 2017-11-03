@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 using ISTS.Application.Common;
 using ISTS.Domain.Rooms;
+using ISTS.Domain.Common;
 using ISTS.Domain.Schedules;
+using ISTS.Domain.Sessions;
 
-namespace ISTS.Application.Schedules
+namespace ISTS.Application.Sessions
 {
     public class SessionScheduleValidator : ISessionScheduleValidator
     {

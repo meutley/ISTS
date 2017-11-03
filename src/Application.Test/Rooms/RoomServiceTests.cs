@@ -5,9 +5,10 @@ using AutoMapper;
 using Moq;
 using Xunit;
 
+using ISTS.Application.Common;
 using ISTS.Application.Rooms;
-using ISTS.Application.Schedules;
 using ISTS.Application.Sessions;
+using ISTS.Domain.Common;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 using ISTS.Domain.Sessions;

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using ISTS.Api.Filters;
 using ISTS.Api.Helpers;
 using ISTS.Application.Rooms;
-using ISTS.Application.Schedules;
 using ISTS.Application.Sessions;
 
 namespace ISTS.Api.Controllers

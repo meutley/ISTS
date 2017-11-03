@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using ISTS.Application.Common;
 using ISTS.Application.Sessions;
-using ISTS.Application.Schedules;
 
 namespace ISTS.Application.Rooms
 {

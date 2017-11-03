@@ -13,7 +13,6 @@ namespace ISTS.Application.PostalCodes
         private readonly IPostalCodeRepository _postalCodeRepository;
 
         private static readonly string FiveDigitPattern = @"^[0-9]{5}$";
-        private static readonly string FivePlusFourPattern = @"^[0-9]{5}\-[0-9]{4}$";
 
         public PostalCodeValidator(
             IPostalCodeRepository postalCodeRepository)

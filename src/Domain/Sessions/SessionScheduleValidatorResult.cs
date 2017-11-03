@@ -1,4 +1,4 @@
-namespace ISTS.Domain.Schedules
+namespace ISTS.Domain.Sessions
 {
     public enum SessionScheduleValidatorResult
     {

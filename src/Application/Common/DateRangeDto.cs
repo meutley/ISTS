@@ -1,6 +1,6 @@
 using System;
 
-namespace ISTS.Application.Schedules
+namespace ISTS.Application.Common
 {
     public class DateRangeDto
     {

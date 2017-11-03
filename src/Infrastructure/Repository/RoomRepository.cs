@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 using ISTS.Domain.Rooms;
-using ISTS.Domain.Schedules;
+using ISTS.Domain.Common;
 using ISTS.Domain.Sessions;
 using ISTS.Infrastructure.Model;
 

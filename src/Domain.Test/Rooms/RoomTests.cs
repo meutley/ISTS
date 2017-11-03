@@ -5,7 +5,7 @@ using Moq;
 using Xunit;
 
 using ISTS.Domain.Rooms;
-using ISTS.Domain.Schedules;
+using ISTS.Domain.Common;
 using ISTS.Domain.Sessions;
 
 namespace ISTS.Domain.Tests.Rooms

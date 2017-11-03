@@ -1,7 +1,7 @@
 using System;
 
+using ISTS.Application.Common;
 using ISTS.Application.Rooms;
-using ISTS.Application.Schedules;
 
 namespace ISTS.Application.Sessions
 {

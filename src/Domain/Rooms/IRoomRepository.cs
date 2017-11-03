@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using ISTS.Domain.Schedules;
+using ISTS.Domain.Common;
 using ISTS.Domain.Sessions;
 
 namespace ISTS.Domain.Rooms

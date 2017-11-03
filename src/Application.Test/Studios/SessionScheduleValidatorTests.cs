@@ -7,11 +7,13 @@ using Moq;
 using Xunit;
 
 using ISTS.Application.Common;
-using ISTS.Application.Schedules;
-using ISTS.Domain.Schedules;
+using ISTS.Application.Sessions;
+using ISTS.Domain.Common;
 using ISTS.Domain.Rooms;
+using ISTS.Domain.Schedules;
+using ISTS.Domain.Sessions;
 
-namespace ISTS.Application.Test.Schedules
+namespace ISTS.Application.Test.Sessions
 {
     public class SessionScheduleValidatorTests
     {
