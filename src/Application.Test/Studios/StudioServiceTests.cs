@@ -8,6 +8,7 @@ using AutoMapper;
 using Moq;
 using Xunit;
 
+using ISTS.Application.Common;
 using ISTS.Application.Rooms;
 using ISTS.Application.Schedules;
 using ISTS.Application.Studios;
@@ -176,13 +177,15 @@ namespace ISTS.Application.Test.Studios
         }
 
         [Fact]
-        public void BuildSearchModelAsync_Throws_ArgumentException_When_Anonymous_And_No_PostalCode_Criteria_Given()
+        public async void BuildSearchModelAsync_Throws_ArgumentException_When_Anonymous_And_No_PostalCode_Criteria_Given()
         {
             var model = new StudioSearchModel();
 
-            var ex = Assert.ThrowsAsync<ArgumentException>(() => _studioService.BuildSearchModelAsync(null, model));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _studioService.BuildSearchModelAsync(null, model));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<ArgumentException>(ex.InnerException);
         }
 
         [Fact]

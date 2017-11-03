@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
 
+using ISTS.Application.Common;
 using ISTS.Application.Rooms;
 using ISTS.Application.Studios.Search;
 using ISTS.Domain.PostalCodes;
@@ -52,7 +53,7 @@ namespace ISTS.Application.Studios
 
             if (isPostalCodeCriteriaRequired)
             {
-                throw new ArgumentException("Postal Code and Distance are required");
+                throw new DataValidationException(new ArgumentException("Postal Code and Distance are required"));
             }
 
             var postalCode = string.Empty;
@@ -67,7 +68,7 @@ namespace ISTS.Application.Studios
 
                 if (user == null)
                 {
-                    throw new ArgumentException("User Id is invalid");  
+                    throw new ArgumentException("User Id is invalid");
                 }
 
                 postalCode = user.PostalCode;
