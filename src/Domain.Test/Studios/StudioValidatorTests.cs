@@ -4,12 +4,11 @@ using System.Threading.Tasks;
 using Moq;
 using Xunit;
 
-using ISTS.Application.Common;
-using ISTS.Application.Studios;
+using ISTS.Domain.Common;
 using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Studios;
 
-namespace ISTS.Application.Test.Studios
+namespace ISTS.Domain.Test.Studios
 {
     public class StudioValidatorTests
     {
@@ -41,7 +40,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public async void ValidateAsync_Throws_ArgumentException_When_Url_Less_Than_Min_Length()
         {
-            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _studioValidator.ValidateAsync(null, "StudioName", "A", "12345"));
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(() => _studioValidator.ValidateAsync(null, "StudioName", "A", "12345"));
 
             Assert.NotNull(ex);
             Assert.NotNull(ex.InnerException);
@@ -51,7 +50,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public async void ValidateAsync_Throws_ArgumentException_When_Url_Longer_Than_Max_Length()
         {
-            var ex = await Assert.ThrowsAsync<DataValidationException>(
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(
                 () =>
                 _studioValidator.ValidateAsync(null, "StudioName", "111111111111111111111111111111", "12345"));
 
@@ -63,7 +62,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public async void ValidateAsync_Throws_UriFormatException_When_Url_Contains_Invalid_Characters()
         {
-            var ex = await Assert.ThrowsAsync<DataValidationException>(
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(
                 () =>
                 _studioValidator.ValidateAsync(null, "StudioName", "StudioUrl%^", "12345"));
 
@@ -75,7 +74,7 @@ namespace ISTS.Application.Test.Studios
         [Fact]
         public async void ValidateAsync_Throws_UriFormatException_When_Url_Does_Not_Start_With_Letter()
         {
-            var ex = await Assert.ThrowsAsync<DataValidationException>(
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(
                 () =>
                 _studioValidator.ValidateAsync(null, "StudioName", "-InvalidUrl", "12345"));
 
@@ -105,7 +104,7 @@ namespace ISTS.Application.Test.Studios
                 .Setup(r => r.GetByUrlAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(studio));
 
-            var ex = await Assert.ThrowsAsync<DataValidationException>(
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(
                 () =>
                 _studioValidator.ValidateAsync(null, "StudioName", "FriendlyUrl", "12345"));
 
@@ -123,7 +122,7 @@ namespace ISTS.Application.Test.Studios
                 .Setup(r => r.GetByUrlAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(studio));
 
-            var ex = await Assert.ThrowsAsync<DataValidationException>(
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(
                 () =>
                 _studioValidator.ValidateAsync(Guid.NewGuid(), "StudioName", "FriendlyUrl", "12345"));
 

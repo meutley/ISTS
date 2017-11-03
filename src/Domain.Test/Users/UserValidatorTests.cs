@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 using Moq;
 using Xunit;
 
-using ISTS.Application.Users;
 using ISTS.Domain.Common;
 using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Users;
 
-namespace ISTS.Application.Test.Users
+namespace ISTS.Domain.Test.Users
 {
     public class UserValidatorTests
     {

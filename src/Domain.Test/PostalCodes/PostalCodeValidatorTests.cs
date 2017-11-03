@@ -3,11 +3,10 @@ using System;
 using Moq;
 using Xunit;
 
-using ISTS.Application.Common;
-using ISTS.Application.PostalCodes;
+using ISTS.Domain.Common;
 using ISTS.Domain.PostalCodes;
 
-namespace ISTS.Application.Test.PostalCodes
+namespace ISTS.Domain.Test.PostalCodes
 {
     public class PostalCodeValidatorTests
     {
@@ -32,7 +31,7 @@ namespace ISTS.Application.Test.PostalCodes
         public async void ValidateAsync_Throws_PostalCodeFormatException_When_Code_Contains_Letters()
         {
             string postalCode = "A1234";
-            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _postalCodeValidator.ValidateAsync(postalCode));
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(() => _postalCodeValidator.ValidateAsync(postalCode));
 
             Assert.NotNull(ex);
             Assert.NotNull(ex.InnerException);
@@ -43,7 +42,7 @@ namespace ISTS.Application.Test.PostalCodes
         public async void ValidateAsync_Throws_PostalCodeFormatException_When_Code_Format_Invalid()
         {
             string postalCode = "12";
-            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _postalCodeValidator.ValidateAsync(postalCode));
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(() => _postalCodeValidator.ValidateAsync(postalCode));
 
             Assert.NotNull(ex);
             Assert.NotNull(ex.InnerException);

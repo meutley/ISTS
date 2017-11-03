@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using ISTS.Application.Common;
-using ISTS.Application.PostalCodes;
 using ISTS.Application.Rooms;
 using ISTS.Application.Sessions;
 using ISTS.Application.Studios;

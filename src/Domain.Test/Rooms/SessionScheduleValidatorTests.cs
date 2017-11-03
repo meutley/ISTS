@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 using Moq;
 using Xunit;
 
-using ISTS.Application.Common;
-using ISTS.Application.Sessions;
 using ISTS.Domain.Common;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 using ISTS.Domain.Sessions;
 
-namespace ISTS.Application.Test.Sessions
+namespace ISTS.Application.Test.Rooms
 {
     public class SessionScheduleValidatorTests
     {
@@ -65,7 +63,7 @@ namespace ISTS.Application.Test.Sessions
             var end = start;
             var schedule = DateRange.Create(start, end);
 
-            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
 
             Assert.NotNull(ex);
             Assert.NotNull(ex.InnerException);
@@ -83,7 +81,7 @@ namespace ISTS.Application.Test.Sessions
             var end = start.AddHours(-2);
             var schedule = DateRange.Create(start, end);
 
-            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
 
             Assert.NotNull(ex);
             Assert.NotNull(ex.InnerException);
@@ -101,7 +99,7 @@ namespace ISTS.Application.Test.Sessions
             var end = Start.AddMinutes(30);
             var schedule = DateRange.Create(start, end);
 
-            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
 
             Assert.NotNull(ex);
             Assert.NotNull(ex.InnerException);
@@ -119,7 +117,7 @@ namespace ISTS.Application.Test.Sessions
             var end = Start.AddHours(3);
             var schedule = DateRange.Create(start, end);
 
-            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
 
             Assert.NotNull(ex);
             Assert.NotNull(ex.InnerException);

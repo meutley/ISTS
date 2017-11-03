@@ -3,14 +3,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-using ISTS.Application.Common;
 using ISTS.Domain.Common;
 using ISTS.Domain.PostalCodes;
-using ISTS.Domain.Users;
 using ISTS.Helpers.Async;
 using ISTS.Helpers.Validation;
 
-namespace ISTS.Application.Users
+namespace ISTS.Domain.Users
 {
     public class UserValidator : IUserValidator
     {
@@ -41,7 +39,7 @@ namespace ISTS.Application.Users
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new DataValidationException(new ArgumentException(string.Format("Password cannot be empty or whitespace")));
+                throw new DomainValidationException(new ArgumentException(string.Format("Password cannot be empty or whitespace")));
             }
             
             _emailValidator.Validate(email);
@@ -63,7 +61,7 @@ namespace ISTS.Application.Users
 
             if (existingEmail.Any())
             {
-                throw new DataValidationException(new EmailInUseException(email));
+                throw new DomainValidationException(new EmailInUseException(email));
             }
         }
 
@@ -71,19 +69,19 @@ namespace ISTS.Application.Users
         {
             if (string.IsNullOrWhiteSpace(displayName))
             {
-                throw new DataValidationException(new ArgumentException("Display Name must not be empty or whitespace", nameof(displayName)));
+                throw new DomainValidationException(new ArgumentException("Display Name must not be empty or whitespace", nameof(displayName)));
             }
 
             var doesPatternMatch = Regex.IsMatch(displayName, DisplayNameRegexPattern);
             if (!doesPatternMatch)
             {
                 var message = "Display Name must start with a non-whitespace character";
-                throw new DataValidationException(new FormatException(message));
+                throw new DomainValidationException(new FormatException(message));
             }
 
             if (displayName.Length < DisplayNameMinLength || displayName.Length > DisplayNameMaxLength)
             {
-                throw new DataValidationException(
+                throw new DomainValidationException(
                     new ArgumentException(
                         $"Display Name must be between {DisplayNameMinLength} and {DisplayNameMaxLength} characters in length"));
             }

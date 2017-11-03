@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 using ISTS.Application.Common;
+using ISTS.Domain.Common;
 
 namespace ISTS.Api.Filters
 {
@@ -13,6 +14,7 @@ namespace ISTS.Api.Filters
         {
             var isUnauthorizedAccess = context.Exception is UnauthorizedAccessException;
             var isDataValidationException = context.Exception is DataValidationException;
+            var isDomainValidationException = context.Exception is DomainValidationException;
 
             if (!isUnauthorizedAccess && !isDataValidationException)
             {
@@ -25,7 +27,7 @@ namespace ISTS.Api.Filters
                 });
             }
 
-            if (isDataValidationException)
+            if (isDataValidationException || isDomainValidationException)
             {
                 var exceptionMessage = context.Exception.InnerException.Message;
                 context.HttpContext.Response.StatusCode = 400;

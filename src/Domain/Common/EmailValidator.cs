@@ -1,9 +1,7 @@
 using System;
 using System.Net.Mail;
 
-using ISTS.Domain.Common;
-
-namespace ISTS.Application.Common
+namespace ISTS.Domain.Common
 {
     public class EmailValidator : IEmailValidator
     {
@@ -15,7 +13,7 @@ namespace ISTS.Application.Common
             }
             catch (FormatException)
             {
-                throw new DataValidationException(new FormatException(string.Format("The email address is not in a recognized format: {0}", email)));
+                throw new DomainValidationException(new FormatException(string.Format("The email address is not in a recognized format: {0}", email)));
             }
             catch (Exception)
             {

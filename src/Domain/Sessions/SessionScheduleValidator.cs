@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using ISTS.Application.Common;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Common;
 using ISTS.Domain.Schedules;
-using ISTS.Domain.Sessions;
 
-namespace ISTS.Application.Sessions
+namespace ISTS.Domain.Sessions
 {
     public class SessionScheduleValidator : ISessionScheduleValidator
     {
@@ -27,7 +25,7 @@ namespace ISTS.Application.Sessions
             {
                 if (schedule.Start >= schedule.End)
                 {
-                    throw new DataValidationException(new ScheduleEndMustBeGreaterThanStartException());
+                    throw new DomainValidationException(new ScheduleEndMustBeGreaterThanStartException());
                 }
 
                 var roomScheduleEntities = await _roomRepository.GetScheduleAsync(roomId, schedule);
@@ -38,7 +36,7 @@ namespace ISTS.Application.Sessions
 
                 if (roomSchedule.Any() && DoesScheduleOverlap(schedule, roomSchedule))
                 {
-                    throw new DataValidationException(new OverlappingScheduleException());
+                    throw new DomainValidationException(new OverlappingScheduleException());
                 }
             }
 
