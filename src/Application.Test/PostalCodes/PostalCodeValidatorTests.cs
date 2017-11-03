@@ -3,6 +3,7 @@ using System;
 using Moq;
 using Xunit;
 
+using ISTS.Application.Common;
 using ISTS.Application.PostalCodes;
 using ISTS.Domain.PostalCodes;
 
@@ -28,21 +29,25 @@ namespace ISTS.Application.Test.PostalCodes
         }
 
         [Fact]
-        public void ValidateAsync_Throws_PostalCodeFormatException_When_Code_Contains_Letters()
+        public async void ValidateAsync_Throws_PostalCodeFormatException_When_Code_Contains_Letters()
         {
             string postalCode = "A1234";
-            var ex = Assert.ThrowsAsync<PostalCodeFormatException>(() => _postalCodeValidator.ValidateAsync(postalCode));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _postalCodeValidator.ValidateAsync(postalCode));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<PostalCodeFormatException>(ex.InnerException);
         }
 
         [Fact]
-        public void ValidateAsync_Throws_PostalCodeFormatException_When_Code_Format_Invalid()
+        public async void ValidateAsync_Throws_PostalCodeFormatException_When_Code_Format_Invalid()
         {
             string postalCode = "12";
-            var ex = Assert.ThrowsAsync<PostalCodeFormatException>(() => _postalCodeValidator.ValidateAsync(postalCode));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _postalCodeValidator.ValidateAsync(postalCode));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<PostalCodeFormatException>(ex.InnerException);
         }
     }
 }

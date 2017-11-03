@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Moq;
 using Xunit;
 
+using ISTS.Application.Common;
 using ISTS.Application.Schedules;
 using ISTS.Domain.Schedules;
 using ISTS.Domain.Rooms;
@@ -52,7 +53,7 @@ namespace ISTS.Application.Test.Schedules
         }
 
         [Fact]
-        public void Validate_Should_Throw_Exception_When_Start_Equals_End()
+        public async void Validate_Should_Throw_Exception_When_Start_Equals_End()
         {
             _roomRepositoryMock
                 .Setup(r => r.GetScheduleAsync(It.IsAny<Guid>(), It.IsAny<DateRange>()))
@@ -62,13 +63,15 @@ namespace ISTS.Application.Test.Schedules
             var end = start;
             var schedule = DateRange.Create(start, end);
 
-            var ex = Assert.ThrowsAsync<ScheduleEndMustBeGreaterThanStartException>(() => _validator.ValidateAsync(RoomId, null, schedule));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<ScheduleEndMustBeGreaterThanStartException>(ex.InnerException);
         }
 
         [Fact]
-        public void Validate_Should_Throw_Exception_When_Start_Greater_Than_End()
+        public async void Validate_Should_Throw_Exception_When_Start_Greater_Than_End()
         {
             _roomRepositoryMock
                 .Setup(r => r.GetScheduleAsync(It.IsAny<Guid>(), It.IsAny<DateRange>()))
@@ -78,13 +81,15 @@ namespace ISTS.Application.Test.Schedules
             var end = start.AddHours(-2);
             var schedule = DateRange.Create(start, end);
 
-            var ex = Assert.ThrowsAsync<ScheduleEndMustBeGreaterThanStartException>(() => _validator.ValidateAsync(RoomId, null, schedule));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<ScheduleEndMustBeGreaterThanStartException>(ex.InnerException);
         }
 
         [Fact]
-        public void Validate_Should_Throw_Exception_When_Schedule_End_Overlaps()
+        public async void Validate_Should_Throw_Exception_When_Schedule_End_Overlaps()
         {
             _roomRepositoryMock
                 .Setup(r => r.GetScheduleAsync(It.IsAny<Guid>(), It.IsAny<DateRange>()))
@@ -94,13 +99,15 @@ namespace ISTS.Application.Test.Schedules
             var end = Start.AddMinutes(30);
             var schedule = DateRange.Create(start, end);
 
-            var ex = Assert.ThrowsAsync<OverlappingScheduleException>(() => _validator.ValidateAsync(RoomId, null, schedule));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<OverlappingScheduleException>(ex.InnerException);
         }
 
         [Fact]
-        public void Validate_Should_Throw_Exception_When_Schedule_Start_Overlaps()
+        public async void Validate_Should_Throw_Exception_When_Schedule_Start_Overlaps()
         {
             _roomRepositoryMock
                 .Setup(r => r.GetScheduleAsync(It.IsAny<Guid>(), It.IsAny<DateRange>()))
@@ -110,9 +117,11 @@ namespace ISTS.Application.Test.Schedules
             var end = Start.AddHours(3);
             var schedule = DateRange.Create(start, end);
 
-            var ex = Assert.ThrowsAsync<OverlappingScheduleException>(() => _validator.ValidateAsync(RoomId, null, schedule));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _validator.ValidateAsync(RoomId, null, schedule));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<OverlappingScheduleException>(ex.InnerException);
         }
 
         [Fact]

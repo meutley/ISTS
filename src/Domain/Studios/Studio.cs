@@ -32,10 +32,6 @@ namespace ISTS.Domain.Studios
             Guid ownerUserId,
             IStudioValidator studioValidator)
         {
-            ArgumentNotNullValidator.Validate(name, nameof(name));
-            ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
-            ArgumentNotNullValidator.Validate(postalCode, nameof(postalCode));
-
             AsyncHelper.RunSync(() => studioValidator.ValidateAsync(null, name, friendlyUrl, postalCode));
             
             var result = new Studio
@@ -55,9 +51,6 @@ namespace ISTS.Domain.Studios
 
         public void Update(string name, string friendlyUrl, string postalCode, IStudioValidator studioValidator)
         {
-            ArgumentNotNullValidator.Validate(name, nameof(name));
-            ArgumentNotNullValidator.Validate(friendlyUrl, nameof(friendlyUrl));
-
             AsyncHelper.RunSync(() => studioValidator.ValidateAsync(this.Id, name, friendlyUrl, postalCode));
             
             this.Name = name;

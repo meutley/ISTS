@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using ISTS.Application.Common;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 
@@ -24,7 +25,7 @@ namespace ISTS.Application.Schedules
             {
                 if (schedule.Start >= schedule.End)
                 {
-                    throw new ScheduleEndMustBeGreaterThanStartException();
+                    throw new DataValidationException(new ScheduleEndMustBeGreaterThanStartException());
                 }
 
                 var roomScheduleEntities = await _roomRepository.GetScheduleAsync(roomId, schedule);
@@ -35,7 +36,7 @@ namespace ISTS.Application.Schedules
 
                 if (roomSchedule.Any() && DoesScheduleOverlap(schedule, roomSchedule))
                 {
-                    throw new OverlappingScheduleException();
+                    throw new DataValidationException(new OverlappingScheduleException());
                 }
             }
 

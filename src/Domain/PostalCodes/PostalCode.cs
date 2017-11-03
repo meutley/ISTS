@@ -25,13 +25,6 @@ namespace ISTS.Domain.PostalCodes
             decimal latitude,
             decimal longitude)
         {
-            ArgumentNotNullValidator.Validate(code, nameof(code));
-
-            if (string.IsNullOrWhiteSpace(code))
-            {
-                throw new ArgumentException("Code cannot be empty or whitespace");
-            }
-
             AsyncHelper.RunSync(() => postalCodeValidator.ValidateAsync(code));
             
             var result = new PostalCode

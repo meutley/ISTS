@@ -15,7 +15,7 @@ namespace ISTS.Application.Common
             }
             catch (FormatException)
             {
-                throw new FormatException(string.Format("The email address is not in a recognized format: {0}", email));
+                throw new DataValidationException(new FormatException(string.Format("The email address is not in a recognized format: {0}", email)));
             }
             catch (Exception)
             {

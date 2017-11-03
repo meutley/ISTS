@@ -13,7 +13,7 @@ namespace ISTS.Api.Controllers
 {
     [Authorize(AuthenticationSchemes = "Bearer")]
     [HandleUnauthorizedAccessException]
-    [HandleGenericException]
+    [HandleApiException]
     [Route("api/[controller]")]
     public class RoomsController : AuthControllerBase
     {

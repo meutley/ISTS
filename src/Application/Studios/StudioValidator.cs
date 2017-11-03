@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using ISTS.Application.Common;
 using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Studios;
 
@@ -41,12 +42,12 @@ namespace ISTS.Application.Studios
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Name cannot be empty or whitespace");
+                throw new DataValidationException(new ArgumentException("Name cannot be empty or whitespace"));
             }
 
             if (name.Length < NameMinLength || name.Length > NameMaxLength)
             {
-                throw new ArgumentException($"Name must be between {NameMinLength} and {NameMaxLength} characters in length");
+                throw new DataValidationException(new ArgumentException($"Name must be between {NameMinLength} and {NameMaxLength} characters in length"));
             }
 
             return true;
@@ -56,12 +57,12 @@ namespace ISTS.Application.Studios
         {
             if (string.IsNullOrWhiteSpace(url))
             {
-                throw new ArgumentException(string.Format("{0} is required", nameof(url)));
+                throw new DataValidationException(new ArgumentException(string.Format("{0} is required", nameof(url))));
             }
 
             if (url.Length < UrlMinLength || url.Length > UrlMaxLength)
             {
-                throw new ArgumentException($"URL must be between {UrlMinLength} and {UrlMaxLength} characters in length");
+                throw new DataValidationException(new ArgumentException($"URL must be between {UrlMinLength} and {UrlMaxLength} characters in length"));
             }
             
             var entity = await _studioRepository.GetByUrlAsync(url);
@@ -69,7 +70,7 @@ namespace ISTS.Application.Studios
                 
             if (urlAlreadyExists)
             {
-                throw new StudioUrlInUseException(string.Format("The given url is already in use: {0}", url));
+                throw new DataValidationException(new StudioUrlInUseException(string.Format("The given url is already in use: {0}", url)));
             }
 
             var doesUrlMatchPattern = Regex.IsMatch(url, ValidUrlCharactersRegexPattern);
@@ -77,7 +78,7 @@ namespace ISTS.Application.Studios
             {
                 var message = "URL must start with a letter, and can only contain letters, numbers, hyphens and underscores";
 
-                throw new UriFormatException(message);
+                throw new DataValidationException(new UriFormatException(message));
             }
 
             return true;

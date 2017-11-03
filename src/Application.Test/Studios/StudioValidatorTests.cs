@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Moq;
 using Xunit;
 
+using ISTS.Application.Common;
 using ISTS.Application.Studios;
 using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Studios;
@@ -38,35 +39,49 @@ namespace ISTS.Application.Test.Studios
         }
 
         [Fact]
-        public void ValidateAsync_Throws_ArgumentException_When_Url_Less_Than_Min_Length()
+        public async void ValidateAsync_Throws_ArgumentException_When_Url_Less_Than_Min_Length()
         {
-            var ex = Assert.ThrowsAsync<ArgumentException>(() => _studioValidator.ValidateAsync(null, "StudioName", "A", "12345"));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _studioValidator.ValidateAsync(null, "StudioName", "A", "12345"));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<ArgumentException>(ex.InnerException);
         }
 
         [Fact]
-        public void ValidateAsync_Throws_ArgumentException_When_Url_Longer_Than_Max_Length()
+        public async void ValidateAsync_Throws_ArgumentException_When_Url_Longer_Than_Max_Length()
         {
-            var ex = Assert.ThrowsAsync<ArgumentException>(() => _studioValidator.ValidateAsync(null, "StudioName", "111111111111111111111111111111", "12345"));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(
+                () =>
+                _studioValidator.ValidateAsync(null, "StudioName", "111111111111111111111111111111", "12345"));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<ArgumentException>(ex.InnerException);
         }
 
         [Fact]
-        public void ValidateAsync_Throws_UriFormatException_When_Url_Contains_Invalid_Characters()
+        public async void ValidateAsync_Throws_UriFormatException_When_Url_Contains_Invalid_Characters()
         {
-            var ex = Assert.ThrowsAsync<UriFormatException>(() => _studioValidator.ValidateAsync(null, "StudioName", "StudioUrl%^", "12345"));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(
+                () =>
+                _studioValidator.ValidateAsync(null, "StudioName", "StudioUrl%^", "12345"));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<UriFormatException>(ex.InnerException);
         }
 
         [Fact]
-        public void ValidateAsync_Throws_UriFormatException_When_Url_Does_Not_Start_With_Letter()
+        public async void ValidateAsync_Throws_UriFormatException_When_Url_Does_Not_Start_With_Letter()
         {
-            var ex = Assert.ThrowsAsync<UriFormatException>(() => _studioValidator.ValidateAsync(null, "StudioName", "-InvalidUrl", "12345"));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(
+                () =>
+                _studioValidator.ValidateAsync(null, "StudioName", "-InvalidUrl", "12345"));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<UriFormatException>(ex.InnerException);
         }
 
         [Fact]
@@ -82,21 +97,7 @@ namespace ISTS.Application.Test.Studios
         }
 
         [Fact]
-        public void ValidateAsync_Throws_StudioUrlInUseException_When_New_Studio()
-        {
-            var studio = Studio.Create("StudioName", "FriendlyUrl", "12345", Guid.NewGuid(), _studioValidator);
-
-            _studioRepository
-                .Setup(r => r.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(studio));
-
-            var ex = Assert.ThrowsAsync<StudioUrlInUseException>(() => _studioValidator.ValidateAsync(null, "StudioName", "FriendlyUrl", "12345"));
-
-            Assert.NotNull(ex);
-        }
-
-        [Fact]
-        public void ValidateAsync_Throws_StudioUrlInUseException_When_Existing_Studio_Uses_Url()
+        public async void ValidateAsync_Throws_StudioUrlInUseException_When_New_Studio()
         {
             var studio = Studio.Create("StudioName", "FriendlyUrl", "12345", Guid.NewGuid(), _studioValidator);
 
@@ -104,23 +105,31 @@ namespace ISTS.Application.Test.Studios
                 .Setup(r => r.GetByUrlAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(studio));
 
-            var ex = Assert.ThrowsAsync<StudioUrlInUseException>(() => _studioValidator.ValidateAsync(Guid.NewGuid(), "StudioName", "FriendlyUrl", "12345"));
+            var ex = await Assert.ThrowsAsync<DataValidationException>(
+                () =>
+                _studioValidator.ValidateAsync(null, "StudioName", "FriendlyUrl", "12345"));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<StudioUrlInUseException>(ex.InnerException);
         }
 
         [Fact]
-        public void ValidateAsync_Throws_PostalCodeFormatException_When_PostalCode_Format_Invalid()
+        public async void ValidateAsync_Throws_StudioUrlInUseException_When_Existing_Studio_Uses_Url()
         {
-            _postalCodeValidator
-                .Setup(v => v.ValidateAsync(It.IsAny<string>(), It.IsAny<PostalCodeValidatorTypes>()))
-                .Throws<PostalCodeFormatException>();
+            var studio = Studio.Create("StudioName", "FriendlyUrl", "12345", Guid.NewGuid(), _studioValidator);
 
-            var ex = Assert.ThrowsAsync<PostalCodeFormatException>(
+            _studioRepository
+                .Setup(r => r.GetByUrlAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(studio));
+
+            var ex = await Assert.ThrowsAsync<DataValidationException>(
                 () =>
-                    _studioValidator.ValidateAsync(Guid.NewGuid(), "StudioName", "FriendlyUrl", "12"));
+                _studioValidator.ValidateAsync(Guid.NewGuid(), "StudioName", "FriendlyUrl", "12345"));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<StudioUrlInUseException>(ex.InnerException);
         }
     }
 }

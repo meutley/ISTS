@@ -16,9 +16,9 @@ namespace ISTS.Api.Controllers
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 return
-                    identity == null
-                    ? null
-                    : (Guid?)Guid.Parse(identity.Name);
+                    identity.IsAuthenticated
+                    ? (Guid?)Guid.Parse(identity.Name)
+                    : null;
             }
         }
 

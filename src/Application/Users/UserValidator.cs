@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using ISTS.Application.Common;
 using ISTS.Domain.Common;
 using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Users;
@@ -40,7 +41,7 @@ namespace ISTS.Application.Users
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                throw new ArgumentException(string.Format("Password cannot be empty or whitespace"));
+                throw new DataValidationException(new ArgumentException(string.Format("Password cannot be empty or whitespace")));
             }
             
             _emailValidator.Validate(email);
@@ -62,7 +63,7 @@ namespace ISTS.Application.Users
 
             if (existingEmail.Any())
             {
-                throw new EmailInUseException(email);
+                throw new DataValidationException(new EmailInUseException(email));
             }
         }
 
@@ -70,19 +71,21 @@ namespace ISTS.Application.Users
         {
             if (string.IsNullOrWhiteSpace(displayName))
             {
-                throw new ArgumentException("Display Name must not be empty or whitespace", nameof(displayName));
+                throw new DataValidationException(new ArgumentException("Display Name must not be empty or whitespace", nameof(displayName)));
             }
 
             var doesPatternMatch = Regex.IsMatch(displayName, DisplayNameRegexPattern);
             if (!doesPatternMatch)
             {
                 var message = "Display Name must start with a non-whitespace character";
-                throw new FormatException(message);
+                throw new DataValidationException(new FormatException(message));
             }
 
             if (displayName.Length < DisplayNameMinLength || displayName.Length > DisplayNameMaxLength)
             {
-                throw new ArgumentException($"Display Name must be between {DisplayNameMinLength} and {DisplayNameMaxLength} characters in length");
+                throw new DataValidationException(
+                    new ArgumentException(
+                        $"Display Name must be between {DisplayNameMinLength} and {DisplayNameMaxLength} characters in length"));
             }
         }
     }

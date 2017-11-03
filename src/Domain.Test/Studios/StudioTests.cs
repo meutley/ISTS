@@ -16,22 +16,6 @@ namespace ISTS.Domain.Tests.Studios
         {
             _studioValidator = new Mock<IStudioValidator>();
         }
-        
-        [Fact]
-        public void Create_Throws_ArgumentNullException_When_Name_Is_Null()
-        {
-            var ex = Assert.Throws<ArgumentNullException>(() => Studio.Create(null, "FriendlyUrl", "12345", Guid.NewGuid(), _studioValidator.Object));
-
-            Assert.NotNull(ex);
-        }
-
-        [Fact]
-        public void Create_Throws_ArgumentNullException_When_FriendlyUrl_Is_Null()
-        {
-            var ex = Assert.Throws<ArgumentNullException>(() => Studio.Create("Name", null, "12345", Guid.NewGuid(), _studioValidator.Object));
-
-            Assert.NotNull(ex);
-        }
 
         [Fact]
         public void Create_Returns_New_Studio()
