@@ -80,6 +80,16 @@ namespace ISTS.Application.Studios
                 model.PostalCodeSearchCriteria = new PostalCodeSearchCriteria(postalCode, distance);
             }
 
+            if (string.IsNullOrWhiteSpace(model.PostalCodeSearchCriteria.FromPostalCode))
+            {
+                throw new DataValidationException(new ArgumentException("Postal Code is required"));
+            }
+
+            if (model.PostalCodeSearchCriteria.Distance < 0)
+            {
+                throw new DataValidationException(new ArgumentOutOfRangeException("Distance must be greater than or equal to 0 (zero)"));
+            }
+
             return model;
         }
 

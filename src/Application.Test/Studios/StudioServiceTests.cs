@@ -188,6 +188,32 @@ namespace ISTS.Application.Test.Studios
         }
 
         [Fact]
+        public async void BuildSearchModelAsync_Throws_ArgumentException_When_Anonymous_And_PostalCode_Invalid()
+        {
+            var model = new StudioSearchModel();
+            model.PostalCodeSearchCriteria = new PostalCodeSearchCriteria("", 10);
+
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _studioService.BuildSearchModelAsync(null, model));
+
+            Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<ArgumentException>(ex.InnerException);
+        }
+
+        [Fact]
+        public async void BuildSearchModelAsync_Throws_ArgumentException_When_Anonymous_And_Distance_Invalid()
+        {
+            var model = new StudioSearchModel();
+            model.PostalCodeSearchCriteria = new PostalCodeSearchCriteria("11111", -5);
+
+            var ex = await Assert.ThrowsAsync<DataValidationException>(() => _studioService.BuildSearchModelAsync(null, model));
+
+            Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<ArgumentOutOfRangeException>(ex.InnerException);
+        }
+
+        [Fact]
         public async void SearchAsync_Returns_Studio_When_In_Distance()
         {
             var name = "StudioName";
