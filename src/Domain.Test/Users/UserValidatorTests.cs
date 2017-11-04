@@ -46,13 +46,13 @@ namespace ISTS.Domain.Test.Users
         }
 
         [Fact]
-        public void Validate_Throws_FormatException_When_Email_Format_Is_Invalid()
+        public async void Validate_Throws_FormatException_When_Email_Format_Is_Invalid()
         {
             _emailValidator
                 .Setup(v => v.Validate(It.IsAny<string>()))
                 .Throws<FormatException>();
 
-            var ex = Assert.ThrowsAsync<FormatException>(
+            var ex = await Assert.ThrowsAsync<FormatException>(
                 () =>
                     _userValidator.ValidateAsync(Guid.NewGuid(), "bad.email", "DisplayName", "Password", "00000"));
 
@@ -60,13 +60,13 @@ namespace ISTS.Domain.Test.Users
         }
 
         [Fact]
-        public void Validate_Throws_PostalCodeFormatException_When_PostalCode_Format_Invalid()
+        public async void Validate_Throws_PostalCodeFormatException_When_PostalCode_Format_Invalid()
         {
             _postalCodeValidator
                 .Setup(v => v.ValidateAsync(It.IsAny<string>(), It.IsAny<PostalCodeValidatorTypes>()))
                 .Throws<PostalCodeFormatException>();
 
-            var ex = Assert.ThrowsAsync<PostalCodeFormatException>(
+            var ex = await Assert.ThrowsAsync<PostalCodeFormatException>(
                 () =>
                     _userValidator.ValidateAsync(Guid.NewGuid(), "a@b.com", "DisplayName", "Password", "abcd"));
 
@@ -74,13 +74,13 @@ namespace ISTS.Domain.Test.Users
         }
 
         [Fact]
-        public void Validate_Throws_PostalCodeNotFoundException()
+        public async void Validate_Throws_PostalCodeNotFoundException()
         {
             _postalCodeValidator
                 .Setup(v => v.ValidateAsync(It.IsAny<string>(), It.IsAny<PostalCodeValidatorTypes>()))
                 .Throws<PostalCodeNotFoundException>();
 
-            var ex = Assert.ThrowsAsync<PostalCodeNotFoundException>(
+            var ex = await Assert.ThrowsAsync<PostalCodeNotFoundException>(
                 () =>
                     _userValidator.ValidateAsync(Guid.NewGuid(), "a@b.com", "DisplayName", "Password", "00000"));
 
@@ -88,7 +88,7 @@ namespace ISTS.Domain.Test.Users
         }
 
         [Fact]
-        public void Validate_Throws_EmailInUseException()
+        public async void Validate_Throws_EmailInUseException()
         {
             var existingUsers = new List<User>
             {
@@ -105,11 +105,13 @@ namespace ISTS.Domain.Test.Users
                 .Setup(r => r.GetAsync(It.IsAny<Expression<Func<User, bool>>>()))
                 .Returns((Expression<Func<User, bool>> predicate) => Task.FromResult(existingUsers.Where(predicate).ToList()));
 
-            var ex = Assert.ThrowsAsync<EmailInUseException>(
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(
                 () =>
                     _userValidator.ValidateAsync(Guid.NewGuid(), "existing@email.com", "DisplayName", "Password", "00000"));
 
             Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<EmailInUseException>(ex.InnerException);
         }
 
         [Fact]

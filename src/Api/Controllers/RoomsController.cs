@@ -7,6 +7,8 @@ using ISTS.Api.Filters;
 using ISTS.Api.Helpers;
 using ISTS.Application.Rooms;
 using ISTS.Application.Sessions;
+using ISTS.Application.Studios;
+using ISTS.Helpers.Async;
 
 namespace ISTS.Api.Controllers
 {
@@ -17,11 +19,14 @@ namespace ISTS.Api.Controllers
     public class RoomsController : AuthControllerBase
     {
         private readonly IRoomService _roomService;
+        private readonly IStudioService _studioService;
 
         public RoomsController(
-            IRoomService roomService)
+            IRoomService roomService,
+            IStudioService studioService)
         {
             _roomService = roomService;
+            _studioService = studioService;
         }
 
         [AllowAnonymous]
@@ -82,10 +87,14 @@ namespace ISTS.Api.Controllers
             return Ok(session);
         }
 
-        protected override async void ValidateUserIsOwner(Guid roomId)
+        protected override void ValidateUserIsOwner(Guid roomId)
         {
-            var room = await _roomService.GetAsync(roomId);
-            ValidateUserIdMatchesAuthenticatedUser(room.StudioId);
+            AsyncHelper.RunSync(async () =>
+            {
+                var room = await _roomService.GetAsync(roomId);
+                var studio = await _studioService.GetAsync(room.StudioId);
+                ValidateUserIdMatchesAuthenticatedUser(studio.OwnerUserId);
+            });
         }
     }
 }

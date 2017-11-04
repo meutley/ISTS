@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +13,13 @@ using ISTS.Api.Controllers;
 using ISTS.Api.Helpers;
 using ISTS.Application.Rooms;
 using ISTS.Application.Studios;
-using System.Security.Claims;
 
 namespace ISTS.Api.Test.Controllers
 {
     public class StudiosControllerTests
     {
         private readonly Mock<IStudioService> _studioService;
+
         private readonly Mock<HttpContext> _httpContext;
         private readonly Mock<ClaimsIdentity> _identity;
 
@@ -54,7 +55,7 @@ namespace ISTS.Api.Test.Controllers
         }
 
         [Fact]
-        public async void Get_Returns_StudioDto_When_Found()
+        public async void Get_Returns_OkObjectResult_With_StudioDto()
         {
             var dto = new StudioDto
             {
@@ -83,19 +84,19 @@ namespace ISTS.Api.Test.Controllers
 
         [Theory]
         [InlineData(null)]
-        [InlineData("BadUserId")]
-        public void Post_Throws_UnauthorizedAccessException(string inputId)
+        [InlineData("902adcdc-1911-490e-8961-839eb2056da3")]
+        public async void Post_Throws_UnauthorizedAccessException(string userId)
         {
             var model = new StudioDto
             {
                 OwnerUserId = Guid.NewGuid()
             };
 
-            var isAuthenticated = inputId != null;
+            var isAuthenticated = userId != null;
             _identity.Setup(i => i.IsAuthenticated).Returns(isAuthenticated);
-            _identity.Setup(i => i.Name).Returns(inputId);
+            _identity.Setup(i => i.Name).Returns(userId);
 
-            var ex = Assert.ThrowsAsync<UnauthorizedAccessException>(() => _studiosController.Post(model));
+            var ex = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _studiosController.Post(model));
 
             Assert.NotNull(ex);
         }
