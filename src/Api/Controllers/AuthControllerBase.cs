@@ -24,7 +24,7 @@ namespace ISTS.Api.Controllers
 
         protected void ValidateUserIdMatchesAuthenticatedUser(Guid userId)
         {
-            if (UserId != null && userId != UserId)
+            if (UserId == null || userId != UserId)
             {
                 throw new UnauthorizedAccessException();
             }

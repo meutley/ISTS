@@ -80,14 +80,15 @@ namespace ISTS.Api.Controllers
         [HttpPost("{id}/rooms")]
         public async Task<IActionResult> CreateRoom(Guid id, [FromBody]RoomDto model)
         {
-            ValidateUserIsOwner(id);
-            
-            var room = await _studioService.CreateRoomAsync(UserId.Value, id, model);
-            if (room == null)
+            var studio = await _studioService.GetAsync(id);
+            if (studio == null)
             {
                 return NotFound();
             }
             
+            ValidateUserIsOwner(studio.OwnerUserId);
+            
+            var room = await _studioService.CreateRoomAsync(UserId.Value, id, model);
             var roomUri = ApiHelper.GetResourceUri("studios", id, "rooms", room.Id);
             
             return Created(roomUri, room);

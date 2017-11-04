@@ -174,17 +174,6 @@ namespace ISTS.Application.Studios
         
         public async Task<RoomDto> CreateRoomAsync(Guid userId, Guid studioId, RoomDto model)
         {
-            var studio = await _studioRepository.GetAsync(studioId);
-            if (studio == null)
-            {
-                return null;
-            }
-
-            if (studio.OwnerUserId != userId)
-            {
-                throw new UnauthorizedAccessException();
-            }
-            
             var result = await _studioRepository.CreateRoomAsync(studioId, model.Name);
 
             var roomDto = _mapper.Map<RoomDto>(result);
