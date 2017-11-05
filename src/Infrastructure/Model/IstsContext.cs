@@ -21,6 +21,8 @@ namespace ISTS.Infrastructure.Model
 
         public DbSet<Session> Sessions { get; set; }
 
+        public DbSet<SessionRequest> SessionRequests { get; set; }
+
         public DbSet<Studio> Studios { get; set; }
 
         public DbSet<User> Users { get; set; }
@@ -63,6 +65,15 @@ namespace ISTS.Infrastructure.Model
                     
                     session.HasKey(x => x.Id);
                     session.Ignore(x => x.Schedule);
+                });
+
+            modelBuilder
+                .Entity<SessionRequest>(request =>
+                {
+                    request.ToTable("SessionRequest");
+
+                    request.HasKey(x => x.Id);
+                    request.Ignore(x => x.RequestedTime);
                 });
 
             modelBuilder

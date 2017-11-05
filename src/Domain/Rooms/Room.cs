@@ -24,6 +24,8 @@ namespace ISTS.Domain.Rooms
 
         public virtual ICollection<Session> Sessions { get; set; }
 
+        public virtual ICollection<SessionRequest> SessionRequests { get; set; }
+
         public static Room Create(Guid studioId, string name)
         {
             var room = new Room
@@ -45,6 +47,24 @@ namespace ISTS.Domain.Rooms
                 var session = Session.Create(this.Id, scheduledTime);
                 Sessions.Add(session);
                 return session; 
+            }
+
+            throw new InvalidOperationException();
+        }
+
+        public SessionRequest RequestSession(Guid requestingUserId, DateRange requestedTime, ISessionScheduleValidator sessionScheduleValidator)
+        {
+            var result = Room.ValidateSchedule(this.Id, null, requestedTime, sessionScheduleValidator);
+            if (result)
+            {
+                var request = SessionRequest.Create(
+                    requestingUserId,
+                    this.Id,
+                    requestedTime.Start,
+                    requestedTime.End);
+
+                SessionRequests.Add(request);
+                return request;
             }
 
             throw new InvalidOperationException();
