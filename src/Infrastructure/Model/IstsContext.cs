@@ -74,6 +74,9 @@ namespace ISTS.Infrastructure.Model
                     request.ToTable("SessionRequest");
 
                     request.HasKey(x => x.Id);
+                    request.Property(x => x.RejectedReason)
+                        .HasMaxLength(100);
+                        
                     request.Ignore(x => x.RequestedTime);
                 });
 
