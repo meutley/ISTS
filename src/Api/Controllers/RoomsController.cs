@@ -62,6 +62,7 @@ namespace ISTS.Api.Controllers
         public async Task<IActionResult> CreateSession(Guid id, [FromBody]SessionDto model)
         {
             ValidateUserIsOwner(id);
+            model.RoomId = id;
             var session = await _roomService.CreateSessionAsync(id, model);
             var sessionUri = ApiHelper.GetResourceUri("rooms", id, "sessions", session.Id);
 
@@ -91,11 +92,6 @@ namespace ISTS.Api.Controllers
         [HttpPost("{id}/sessions/request")]
         public async Task<IActionResult> RequestSession(Guid id, [FromBody]DateRangeDto requestedTime)
         {
-            if (!UserId.HasValue)
-            {
-                return Unauthorized();
-            }
-
             var room = await _roomService.GetAsync(id);
             if (room == null)
             {

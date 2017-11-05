@@ -57,8 +57,8 @@ namespace ISTS.Api.Controllers
         public async Task<IActionResult> Post([FromBody]StudioDto model)
         {
             ArgumentNotNullValidator.Validate(model, nameof(model));
-            ValidateUserIsOwner(model.OwnerUserId);
             
+            model.OwnerUserId = UserId.Value;
             var studio = await _studioService.CreateAsync(model);
             var studioUri = ApiHelper.GetResourceUri("studios", studio.Id);
             
