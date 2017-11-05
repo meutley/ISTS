@@ -187,6 +187,10 @@ namespace ISTS.Application.Test.Rooms
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(room));
 
+            _sessionScheduleValidator
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
+                .Returns(Task.FromResult(SessionScheduleValidatorResult.Success));
+
             var result = await _roomService.ApproveSessionRequestAsync(room.Id, request.Id);
             Assert.Equal((int)SessionRequestStatusId.Approved, result.SessionRequestStatusId);
         }

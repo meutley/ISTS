@@ -72,12 +72,17 @@ namespace ISTS.Domain.Rooms
             throw new InvalidOperationException();
         }
 
-        public SessionRequest ApproveSessionRequest(Guid requestId)
+        public SessionRequest ApproveSessionRequest(Guid requestId, ISessionScheduleValidator sessionScheduleValidator)
         {
             var request = SessionRequests.Single(r => r.Id == requestId);
-            request.Approve();
+            var isValid = Room.ValidateSchedule(this.Id, null, request.RequestedTime, sessionScheduleValidator);
+            if (isValid)
+            {
+                request.Approve();
+                return request;
+            }
 
-            return request;
+            throw new InvalidOperationException();
         }
 
         public SessionRequest RejectSessionRequest(Guid requestId, string reason)

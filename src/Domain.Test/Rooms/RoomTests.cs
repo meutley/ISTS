@@ -132,6 +132,10 @@ namespace ISTS.Domain.Tests.Rooms
             var endTime = startTime.AddHours(2);
             var requestedTime = DateRange.Create(startTime, endTime);
 
+            _sessionScheduleValidator
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
+                .Returns(Task.FromResult(SessionScheduleValidatorResult.Success));
+
             var request = Room.RequestSession(userId, requestedTime, _sessionScheduleValidator.Object);
             Assert.Equal((int)SessionRequestStatusId.Pending, request.SessionRequestStatusId);
 
@@ -139,7 +143,7 @@ namespace ISTS.Domain.Tests.Rooms
             switch (type)
             {
                 case "Approve":
-                    modifiedRequest = Room.ApproveSessionRequest(request.Id);
+                    modifiedRequest = Room.ApproveSessionRequest(request.Id, _sessionScheduleValidator.Object);
                     break;
                 case "Reject":
                     modifiedRequest = Room.RejectSessionRequest(request.Id, reason);

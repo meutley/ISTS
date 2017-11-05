@@ -122,11 +122,14 @@ namespace ISTS.Application.Rooms
             var result = _mapper.Map<SessionRequestDto>(entity);
             return result;
         }
-
         public async Task<SessionRequestDto> ApproveSessionRequestAsync(Guid roomId, Guid requestId)
         {
             var room = await _roomRepository.GetAsync(roomId);
-            var model = room.ApproveSessionRequest(requestId);
+            var model = room.ApproveSessionRequest(requestId, _sessionScheduleValidator);
+            await _roomRepository.ApproveSessionRequestAsync(model);
+
+            var newSession = room.CreateSession(model.RequestedTime, _sessionScheduleValidator);
+            await _roomRepository.CreateSessionAsync(newSession.RoomId, newSession);
 
             var result = _mapper.Map<SessionRequestDto>(model);
             return result;
@@ -136,6 +139,7 @@ namespace ISTS.Application.Rooms
         {
             var room = await _roomRepository.GetAsync(roomId);
             var model = room.RejectSessionRequest(requestId, reason);
+            await _roomRepository.RejectSessionRequestAsync(model);
 
             var result = _mapper.Map<SessionRequestDto>(model);
             return result;

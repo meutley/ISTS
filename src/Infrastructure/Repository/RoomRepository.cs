@@ -100,6 +100,22 @@ namespace ISTS.Infrastructure.Repository
             return entity;
         }
 
+        public async Task<SessionRequest> ApproveSessionRequestAsync(SessionRequest entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return entity;
+        }
+
+        public async Task<SessionRequest> RejectSessionRequestAsync(SessionRequest entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return entity;
+        }
+
         public async Task<IEnumerable<RoomSessionSchedule>> GetScheduleAsync(Guid id, DateRange range)
         {
             var sessions = await _context.Sessions
