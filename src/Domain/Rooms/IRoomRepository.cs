@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using ISTS.Domain.Common;
 using ISTS.Domain.Sessions;
+using ISTS.Domain.SessionRequests;
 
 namespace ISTS.Domain.Rooms
 {

@@ -7,6 +7,7 @@ using Xunit;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Common;
 using ISTS.Domain.Sessions;
+using ISTS.Domain.SessionRequests;
 
 namespace ISTS.Domain.Tests.Rooms
 {
@@ -115,6 +116,37 @@ namespace ISTS.Domain.Tests.Rooms
             Assert.Equal(startTime, model.RequestedStartTime);
             Assert.Equal(endTime, model.RequestedEndTime);
             Assert.Equal(requestedTime, model.RequestedTime);
+            Assert.Equal((int)SessionRequestStatusId.Pending, model.SessionRequestStatusId);
+        }
+
+        [Theory]
+        [InlineData("Approve", "", (int)SessionRequestStatusId.Approved)]
+        [InlineData("Reject", "Need to reschedule", (int)SessionRequestStatusId.Rejected)]
+        public void ApproveReject_SessionRequest_Returns_SessionRequest_With_Updated_Status(
+            string type,
+            string reason,
+            int expectedStatusId)
+        {
+            var userId = Guid.NewGuid();
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddHours(2);
+            var requestedTime = DateRange.Create(startTime, endTime);
+
+            var request = Room.RequestSession(userId, requestedTime, _sessionScheduleValidator.Object);
+            Assert.Equal((int)SessionRequestStatusId.Pending, request.SessionRequestStatusId);
+
+            SessionRequest modifiedRequest = null;
+            switch (type)
+            {
+                case "Approve":
+                    modifiedRequest = Room.ApproveSessionRequest(request.Id);
+                    break;
+                case "Reject":
+                    modifiedRequest = Room.RejectSessionRequest(request.Id, reason);
+                    break;
+            }
+
+            Assert.Equal(expectedStatusId, modifiedRequest.SessionRequestStatusId);
         }
     }
 }

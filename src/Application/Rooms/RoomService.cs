@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ISTS.Application.Common;
 using ISTS.Application.Sessions;
+using ISTS.Application.SessionRequests;
 using ISTS.Domain.Common;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Sessions;
+using ISTS.Domain.SessionRequests;
 
 namespace ISTS.Application.Rooms
 {
@@ -118,6 +120,24 @@ namespace ISTS.Application.Rooms
             var entity = await _roomRepository.RequestSessionAsync(newModel);
 
             var result = _mapper.Map<SessionRequestDto>(entity);
+            return result;
+        }
+
+        public async Task<SessionRequestDto> ApproveSessionRequestAsync(Guid roomId, Guid requestId)
+        {
+            var room = await _roomRepository.GetAsync(roomId);
+            var model = room.ApproveSessionRequest(requestId);
+
+            var result = _mapper.Map<SessionRequestDto>(model);
+            return result;
+        }
+
+        public async Task<SessionRequestDto> RejectSessionRequestAsync(Guid roomId, Guid requestId, string reason)
+        {
+            var room = await _roomRepository.GetAsync(roomId);
+            var model = room.RejectSessionRequest(requestId, reason);
+
+            var result = _mapper.Map<SessionRequestDto>(model);
             return result;
         }
     }

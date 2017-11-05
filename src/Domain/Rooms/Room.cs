@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ISTS.Domain.Common;
 using ISTS.Domain.Schedules;
 using ISTS.Domain.Sessions;
+using ISTS.Domain.SessionRequests;
 using ISTS.Domain.Studios;
 using ISTS.Helpers.Async;
 
@@ -69,6 +70,22 @@ namespace ISTS.Domain.Rooms
             }
 
             throw new InvalidOperationException();
+        }
+
+        public SessionRequest ApproveSessionRequest(Guid requestId)
+        {
+            var request = SessionRequests.Single(r => r.Id == requestId);
+            request.Approve();
+
+            return request;
+        }
+
+        public SessionRequest RejectSessionRequest(Guid requestId, string reason)
+        {
+            var request = SessionRequests.Single(r => r.Id == requestId);
+            request.Reject(reason);
+
+            return request;
         }
 
         public Session RescheduleSession(Session session, DateRange newSchedule, ISessionScheduleValidator sessionScheduleValidator)

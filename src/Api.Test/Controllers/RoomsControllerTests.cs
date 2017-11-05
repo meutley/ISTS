@@ -15,12 +15,20 @@ using ISTS.Api.Helpers;
 using ISTS.Application.Rooms;
 using ISTS.Application.Common;
 using ISTS.Application.Sessions;
+using ISTS.Application.SessionRequests;
 using ISTS.Application.Studios;
 
 namespace ISTS.Api.Test.Controllers
 {
     public class RoomsControllerTests
     {
+        private enum SessionRequestStatusId
+        {
+            Pending = 1,
+            Approved = 2,
+            Rejected = 3
+        }
+        
         private readonly Mock<IRoomService> _roomService;
         private readonly Mock<IStudioService> _studioService;
 
@@ -302,15 +310,6 @@ namespace ISTS.Api.Test.Controllers
                 Assert.Equal(dto.ActualEndTime, session.ActualEndTime);
             }
         }
-        
-        [Fact]
-        public async void RequestSession_Returns_UnauthorizedResult()
-        {
-            _identity.Setup(i => i.IsAuthenticated).Returns(false);
-
-            var result = await _roomsController.RequestSession(Guid.NewGuid(), new DateRangeDto());
-            Assert.IsType<UnauthorizedResult>(result);
-        }
 
         [Fact]
         public async void RequestSession_Returns_OkObjectResult_With_SessionRequestDto()
@@ -356,6 +355,96 @@ namespace ISTS.Api.Test.Controllers
             Assert.Equal(expectedModel.RequestingUserId, actual.RequestingUserId);
             Assert.Equal(expectedModel.RequestedTime.Start, actual.RequestedTime.Start);
             Assert.Equal(expectedModel.RequestedTime.End, actual.RequestedTime.End);
+        }
+
+        [Fact]
+        public async void ApproveSessionRequest_Returns_OkObjectResult_With_Approved_SessionRequestDto()
+        {
+            var userId = Guid.NewGuid();
+            var roomId = Guid.NewGuid();
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddHours(2);
+
+            _identity.Setup(i => i.IsAuthenticated).Returns(true);
+            _identity.Setup(i => i.Name).Returns(userId.ToString());
+
+            var room = new RoomDto
+            {
+                Id = roomId
+            };
+
+            var expectedModel = new SessionRequestDto
+            {
+                Id = Guid.NewGuid(),
+                RoomId = roomId,
+                RequestingUserId = userId,
+                RequestedTime = new DateRangeDto { Start = startTime, End = endTime },
+                SessionRequestStatusId = (int)SessionRequestStatusId.Approved
+            };
+
+            _roomService
+                .Setup(s => s.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
+
+            _roomService
+                .Setup(s => s.ApproveSessionRequestAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .Returns(Task.FromResult(expectedModel));
+
+            var result = await _roomsController.ApproveSessionRequest(roomId, expectedModel.Id);
+            Assert.IsType<OkObjectResult>(result);
+
+            var okResult = result as OkObjectResult;
+            Assert.IsType<SessionRequestDto>(okResult.Value);
+
+            var actual = okResult.Value as SessionRequestDto;
+            Assert.Equal(expectedModel.SessionRequestStatusId, actual.SessionRequestStatusId);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("Need to reschedule")]
+        public async void RejectSessionRequest_Returns_OkObjectResult_With_Rejected_SessionRequestDto(string reason)
+        {
+            var userId = Guid.NewGuid();
+            var roomId = Guid.NewGuid();
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddHours(2);
+
+            _identity.Setup(i => i.IsAuthenticated).Returns(true);
+            _identity.Setup(i => i.Name).Returns(userId.ToString());
+
+            var room = new RoomDto
+            {
+                Id = roomId
+            };
+
+            var expectedModel = new SessionRequestDto
+            {
+                Id = Guid.NewGuid(),
+                RoomId = roomId,
+                RequestingUserId = userId,
+                RequestedTime = new DateRangeDto { Start = startTime, End = endTime },
+                SessionRequestStatusId = (int)SessionRequestStatusId.Rejected,
+                RejectedReason = reason
+            };
+
+            _roomService
+                .Setup(s => s.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
+
+            _roomService
+                .Setup(s => s.RejectSessionRequestAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(expectedModel));
+
+            var result = await _roomsController.RejectSessionRequest(roomId, expectedModel.Id, reason);
+            Assert.IsType<OkObjectResult>(result);
+
+            var okResult = result as OkObjectResult;
+            Assert.IsType<SessionRequestDto>(okResult.Value);
+
+            var actual = okResult.Value as SessionRequestDto;
+            Assert.Equal(expectedModel.SessionRequestStatusId, actual.SessionRequestStatusId);
+            Assert.Equal(expectedModel.RejectedReason, actual.RejectedReason);
         }
     }
 }

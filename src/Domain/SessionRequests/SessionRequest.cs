@@ -5,7 +5,7 @@ using ISTS.Domain.Rooms;
 using ISTS.Domain.Users;
 using ISTS.Helpers.Async;
 
-namespace ISTS.Domain.Sessions
+namespace ISTS.Domain.SessionRequests
 {
     public class SessionRequest : IAggregateRoot
     {
@@ -31,6 +31,12 @@ namespace ISTS.Domain.Sessions
             }
         }
 
+        public int SessionRequestStatusId { get; protected set; }
+
+        public virtual SessionRequestStatus SessionRequestStatus { get; protected set; }
+
+        public string RejectedReason { get; protected set; }
+
         public static SessionRequest Create(
             Guid requestingUserId,
             Guid roomId,
@@ -39,13 +45,29 @@ namespace ISTS.Domain.Sessions
         {
             var request = new SessionRequest
             {
+                Id = Guid.NewGuid(),
                 RequestingUserId = requestingUserId,
                 RoomId = roomId,
                 RequestedStartTime = requestedStartTime,
-                RequestedEndTime = requestedEndTime
+                RequestedEndTime = requestedEndTime,
+                SessionRequestStatusId = (int)SessionRequests.SessionRequestStatusId.Pending
             };
 
             return request;
+        }
+
+        public SessionRequest Approve()
+        {
+            this.SessionRequestStatusId = (int)SessionRequests.SessionRequestStatusId.Approved;
+            this.RejectedReason = null;
+            return this;
+        }
+
+        public SessionRequest Reject(string reason)
+        {
+            this.SessionRequestStatusId = (int)SessionRequests.SessionRequestStatusId.Rejected;
+            this.RejectedReason = reason != null ? reason.Trim() : null;
+            return this;
         }
     }
 }

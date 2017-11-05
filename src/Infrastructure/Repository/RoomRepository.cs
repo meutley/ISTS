@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Common;
 using ISTS.Domain.Sessions;
+using ISTS.Domain.SessionRequests;
 using ISTS.Infrastructure.Model;
 
 namespace ISTS.Infrastructure.Repository

@@ -2,7 +2,7 @@ using System;
 
 using ISTS.Application.Common;
 
-namespace ISTS.Application.Sessions
+namespace ISTS.Application.SessionRequests
 {
     public class SessionRequestDto
     {
@@ -13,5 +13,9 @@ namespace ISTS.Application.Sessions
         public Guid RequestingUserId { get; set; }
 
         public DateRangeDto RequestedTime { get; set; }
+
+        public int SessionRequestStatusId { get; set; }
+
+        public string RejectedReason { get; set; }
     }
 }

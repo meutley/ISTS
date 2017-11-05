@@ -8,10 +8,12 @@ using Xunit;
 using ISTS.Application.Common;
 using ISTS.Application.Rooms;
 using ISTS.Application.Sessions;
+using ISTS.Application.SessionRequests;
 using ISTS.Domain.Common;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Schedules;
 using ISTS.Domain.Sessions;
+using ISTS.Domain.SessionRequests;
 
 namespace ISTS.Application.Test.Rooms
 {
@@ -55,13 +57,15 @@ namespace ISTS.Application.Test.Rooms
                         Id = source.Id,
                         RoomId = source.RoomId,
                         RequestingUserId = source.RequestingUserId,
-                        RequestedTime = new DateRangeDto { Start = source.RequestedStartTime, End = source.RequestedEndTime }
+                        RequestedTime = new DateRangeDto { Start = source.RequestedStartTime, End = source.RequestedEndTime },
+                        SessionRequestStatusId = source.SessionRequestStatusId,
+                        RejectedReason = source.RejectedReason
                     };
                 });
         }
         
         [Fact]
-        public async void CreateSession_Returns_New_RoomSessionDto_Without_Schedule()
+        public async void CreateSessionAsync_Returns_New_RoomSessionDto_Without_Schedule()
         {
             var studioId = Guid.NewGuid();
             var room = Room.Create(studioId, "Room");
@@ -90,7 +94,7 @@ namespace ISTS.Application.Test.Rooms
         }
 
         [Fact]
-        public async void CreateSession_Returns_New_RoomSessionDto_With_Schedule()
+        public async void CreateSessionAsync_Returns_New_RoomSessionDto_With_Schedule()
         {
             var studioId = Guid.NewGuid();
             var room = Room.Create(studioId, "Room");
@@ -127,7 +131,7 @@ namespace ISTS.Application.Test.Rooms
         }
 
         [Fact]
-        public async void RequestSession_Returns_New_SessionRequestDto()
+        public async void RequestSessionAsync_Returns_New_SessionRequestDto()
         {
             var studioId = Guid.NewGuid();
             var room = Room.Create(studioId, "Room");
@@ -167,6 +171,45 @@ namespace ISTS.Application.Test.Rooms
             Assert.Equal(entity.RequestingUserId, result.RequestingUserId);
             Assert.Equal(entity.RequestedStartTime, result.RequestedTime.Start);
             Assert.Equal(entity.RequestedEndTime, result.RequestedTime.End);
+        }
+
+        [Fact]
+        public async void ApproveSessionRequestAsync_Returns_Approved_SessionRequestDto()
+        {
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddHours(2);
+            
+            var room = Room.Create(Guid.NewGuid(), "Room");
+            var request = SessionRequest.Create(Guid.NewGuid(), room.Id, startTime, endTime);
+            room.SessionRequests.Add(request);
+
+            _roomRepository
+                .Setup(r => r.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
+
+            var result = await _roomService.ApproveSessionRequestAsync(room.Id, request.Id);
+            Assert.Equal((int)SessionRequestStatusId.Approved, result.SessionRequestStatusId);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("Need to reschedule")]
+        public async void RejectSessionRequestAsync_Returns_Rejected_SessionRequestDto(string reason)
+        {
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddHours(2);
+            
+            var room = Room.Create(Guid.NewGuid(), "Room");
+            var request = SessionRequest.Create(Guid.NewGuid(), room.Id, startTime, endTime);
+            room.SessionRequests.Add(request);
+
+            _roomRepository
+                .Setup(r => r.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
+
+            var result = await _roomService.RejectSessionRequestAsync(room.Id, request.Id, reason);
+            Assert.Equal((int)SessionRequestStatusId.Rejected, result.SessionRequestStatusId);
+            Assert.Equal(reason, result.RejectedReason);
         }
     }
 }

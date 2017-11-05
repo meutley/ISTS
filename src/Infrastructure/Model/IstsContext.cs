@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ISTS.Domain.PostalCodes;
 using ISTS.Domain.Rooms;
 using ISTS.Domain.Sessions;
+using ISTS.Domain.SessionRequests;
 using ISTS.Domain.Studios;
 using ISTS.Domain.Users;
 
@@ -74,6 +75,17 @@ namespace ISTS.Infrastructure.Model
 
                     request.HasKey(x => x.Id);
                     request.Ignore(x => x.RequestedTime);
+                });
+
+            modelBuilder
+                .Entity<SessionRequestStatus>(status =>
+                {
+                    status.ToTable("SessionRequestStatus");
+
+                    status.HasKey(x => x.Id);
+                    status.Property(x => x.Description)
+                        .HasMaxLength(50)
+                        .IsRequired();
                 });
 
             modelBuilder

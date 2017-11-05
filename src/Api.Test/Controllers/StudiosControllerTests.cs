@@ -82,25 +82,6 @@ namespace ISTS.Api.Test.Controllers
             Assert.Equal(dto.PostalCode, model.PostalCode);
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("902adcdc-1911-490e-8961-839eb2056da3")]
-        public async void Post_Throws_UnauthorizedAccessException(string userId)
-        {
-            var model = new StudioDto
-            {
-                OwnerUserId = Guid.NewGuid()
-            };
-
-            var isAuthenticated = userId != null;
-            _identity.Setup(i => i.IsAuthenticated).Returns(isAuthenticated);
-            _identity.Setup(i => i.Name).Returns(userId);
-
-            var ex = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _studiosController.Post(model));
-
-            Assert.NotNull(ex);
-        }
-
         [Fact]
         public async void Post_Returns_CreatedResult_With_StudioDto_And_Location()
         {

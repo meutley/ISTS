@@ -8,6 +8,7 @@ using ISTS.Api.Helpers;
 using ISTS.Application.Common;
 using ISTS.Application.Rooms;
 using ISTS.Application.Sessions;
+using ISTS.Application.SessionRequests;
 using ISTS.Application.Studios;
 using ISTS.Helpers.Async;
 
@@ -107,6 +108,20 @@ namespace ISTS.Api.Controllers
 
             var request = await _roomService.RequestSessionAsync(model);
 
+            return Ok(request);
+        }
+
+        [HttpPut("{id}/sessions/requests/{requestId}/approve")]
+        public async Task<IActionResult> ApproveSessionRequest(Guid id, Guid requestId)
+        {
+            var request = await _roomService.ApproveSessionRequestAsync(id, requestId);
+            return Ok(request);
+        }
+
+        [HttpPut("{id}/sessions/requests/{requestId}/reject")]
+        public async Task<IActionResult> RejectSessionRequest(Guid id, Guid requestId, [FromBody]string reason)
+        {
+            var request = await _roomService.RejectSessionRequestAsync(id, requestId, reason);
             return Ok(request);
         }
 

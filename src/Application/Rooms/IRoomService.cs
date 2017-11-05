@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using ISTS.Application.Common;
 using ISTS.Application.Sessions;
+using ISTS.Application.SessionRequests;
 
 namespace ISTS.Application.Rooms
 {
@@ -18,5 +19,7 @@ namespace ISTS.Application.Rooms
         Task<SessionDto> EndSessionAsync(Guid roomId, Guid sessionId);
 
         Task<SessionRequestDto> RequestSessionAsync(SessionRequestDto model);
+        Task<SessionRequestDto> ApproveSessionRequestAsync(Guid roomId, Guid requestId);
+        Task<SessionRequestDto> RejectSessionRequestAsync(Guid roomId, Guid requestId, string reason);
     }
 }
