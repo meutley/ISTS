@@ -132,11 +132,6 @@ namespace ISTS.Application.Studios
                 return null;
             }
 
-            if (studio.OwnerUserId != model.OwnerUserId)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
             studio.Update(model.Name, model.FriendlyUrl, model.PostalCode, _studioUrlValidator);
             var entity = await _studioRepository.UpdateAsync(studio);
 

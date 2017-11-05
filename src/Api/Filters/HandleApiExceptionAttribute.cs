@@ -16,17 +16,6 @@ namespace ISTS.Api.Filters
             var isDataValidationException = context.Exception is DataValidationException;
             var isDomainValidationException = context.Exception is DomainValidationException;
 
-            if (!isUnauthorizedAccess && !isDataValidationException)
-            {
-                var exceptionMessage = context.Exception.Message;
-                context.HttpContext.Response.StatusCode = 500;
-                context.Result = new JsonResult(new
-                {
-                    ErrorMessage = exceptionMessage,
-                    StackTrace = context.Exception.StackTrace
-                });
-            }
-
             if (isDataValidationException || isDomainValidationException)
             {
                 var exceptionMessage = context.Exception.InnerException.Message;
@@ -34,6 +23,17 @@ namespace ISTS.Api.Filters
                 context.Result = new JsonResult(new
                 {
                     ValidationErrorMessage = exceptionMessage
+                });
+            }
+
+            if (!isUnauthorizedAccess)
+            {
+                var exceptionMessage = context.Exception.Message;
+                context.HttpContext.Response.StatusCode = 500;
+                context.Result = new JsonResult(new
+                {
+                    ErrorMessage = exceptionMessage,
+                    StackTrace = context.Exception.StackTrace
                 });
             }
         }
