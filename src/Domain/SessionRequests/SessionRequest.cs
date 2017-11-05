@@ -58,6 +58,8 @@ namespace ISTS.Domain.SessionRequests
 
         public SessionRequest Approve()
         {
+            ValidateRequestIsPending(this.SessionRequestStatusId);
+            
             this.SessionRequestStatusId = (int)SessionRequests.SessionRequestStatusId.Approved;
             this.RejectedReason = null;
             return this;
@@ -65,9 +67,24 @@ namespace ISTS.Domain.SessionRequests
 
         public SessionRequest Reject(string reason)
         {
+            ValidateRequestIsPending(this.SessionRequestStatusId);
+            
             this.SessionRequestStatusId = (int)SessionRequests.SessionRequestStatusId.Rejected;
             this.RejectedReason = reason != null ? reason.Trim() : null;
             return this;
+        }
+
+        private static void ValidateRequestIsPending(int statusId)
+        {
+            if (statusId != (int)SessionRequests.SessionRequestStatusId.Pending)
+            {
+                var type =
+                    statusId == (int)SessionRequests.SessionRequestStatusId.Approved
+                    ? "approved"
+                    : "rejected";
+
+                throw new DomainValidationException(new InvalidOperationException($"The session request has already been {type}"));
+            }
         }
     }
 }
