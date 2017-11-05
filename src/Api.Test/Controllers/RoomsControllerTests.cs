@@ -223,5 +223,84 @@ namespace ISTS.Api.Test.Controllers
             var expectedLocation = ApiHelper.GetResourceUri("rooms", roomId, "sessions", model.Id);
             Assert.Equal(expectedLocation, createdLocation);
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async void StartSession_And_EndSession_Return_SessionDto_With_ActualStartTime_ActualEndTime(bool startSession)
+        {
+            var userId = Guid.NewGuid();
+            var roomId = Guid.NewGuid();
+            var start = DateTime.Now;
+            var end = start.AddHours(2);
+            var actualStart = DateTime.Now;
+            var actualEnd = actualStart.AddHours(2);
+
+            var studio = new StudioDto
+            {
+                Id = Guid.NewGuid(),
+                OwnerUserId = userId
+            };
+
+            var room = new RoomDto
+            {
+                Id = roomId,
+                StudioId = studio.Id
+            };
+            
+            var dto = new SessionDto
+            {
+                Id = Guid.NewGuid(),
+                RoomId = roomId,
+                Schedule = new DateRangeDto
+                {
+                    Start = start,
+                    End = end
+                },
+                ActualStartTime = startSession ? actualStart : (DateTime?)null,
+                ActualEndTime = !startSession ? actualEnd : (DateTime?)null
+            };
+
+            _identity.Setup(i => i.IsAuthenticated).Returns(true);
+            _identity.Setup(i => i.Name).Returns(userId.ToString());
+
+            _studioService
+                .Setup(s => s.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(studio));
+
+            _roomService
+                .Setup(s => s.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
+
+            _roomService
+                .Setup(s => s.StartSessionAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .Returns(Task.FromResult(dto));
+
+            _roomService
+                .Setup(s => s.EndSessionAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .Returns(Task.FromResult(dto));
+
+            var result =
+                startSession
+                ? await _roomsController.StartSession(roomId, dto.Id)
+                : await _roomsController.EndSession(roomId, dto.Id);
+
+            Assert.IsType<OkObjectResult>(result);
+
+            var okResult = result as OkObjectResult;
+            Assert.IsType<SessionDto>(okResult.Value);
+
+            var session = okResult.Value as SessionDto;
+            if (startSession)
+            {
+                Assert.NotNull(session.ActualStartTime);
+                Assert.Equal(dto.ActualStartTime, session.ActualStartTime);
+            }
+            else
+            {
+                Assert.NotNull(session.ActualEndTime);
+                Assert.Equal(dto.ActualEndTime, session.ActualEndTime);
+            }
+        }
     }
 }
