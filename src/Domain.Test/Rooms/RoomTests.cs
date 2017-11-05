@@ -99,5 +99,22 @@ namespace ISTS.Domain.Tests.Rooms
             var ex = Assert.Throws<SessionNotStartedException>(() => Room.EndSession(session.Id, endTime));
             Assert.NotNull(ex);
         }
+
+        [Fact]
+        public void RequestSession_Returns_SessionRequest_Model()
+        {
+            var userId = Guid.NewGuid();
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddHours(2);
+            var requestedTime = DateRange.Create(startTime, endTime);
+
+            var model = Room.RequestSession(userId, requestedTime, _sessionScheduleValidator.Object);
+
+            Assert.NotNull(model);
+            Assert.Equal(userId, model.RequestingUserId);
+            Assert.Equal(startTime, model.RequestedStartTime);
+            Assert.Equal(endTime, model.RequestedEndTime);
+            Assert.Equal(requestedTime, model.RequestedTime);
+        }
     }
 }

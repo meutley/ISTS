@@ -16,5 +16,7 @@ namespace ISTS.Application.Rooms
         Task<SessionDto> RescheduleSessionAsync(Guid roomId, Guid sessionId, DateRangeDto newSchedule);
         Task<SessionDto> StartSessionAsync(Guid roomId, Guid sessionId);
         Task<SessionDto> EndSessionAsync(Guid roomId, Guid sessionId);
+
+        Task<SessionRequestDto> RequestSessionAsync(SessionRequestDto model);
     }
 }

@@ -108,5 +108,17 @@ namespace ISTS.Application.Rooms
             var result = _mapper.Map<SessionDto>(model);
             return result;
         }
+
+        public async Task<SessionRequestDto> RequestSessionAsync(SessionRequestDto model)
+        {
+            var requestedDateRange = DateRange.Create(model.RequestedTime.Start, model.RequestedTime.End);
+            
+            var room = await _roomRepository.GetAsync(model.RoomId);
+            var newModel = room.RequestSession(model.RequestingUserId, requestedDateRange, _sessionScheduleValidator);
+            var entity = await _roomRepository.RequestSessionAsync(newModel);
+
+            var result = _mapper.Map<SessionRequestDto>(entity);
+            return result;
+        }
     }
 }

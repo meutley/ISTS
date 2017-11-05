@@ -45,6 +45,19 @@ namespace ISTS.Application.Test.Rooms
                             : new DateRangeDto { Start = source.Schedule.Start, End = source.Schedule.End }
                     };
                 });
+
+            _mapper
+                .Setup(x => x.Map<SessionRequestDto>(It.IsAny<SessionRequest>()))
+                .Returns((SessionRequest source) =>
+                {
+                    return new SessionRequestDto
+                    {
+                        Id = source.Id,
+                        RoomId = source.RoomId,
+                        RequestingUserId = source.RequestingUserId,
+                        RequestedTime = new DateRangeDto { Start = source.RequestedStartTime, End = source.RequestedEndTime }
+                    };
+                });
         }
         
         [Fact]
@@ -111,6 +124,49 @@ namespace ISTS.Application.Test.Rooms
             Assert.Equal(dto.Schedule.Start, schedule.Start);
             Assert.Equal(dto.Schedule.End, schedule.End);
             Assert.Equal(studioId, room.StudioId);
+        }
+
+        [Fact]
+        public async void RequestSession_Returns_New_SessionRequestDto()
+        {
+            var studioId = Guid.NewGuid();
+            var room = Room.Create(studioId, "Room");
+
+            var userId = Guid.NewGuid();
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddHours(2);
+            var requestedTime = DateRange.Create(startTime, endTime);
+            var entity = room.RequestSession(userId, requestedTime, _sessionScheduleValidator.Object);
+
+            var requestedTimeDto = new DateRangeDto { Start = startTime, End = endTime };
+
+            _roomRepository
+                .Setup(r => r.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
+
+            _roomRepository
+                .Setup(r => r.RequestSessionAsync(It.IsAny<SessionRequest>()))
+                .Returns(Task.FromResult(entity));
+
+            _sessionScheduleValidator
+                .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
+                .Returns(Task.FromResult(SessionScheduleValidatorResult.Success));
+
+            var dto = new SessionRequestDto
+            {
+                RoomId = room.Id,
+                RequestingUserId = userId,
+                RequestedTime = new DateRangeDto { Start = startTime, End = endTime }
+            };
+
+            var result = await _roomService.RequestSessionAsync(dto);
+
+            Assert.NotNull(result);
+            Assert.Equal(entity.Id, result.Id);
+            Assert.Equal(entity.RoomId, result.RoomId);
+            Assert.Equal(entity.RequestingUserId, result.RequestingUserId);
+            Assert.Equal(entity.RequestedStartTime, result.RequestedTime.Start);
+            Assert.Equal(entity.RequestedEndTime, result.RequestedTime.End);
         }
     }
 }

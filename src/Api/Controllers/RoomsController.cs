@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using ISTS.Api.Filters;
 using ISTS.Api.Helpers;
+using ISTS.Application.Common;
 using ISTS.Application.Rooms;
 using ISTS.Application.Sessions;
 using ISTS.Application.Studios;
@@ -85,6 +86,32 @@ namespace ISTS.Api.Controllers
             var session = await _roomService.EndSessionAsync(id, sessionId);
 
             return Ok(session);
+        }
+
+        [HttpPost("{id}/sessions/request")]
+        public async Task<IActionResult> RequestSession(Guid id, [FromBody]DateRangeDto requestedTime)
+        {
+            if (!UserId.HasValue)
+            {
+                return Unauthorized();
+            }
+
+            var room = await _roomService.GetAsync(id);
+            if (room == null)
+            {
+                return NotFound();
+            }
+            
+            var model = new SessionRequestDto
+            {
+                RoomId = room.Id,
+                RequestingUserId = UserId.Value,
+                RequestedTime = requestedTime
+            };
+
+            var request = await _roomService.RequestSessionAsync(model);
+
+            return Ok(request);
         }
 
         protected override void ValidateUserIsOwner(Guid roomId)

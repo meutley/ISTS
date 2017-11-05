@@ -25,6 +25,7 @@ namespace ISTS.Infrastructure.Repository
         {
             var room = await _context.Rooms
                 .Include(r => r.Sessions)
+                .Include(r => r.SessionRequests)
                 .SingleOrDefaultAsync(r => r.Id == id);
 
             return room;
@@ -88,6 +89,14 @@ namespace ISTS.Infrastructure.Repository
             await _context.SaveChangesAsync();
 
             return session;
+        }
+
+        public async Task<SessionRequest> RequestSessionAsync(SessionRequest entity)
+        {
+            await _context.SessionRequests.AddAsync(entity);
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task<IEnumerable<RoomSessionSchedule>> GetScheduleAsync(Guid id, DateRange range)

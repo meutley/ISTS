@@ -302,5 +302,60 @@ namespace ISTS.Api.Test.Controllers
                 Assert.Equal(dto.ActualEndTime, session.ActualEndTime);
             }
         }
+        
+        [Fact]
+        public async void RequestSession_Returns_UnauthorizedResult()
+        {
+            _identity.Setup(i => i.IsAuthenticated).Returns(false);
+
+            var result = await _roomsController.RequestSession(Guid.NewGuid(), new DateRangeDto());
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public async void RequestSession_Returns_OkObjectResult_With_SessionRequestDto()
+        {
+            var userId = Guid.NewGuid();
+            var roomId = Guid.NewGuid();
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddHours(2);
+
+            _identity.Setup(i => i.IsAuthenticated).Returns(true);
+            _identity.Setup(i => i.Name).Returns(userId.ToString());
+
+            var room = new RoomDto
+            {
+                Id = roomId
+            };
+
+            var expectedModel = new SessionRequestDto
+            {
+                Id = Guid.NewGuid(),
+                RoomId = roomId,
+                RequestingUserId = userId,
+                RequestedTime = new DateRangeDto { Start = startTime, End = endTime }
+            };
+
+            _roomService
+                .Setup(s => s.GetAsync(It.IsAny<Guid>()))
+                .Returns(Task.FromResult(room));
+
+            _roomService
+                .Setup(s => s.RequestSessionAsync(It.IsAny<SessionRequestDto>()))
+                .Returns(Task.FromResult(expectedModel));
+
+            var result = await _roomsController.RequestSession(roomId, expectedModel.RequestedTime);
+            Assert.IsType<OkObjectResult>(result);
+
+            var okResult = result as OkObjectResult;
+            Assert.IsType<SessionRequestDto>(okResult.Value);
+
+            var actual = okResult.Value as SessionRequestDto;
+            Assert.Equal(expectedModel.Id, actual.Id);
+            Assert.Equal(expectedModel.RoomId, actual.RoomId);
+            Assert.Equal(expectedModel.RequestingUserId, actual.RequestingUserId);
+            Assert.Equal(expectedModel.RequestedTime.Start, actual.RequestedTime.Start);
+            Assert.Equal(expectedModel.RequestedTime.End, actual.RequestedTime.End);
+        }
     }
 }

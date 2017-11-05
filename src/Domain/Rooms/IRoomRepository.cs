@@ -17,6 +17,8 @@ namespace ISTS.Domain.Rooms
         Task<Session> StartSessionAsync(Guid id, DateTime time);
         Task<Session> EndSessionAsync(Guid id, DateTime time);
 
+        Task<SessionRequest> RequestSessionAsync(SessionRequest entity);
+
         Task<IEnumerable<RoomSessionSchedule>> GetScheduleAsync(Guid id, DateRange range);
     }
 }

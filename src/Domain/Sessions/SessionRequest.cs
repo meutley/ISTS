@@ -19,18 +19,15 @@ namespace ISTS.Domain.Sessions
 
         public virtual Room Room { get; protected set; }
 
-        public DateTime? RequestedStartTime { get; protected set; }
+        public DateTime RequestedStartTime { get; protected set; }
 
-        public DateTime? RequestedEndTime { get; protected set; }
+        public DateTime RequestedEndTime { get; protected set; }
 
         public DateRange RequestedTime
         {
             get
             {
-                return
-                    !RequestedStartTime.HasValue
-                    ? null
-                    : DateRange.Create(RequestedStartTime.Value, RequestedEndTime.Value);
+                return DateRange.Create(RequestedStartTime, RequestedEndTime);
             }
         }
 

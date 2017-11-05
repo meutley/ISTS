@@ -19,6 +19,7 @@ public class MappingProfile : Profile
         CreateMap<DateRange, DateRangeDto>();
         CreateMap<Room, RoomDto>();
         CreateMap<Session, SessionDto>();
+        CreateMap<SessionRequest, SessionRequestDto>();
         CreateMap<Studio, StudioDto>();
         CreateMap<StudioSearchResult, StudioSearchResultDto>();
         CreateMap<User, UserDto>();
