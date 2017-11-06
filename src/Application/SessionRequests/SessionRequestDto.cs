@@ -17,5 +17,7 @@ namespace ISTS.Application.SessionRequests
         public int SessionRequestStatusId { get; set; }
 
         public string RejectedReason { get; set; }
+
+        public Guid? SessionId { get; set; }
     }
 }

@@ -44,7 +44,8 @@ namespace ISTS.Application.Test.Rooms
                         Schedule =
                             source.Schedule == null
                             ? null
-                            : new DateRangeDto { Start = source.Schedule.Start, End = source.Schedule.End }
+                            : new DateRangeDto { Start = source.Schedule.Start, End = source.Schedule.End },
+                        SessionRequestId = source.SessionRequestId
                     };
                 });
 
@@ -59,7 +60,8 @@ namespace ISTS.Application.Test.Rooms
                         RequestingUserId = source.RequestingUserId,
                         RequestedTime = new DateRangeDto { Start = source.RequestedStartTime, End = source.RequestedEndTime },
                         SessionRequestStatusId = source.SessionRequestStatusId,
-                        RejectedReason = source.RejectedReason
+                        RejectedReason = source.RejectedReason,
+                        SessionId = source.SessionId
                     };
                 });
         }

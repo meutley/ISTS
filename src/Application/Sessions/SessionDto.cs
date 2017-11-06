@@ -16,5 +16,7 @@ namespace ISTS.Application.Sessions
         public DateTime? ActualStartTime { get; set; }
 
         public DateTime? ActualEndTime { get; set; }
+
+        public Guid? SessionRequestId { get; set; }
     }
 }
