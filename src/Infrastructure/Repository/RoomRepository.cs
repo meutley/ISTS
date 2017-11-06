@@ -35,6 +35,7 @@ namespace ISTS.Infrastructure.Repository
         public async Task<Session> GetSessionAsync(Guid id)
         {
             var entity = await _context.Sessions
+                .Include(s => s.SessionRequest)
                 .SingleOrDefaultAsync(s => s.Id == id);
 
             return entity;

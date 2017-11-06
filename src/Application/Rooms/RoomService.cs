@@ -124,14 +124,17 @@ namespace ISTS.Application.Rooms
         }
         public async Task<SessionRequestDto> ApproveSessionRequestAsync(Guid roomId, Guid requestId)
         {
+            // Create the request model first
             var room = await _roomRepository.GetAsync(roomId);
-            var model = room.ApproveSessionRequest(requestId, _sessionScheduleValidator);
-            await _roomRepository.ApproveSessionRequestAsync(model);
+            var requestModel = room.ApproveSessionRequest(requestId, _sessionScheduleValidator);
 
-            var newSession = room.CreateSession(model.RequestedTime, _sessionScheduleValidator);
+            // Create the new Session from the approved request, then link the request to the session and persist changes
+            var newSession = room.CreateSession(requestModel.RequestedTime, requestModel.Id, _sessionScheduleValidator);
+            requestModel.LinkToSession(newSession.Id);
+            await _roomRepository.ApproveSessionRequestAsync(requestModel);
             await _roomRepository.CreateSessionAsync(newSession.RoomId, newSession);
 
-            var result = _mapper.Map<SessionRequestDto>(model);
+            var result = _mapper.Map<SessionRequestDto>(requestModel);
             return result;
         }
 

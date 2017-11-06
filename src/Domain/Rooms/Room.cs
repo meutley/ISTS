@@ -43,15 +43,12 @@ namespace ISTS.Domain.Rooms
 
         public Session CreateSession(DateRange scheduledTime, ISessionScheduleValidator sessionScheduleValidator)
         {
-            var result = Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator);
-            if (result)
-            {
-                var session = Session.Create(this.Id, scheduledTime);
-                Sessions.Add(session);
-                return session; 
-            }
+            return CreateSessionCore(scheduledTime, null, sessionScheduleValidator);
+        }
 
-            throw new InvalidOperationException();
+        public Session CreateSession(DateRange scheduledTime, Guid sessionRequestId, ISessionScheduleValidator sessionScheduleValidator)
+        {
+            return CreateSessionCore(scheduledTime, sessionRequestId, sessionScheduleValidator);
         }
 
         public SessionRequest RequestSession(Guid requestingUserId, DateRange requestedTime, ISessionScheduleValidator sessionScheduleValidator)
@@ -160,6 +157,19 @@ namespace ISTS.Domain.Rooms
             });
 
             return result;
+        }
+
+        private Session CreateSessionCore(DateRange scheduledTime, Guid? sessionRequestId, ISessionScheduleValidator sessionScheduleValidator)
+        {
+            var result = Room.ValidateSchedule(this.Id, null, scheduledTime, sessionScheduleValidator);
+            if (result)
+            {
+                var session = Session.Create(this.Id, scheduledTime, sessionRequestId);
+                Sessions.Add(session);
+                return session; 
+            }
+
+            throw new InvalidOperationException();
         }
 
         private void DoWithSession(Guid sessionId, Action<Session> action)

@@ -37,6 +37,8 @@ namespace ISTS.Domain.SessionRequests
 
         public string RejectedReason { get; protected set; }
 
+        public Guid? SessionId { get; protected set; }
+
         public static SessionRequest Create(
             Guid requestingUserId,
             Guid roomId,
@@ -71,7 +73,13 @@ namespace ISTS.Domain.SessionRequests
             
             this.SessionRequestStatusId = (int)SessionRequests.SessionRequestStatusId.Rejected;
             this.RejectedReason = reason != null ? reason.Trim() : null;
+            this.SessionId = null;
             return this;
+        }
+
+        public void LinkToSession(Guid sessionId)
+        {
+            this.SessionId = sessionId;
         }
 
         private static void ValidateRequestIsPending(int statusId)

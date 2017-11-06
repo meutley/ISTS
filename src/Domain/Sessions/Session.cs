@@ -2,6 +2,7 @@ using System;
 
 using ISTS.Domain.Common;
 using ISTS.Domain.Rooms;
+using ISTS.Domain.SessionRequests;
 
 namespace ISTS.Domain.Sessions
 {
@@ -30,14 +31,19 @@ namespace ISTS.Domain.Sessions
 
         public DateTime? ActualEndTime { get; protected set; }
 
-        public static Session Create(Guid roomId, DateRange schedule)
+        public Guid? SessionRequestId { get; protected set; }
+
+        public virtual SessionRequest SessionRequest { get; protected set; }
+
+        public static Session Create(Guid roomId, DateRange schedule, Guid? sessionRequestId = null)
         {
             var roomSession = new Session
             {
                 Id = Guid.NewGuid(),
                 RoomId = roomId,
                 ScheduledStartTime = schedule?.Start,
-                ScheduledEndTime = schedule?.End
+                ScheduledEndTime = schedule?.End,
+                SessionRequestId = sessionRequestId
             };
 
             return roomSession;

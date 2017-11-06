@@ -183,9 +183,15 @@ namespace ISTS.Application.Test.Rooms
             var request = SessionRequest.Create(Guid.NewGuid(), room.Id, startTime, endTime);
             room.SessionRequests.Add(request);
 
+            var newSession = Session.Create(room.Id, request.RequestedTime, request.Id);
+
             _roomRepository
                 .Setup(r => r.GetAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(room));
+
+            _roomRepository
+                .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<Session>()))
+                .Returns(Task.FromResult(newSession));
 
             _sessionScheduleValidator
                 .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
@@ -193,6 +199,7 @@ namespace ISTS.Application.Test.Rooms
 
             var result = await _roomService.ApproveSessionRequestAsync(room.Id, request.Id);
             Assert.Equal((int)SessionRequestStatusId.Approved, result.SessionRequestStatusId);
+            Assert.NotEqual(new Guid(), request.SessionId);
         }
 
         [Theory]
