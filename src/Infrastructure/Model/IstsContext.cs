@@ -66,6 +66,10 @@ namespace ISTS.Infrastructure.Model
                     
                     session.HasKey(x => x.Id);
                     session.Ignore(x => x.Schedule);
+
+                    session.HasOne(x => x.SessionRequest)
+                        .WithOne(x => x.Session)
+                        .HasForeignKey<SessionRequest>(x => x.SessionId);
                 });
 
             modelBuilder

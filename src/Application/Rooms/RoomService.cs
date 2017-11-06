@@ -132,7 +132,6 @@ namespace ISTS.Application.Rooms
             var newSession = room.CreateSession(requestModel.RequestedTime, requestModel.Id, _sessionScheduleValidator);
             requestModel.LinkToSession(newSession.Id);
             await _roomRepository.ApproveSessionRequestAsync(requestModel);
-            await _roomRepository.CreateSessionAsync(newSession.RoomId, newSession);
 
             var result = _mapper.Map<SessionRequestDto>(requestModel);
             return result;

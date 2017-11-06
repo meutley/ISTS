@@ -2,6 +2,7 @@ using System;
 
 using ISTS.Domain.Common;
 using ISTS.Domain.Rooms;
+using ISTS.Domain.Sessions;
 using ISTS.Domain.Users;
 using ISTS.Helpers.Async;
 
@@ -38,6 +39,8 @@ namespace ISTS.Domain.SessionRequests
         public string RejectedReason { get; protected set; }
 
         public Guid? SessionId { get; protected set; }
+
+        public virtual Session Session { get; protected set; }
 
         public static SessionRequest Create(
             Guid requestingUserId,

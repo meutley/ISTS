@@ -25,8 +25,7 @@ namespace ISTS.Api.Filters
                     ValidationErrorMessage = exceptionMessage
                 });
             }
-
-            if (!isUnauthorizedAccess)
+            else if (!isUnauthorizedAccess)
             {
                 var exceptionMessage = context.Exception.Message;
                 context.HttpContext.Response.StatusCode = 500;
