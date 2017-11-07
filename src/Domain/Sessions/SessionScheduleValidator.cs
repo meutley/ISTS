@@ -21,23 +21,25 @@ namespace ISTS.Domain.Sessions
 
         public async Task<SessionScheduleValidatorResult> ValidateAsync(Guid roomId, Guid? sessionId, DateRange schedule)
         {
-            if (schedule != null)
+            if (schedule == null)
             {
-                if (schedule.Start >= schedule.End)
-                {
-                    throw new DomainValidationException(new ScheduleEndMustBeGreaterThanStartException());
-                }
+                throw new DomainValidationException(new ArgumentNullException("Schedule is required"));
+            }
+            
+            if (schedule.Start >= schedule.End)
+            {
+                throw new DomainValidationException(new ScheduleEndMustBeGreaterThanStartException());
+            }
 
-                var roomScheduleEntities = await _roomRepository.GetScheduleAsync(roomId, schedule);
-                var roomSchedule =
-                    roomScheduleEntities
-                    .Where(s => s.SessionId != sessionId)
-                    .ToList();
+            var roomScheduleEntities = await _roomRepository.GetScheduleAsync(roomId, schedule);
+            var roomSchedule =
+                roomScheduleEntities
+                .Where(s => s.SessionId != sessionId)
+                .ToList();
 
-                if (roomSchedule.Any() && DoesScheduleOverlap(schedule, roomSchedule))
-                {
-                    throw new DomainValidationException(new OverlappingScheduleException());
-                }
+            if (roomSchedule.Any() && DoesScheduleOverlap(schedule, roomSchedule))
+            {
+                throw new DomainValidationException(new OverlappingScheduleException());
             }
 
             return SessionScheduleValidatorResult.Success;

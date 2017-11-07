@@ -65,35 +65,6 @@ namespace ISTS.Application.Test.Rooms
                     };
                 });
         }
-        
-        [Fact]
-        public async void CreateSessionAsync_Returns_New_RoomSessionDto_Without_Schedule()
-        {
-            var studioId = Guid.NewGuid();
-            var room = Room.Create(studioId, "Room");
-            
-            _roomRepository
-                .Setup(r => r.GetAsync(It.IsAny<Guid>()))
-                .Returns(Task.FromResult(room));
-
-            var entity = Session.Create(room.Id, null);
-
-            _roomRepository
-                .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<Session>()))
-                .Returns(Task.FromResult(entity));
-
-            var dto = new SessionDto
-            {
-                RoomId = room.Id
-            };
-
-            var result = await _roomService.CreateSessionAsync(room.Id, dto);
-
-            Assert.NotNull(dto);
-            Assert.Equal(room.Id, dto.RoomId);
-            Assert.Null(dto.Schedule);
-            Assert.Equal(studioId, room.StudioId);
-        }
 
         [Fact]
         public async void CreateSessionAsync_Returns_New_RoomSessionDto_With_Schedule()
@@ -106,7 +77,7 @@ namespace ISTS.Application.Test.Rooms
                 .Returns(Task.FromResult(room));
 
             var schedule = DateRange.Create(DateTime.Now, DateTime.Now.AddHours(2));
-            var entity = Session.Create(room.Id, null);
+            var entity = Session.Create(room.Id, schedule);
 
             _roomRepository
                 .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<Session>()))

@@ -53,6 +53,20 @@ namespace ISTS.Application.Test.Rooms
         }
 
         [Fact]
+        public async void Validate_Should_Throw_Exception_When_Schedule_Is_Null()
+        {
+            _roomRepositoryMock
+                .Setup(r => r.GetScheduleAsync(It.IsAny<Guid>(), It.IsAny<DateRange>()))
+                .Returns(Task.FromResult(Enumerable.Empty<RoomSessionSchedule>()));
+
+            var ex = await Assert.ThrowsAsync<DomainValidationException>(() => _validator.ValidateAsync(RoomId, null, null));
+
+            Assert.NotNull(ex);
+            Assert.NotNull(ex.InnerException);
+            Assert.IsType<ArgumentNullException>(ex.InnerException);
+        }
+
+        [Fact]
         public async void Validate_Should_Throw_Exception_When_Start_Equals_End()
         {
             _roomRepositoryMock

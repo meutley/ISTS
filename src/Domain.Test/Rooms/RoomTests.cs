@@ -26,16 +26,6 @@ namespace ISTS.Domain.Tests.Rooms
                 .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
                 .Returns(Task.FromResult(SessionScheduleValidatorResult.Success));
         }
-        
-        [Fact]
-        public void CreateSession_Returns_New_RoomSession_Without_Schedule()
-        {
-            var session = Room.CreateSession(null, _sessionScheduleValidator.Object);
-
-            Assert.NotNull(session);
-            Assert.Equal(Room.Id, session.RoomId);
-            Assert.Null(session.Schedule);
-        }
 
         [Fact]
         public void RescheduleSession_Returns_RoomSession_With_New_Schedule()
@@ -54,7 +44,8 @@ namespace ISTS.Domain.Tests.Rooms
         public void StartSession_Sets_ActualStartTime()
         {
             var time = DateTime.Now;
-            var session = Room.CreateSession(null, _sessionScheduleValidator.Object);
+            var schedule = DateRange.Create(time, time.AddHours(2));
+            var session = Room.CreateSession(schedule, _sessionScheduleValidator.Object);
             Room.StartSession(session.Id, time);
 
             Assert.NotNull(session);
@@ -67,7 +58,8 @@ namespace ISTS.Domain.Tests.Rooms
         public void StartSession_Throws_SessionAlreadyStartedException()
         {
             var time = DateTime.Now;
-            var session = Room.CreateSession(null, _sessionScheduleValidator.Object);
+            var schedule = DateRange.Create(time, time.AddHours(2));
+            var session = Room.CreateSession(schedule, _sessionScheduleValidator.Object);
             Room.StartSession(session.Id, time);
             
             var ex = Assert.Throws<SessionAlreadyStartedException>(() => Room.StartSession(session.Id, time));
@@ -79,7 +71,8 @@ namespace ISTS.Domain.Tests.Rooms
         {
             var startTime = DateTime.Now;
             var endTime = startTime.AddHours(2);
-            var session = Room.CreateSession(null, _sessionScheduleValidator.Object);
+            var schedule = DateRange.Create(startTime, endTime);
+            var session = Room.CreateSession(schedule, _sessionScheduleValidator.Object);
             Room.StartSession(session.Id, startTime);
             Room.EndSession(session.Id, endTime);
 
@@ -95,7 +88,8 @@ namespace ISTS.Domain.Tests.Rooms
         public void EndSession_Throws_SessionNotStartException()
         {
             var endTime = DateTime.Now;
-            var session = Room.CreateSession(null, _sessionScheduleValidator.Object);
+            var schedule = DateRange.Create(endTime, endTime.AddHours(2));
+            var session = Room.CreateSession(schedule, _sessionScheduleValidator.Object);
             
             var ex = Assert.Throws<SessionNotStartedException>(() => Room.EndSession(session.Id, endTime));
             Assert.NotNull(ex);

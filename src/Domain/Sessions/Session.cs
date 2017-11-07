@@ -12,18 +12,15 @@ namespace ISTS.Domain.Sessions
 
         public Guid RoomId { get; protected set; }
         
-        public DateTime? ScheduledStartTime { get; protected set; }
+        public DateTime ScheduledStartTime { get; protected set; }
 
-        public DateTime? ScheduledEndTime { get; protected set; }
+        public DateTime ScheduledEndTime { get; protected set; }
 
         public DateRange Schedule
         {
             get
             {
-                return
-                    !ScheduledStartTime.HasValue
-                    ? null
-                    : DateRange.Create(ScheduledStartTime.Value, ScheduledEndTime.Value);
+                return DateRange.Create(ScheduledStartTime, ScheduledEndTime);
             }
         }
 
@@ -41,8 +38,8 @@ namespace ISTS.Domain.Sessions
             {
                 Id = Guid.NewGuid(),
                 RoomId = roomId,
-                ScheduledStartTime = schedule?.Start,
-                ScheduledEndTime = schedule?.End,
+                ScheduledStartTime = schedule.Start,
+                ScheduledEndTime = schedule.End,
                 SessionRequestId = sessionRequestId
             };
 
@@ -51,8 +48,8 @@ namespace ISTS.Domain.Sessions
 
         public Session Reschedule(DateRange schedule)
         {
-            this.ScheduledStartTime = schedule?.Start;
-            this.ScheduledEndTime = schedule?.End;
+            this.ScheduledStartTime = schedule.Start;
+            this.ScheduledEndTime = schedule.End;
             return this;
         }
 
