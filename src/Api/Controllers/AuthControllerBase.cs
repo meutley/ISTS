@@ -59,7 +59,7 @@ namespace ISTS.Api.Controllers
             {
                 Id = int.Parse(id),
                 Name = name,
-                UtcOffset = ushort.Parse(utcOffset)
+                UtcOffset = int.Parse(utcOffset)
             };
         }
     }

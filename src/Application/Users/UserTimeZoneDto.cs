@@ -8,6 +8,6 @@ namespace ISTS.Application.Users
 
         public string Name { get; set; }
 
-        public ushort UtcOffset { get; set; }
+        public int UtcOffset { get; set; }
     }
 }
