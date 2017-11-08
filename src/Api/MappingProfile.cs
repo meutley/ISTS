@@ -25,5 +25,6 @@ public class MappingProfile : Profile
         CreateMap<Studio, StudioDto>();
         CreateMap<StudioSearchResult, StudioSearchResultDto>();
         CreateMap<User, UserDto>();
+        CreateMap<UserTimeZone, UserTimeZoneDto>();
     }
 }

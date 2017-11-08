@@ -33,7 +33,8 @@ namespace ISTS.Domain.Tests.Users
                 "myemail@company.com",
                 "Person",
                 "password1",
-                "00000");
+                "00000",
+                1);
 
             Assert.NotNull(user);
             Assert.Equal("myemail@company.com", user.Email);
@@ -58,7 +59,7 @@ namespace ISTS.Domain.Tests.Users
             
             var ex = Assert.Throws<ArgumentNullException>(
                 () =>
-                    User.Create(_userValidator.Object, _userPasswordService.Object, "myemail@company.com", "Person", null, "00000"));
+                    User.Create(_userValidator.Object, _userPasswordService.Object, "myemail@company.com", "Person", null, "00000", 1));
 
             Assert.NotNull(ex);
         }
@@ -79,7 +80,7 @@ namespace ISTS.Domain.Tests.Users
             
             var ex = Assert.Throws<ArgumentException>(
                 () =>
-                    User.Create(_userValidator.Object, _userPasswordService.Object, "myemail@company.com", "Person", "    ", "00000"));
+                    User.Create(_userValidator.Object, _userPasswordService.Object, "myemail@company.com", "Person", "    ", "00000", 1));
 
             Assert.NotNull(ex);
         }

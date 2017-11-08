@@ -1,10 +1,13 @@
 using System;
-using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using ISTS.Api.Helpers;
+using ISTS.Api.Models;
+using ISTS.Application.Users;
 
 namespace ISTS.Api.Controllers
 {
@@ -22,6 +25,20 @@ namespace ISTS.Api.Controllers
             }
         }
 
+        protected UserTimeZoneDto UserTimeZone
+        {
+            get
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                if (identity == null)
+                {
+                    return null;
+                }
+                
+                return GetTimeZoneFromClaims(identity.Claims.ToList());
+            }
+        }
+
         protected void ValidateUserIdMatchesAuthenticatedUser(Guid userId)
         {
             if (UserId == null || userId != UserId)
@@ -31,5 +48,19 @@ namespace ISTS.Api.Controllers
         }
 
         protected abstract void ValidateUserIsOwner(Guid entityId);
+
+        private static UserTimeZoneDto GetTimeZoneFromClaims(List<Claim> claims)
+        {
+            var id = claims.Single(c => c.Type == ApiClaimTypes.TimeZoneId).Value;
+            var name = claims.Single(c => c.Type == ApiClaimTypes.TimeZoneName).Value;
+            var utcOffset = claims.Single(c => c.Type == ApiClaimTypes.TimeZoneUtcOffset).Value;
+            
+            return new UserTimeZoneDto
+            {
+                Id = int.Parse(id),
+                Name = name,
+                UtcOffset = ushort.Parse(utcOffset)
+            };
+        }
     }
 }

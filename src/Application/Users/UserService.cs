@@ -58,7 +58,8 @@ namespace ISTS.Application.Users
                 model.Email,
                 model.DisplayName,
                 model.Password,
-                model.PostalCode);
+                model.PostalCode,
+                model.TimeZoneId);
 
             var entity = await _userRepository.CreateAsync(user);
 

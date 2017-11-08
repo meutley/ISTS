@@ -23,13 +23,18 @@ namespace ISTS.Domain.Users
 
         public string PostalCode { get; protected set; }
 
+        public int TimeZoneId { get; protected set; }
+
+        public UserTimeZone TimeZone { get; protected set; }
+
         public static User Create(
             IUserValidator userValidator,
             IUserPasswordService userPasswordService,
             string email,
             string displayName,
             string plainPassword,
-            string postalCode)
+            string postalCode,
+            int timeZoneId)
         {
             AsyncHelper.RunSync(() => userValidator.ValidateAsync(null, email, displayName, plainPassword, postalCode));
             
@@ -44,7 +49,8 @@ namespace ISTS.Domain.Users
                 DisplayName = displayName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                PostalCode = postalCode
+                PostalCode = postalCode,
+                TimeZoneId = timeZoneId
             };
 
             return user;

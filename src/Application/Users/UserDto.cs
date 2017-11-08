@@ -16,5 +16,9 @@ namespace ISTS.Application.Users
         public string PostalCode { get; set; }
 
         public List<StudioDto> Studios { get; set; }
+
+        public int TimeZoneId { get; set; }
+
+        public UserTimeZoneDto TimeZone { get; set; }
     }
 }

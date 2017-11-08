@@ -98,7 +98,8 @@ namespace ISTS.Domain.Test.Users
                     "existing@email.com",
                     "DisplayName",
                     "Password",
-                    "12345")
+                    "12345",
+                    1)
             }.AsQueryable();
 
             _userRepository
@@ -125,7 +126,8 @@ namespace ISTS.Domain.Test.Users
                     "existing@email.com",
                     "DisplayName",
                     "Password",
-                    "12345")
+                    "12345",
+                    1)
             }.AsQueryable();
 
             _userRepository

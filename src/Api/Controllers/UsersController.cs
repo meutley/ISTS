@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 using ISTS.Api.Helpers;
+using ISTS.Api.Models;
 using ISTS.Application.Users;
 
 namespace ISTS.Api.Controllers
@@ -53,7 +54,10 @@ namespace ISTS.Api.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ApiClaimTypes.TimeZoneId, user.TimeZone.Id.ToString()),
+                    new Claim(ApiClaimTypes.TimeZoneName, user.TimeZone.Name),
+                    new Claim(ApiClaimTypes.TimeZoneUtcOffset, user.TimeZone.UtcOffset.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

@@ -115,8 +115,18 @@ namespace ISTS.Infrastructure.Model
                         .HasMany(x => x.Studios)
                         .WithOne(x => x.OwnerUser)
                         .HasForeignKey(x => x.OwnerUserId);
+
+                    user.HasOne(x => x.TimeZone)
+                        .WithMany(x => x.Users)
+                        .HasForeignKey(x => x.TimeZoneId);
                     
                     user.HasKey(x => x.Id);
+                });
+
+            modelBuilder
+                .Entity<UserTimeZone>(tz =>
+                {
+                    tz.HasKey(x => x.Id);
                 });
 
             base.OnModelCreating(modelBuilder);

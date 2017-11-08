@@ -156,7 +156,8 @@ namespace ISTS.Application.Test.Studios
                     "My@Email.com",
                     "DisplayName",
                     "Password",
-                    postalCode)
+                    postalCode,
+                    1)
             }.AsQueryable();
 
             var user = users.First();

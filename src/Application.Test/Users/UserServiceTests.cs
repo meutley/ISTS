@@ -85,7 +85,8 @@ namespace ISTS.Application.Test.Users
                 email,
                 "DisplayName",
                 "BadPassword",
-                "11111");
+                "11111",
+                1);
 
             var users = new List<User>
             {
@@ -114,7 +115,8 @@ namespace ISTS.Application.Test.Users
                 email,
                 "DisplayName",
                 "Password1",
-                "11111");
+                "11111",
+                1);
 
             var users = new List<User>
             {
@@ -146,7 +148,8 @@ namespace ISTS.Application.Test.Users
                 "my@email.com",
                 "DisplayName",
                 "Password1",
-                "11111");
+                "11111",
+                1);
 
             var dto = new UserPasswordDto
             {
