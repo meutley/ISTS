@@ -27,6 +27,8 @@ namespace ISTS.Domain.Rooms
 
         public virtual ICollection<SessionRequest> SessionRequests { get; set; }
 
+        public virtual ICollection<RoomFunction> RoomFunctions { get; set; }
+
         public static Room Create(Guid studioId, string name)
         {
             var room = new Room
@@ -35,7 +37,8 @@ namespace ISTS.Domain.Rooms
                 StudioId = studioId,
                 Name = name,
                 Sessions = new List<Session>(),
-                SessionRequests = new List<SessionRequest>()
+                SessionRequests = new List<SessionRequest>(),
+                RoomFunctions = new List<RoomFunction>()
             };
 
             return room;
@@ -157,6 +160,13 @@ namespace ISTS.Domain.Rooms
             });
 
             return result;
+        }
+
+        public RoomFunction AddRoomFunction(string name, string description)
+        {
+            var function = RoomFunction.Create(name, description, this.Id);
+            RoomFunctions.Add(function);
+            return function;
         }
 
         private Session CreateSessionCore(DateRange scheduledTime, Guid? sessionRequestId, ISessionScheduleValidator sessionScheduleValidator)

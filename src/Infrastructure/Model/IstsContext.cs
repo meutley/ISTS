@@ -57,6 +57,29 @@ namespace ISTS.Infrastructure.Model
                     room.ToTable("Room");
 
                     room.HasKey(x => x.Id);
+
+                    room.HasMany(x => x.RoomFunctions)
+                        .WithOne(x => x.Room)
+                        .HasForeignKey(x => x.RoomId);
+                });
+
+            modelBuilder
+                .Entity<RoomFunction>(func =>
+                {
+                    func.ToTable("RoomFunction");
+
+                    func.HasKey(x => x.Id);
+                    func.Ignore(x => x.BaseBillingRate);
+                    
+                    func.Property(x => x.Name)
+                        .HasMaxLength(50)
+                        .IsRequired();
+
+                    func.Property(x => x.Description)
+                        .HasMaxLength(250);
+
+                    func.Property(x => x.BillingRateName)
+                        .HasMaxLength(30);
                 });
 
             modelBuilder
