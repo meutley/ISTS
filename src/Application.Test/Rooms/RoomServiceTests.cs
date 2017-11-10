@@ -41,6 +41,7 @@ namespace ISTS.Application.Test.Rooms
                     {
                         Id = source.Id,
                         RoomId = source.RoomId,
+                        RoomFunctionId = source.RoomFunctionId,
                         Schedule =
                             source.Schedule == null
                             ? null
@@ -77,7 +78,7 @@ namespace ISTS.Application.Test.Rooms
                 .Returns(Task.FromResult(room));
 
             var schedule = DateRange.Create(DateTime.Now, DateTime.Now.AddHours(2));
-            var entity = Session.Create(room.Id, schedule);
+            var entity = Session.Create(room.Id, schedule, null);
 
             _roomRepository
                 .Setup(r => r.CreateSessionAsync(It.IsAny<Guid>(), It.IsAny<Session>()))
@@ -113,7 +114,7 @@ namespace ISTS.Application.Test.Rooms
             var startTime = DateTime.Now;
             var endTime = startTime.AddHours(2);
             var requestedTime = DateRange.Create(startTime, endTime);
-            var entity = room.RequestSession(userId, requestedTime, _sessionScheduleValidator.Object);
+            var entity = room.RequestSession(userId, requestedTime, null, _sessionScheduleValidator.Object);
 
             var requestedTimeDto = new DateRangeDto { Start = startTime, End = endTime };
 
@@ -141,6 +142,7 @@ namespace ISTS.Application.Test.Rooms
             Assert.NotNull(result);
             Assert.Equal(entity.Id, result.Id);
             Assert.Equal(entity.RoomId, result.RoomId);
+            Assert.Equal(entity.RoomFunctionId, result.RoomFunctionId);
             Assert.Equal(entity.RequestingUserId, result.RequestingUserId);
             Assert.Equal(entity.RequestedStartTime, result.RequestedTime.Start);
             Assert.Equal(entity.RequestedEndTime, result.RequestedTime.End);
@@ -153,7 +155,7 @@ namespace ISTS.Application.Test.Rooms
             var endTime = startTime.AddHours(2);
             
             var room = Room.Create(Guid.NewGuid(), "Room");
-            var request = SessionRequest.Create(Guid.NewGuid(), room.Id, startTime, endTime);
+            var request = SessionRequest.Create(Guid.NewGuid(), room.Id, startTime, endTime, null);
             room.SessionRequests.Add(request);
 
             var newSession = Session.Create(room.Id, request.RequestedTime, request.Id);
@@ -184,7 +186,7 @@ namespace ISTS.Application.Test.Rooms
             var endTime = startTime.AddHours(2);
             
             var room = Room.Create(Guid.NewGuid(), "Room");
-            var request = SessionRequest.Create(Guid.NewGuid(), room.Id, startTime, endTime);
+            var request = SessionRequest.Create(Guid.NewGuid(), room.Id, startTime, endTime, null);
             room.SessionRequests.Add(request);
 
             _roomRepository

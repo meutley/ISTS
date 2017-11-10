@@ -42,11 +42,16 @@ namespace ISTS.Domain.SessionRequests
 
         public virtual Session Session { get; protected set; }
 
+        public Guid? RoomFunctionId { get; protected set; }
+
+        public virtual RoomFunction RoomFunction { get; protected set; }
+
         public static SessionRequest Create(
             Guid requestingUserId,
             Guid roomId,
             DateTime requestedStartTime,
-            DateTime requestedEndTime)
+            DateTime requestedEndTime,
+            Guid? roomFunctionId)
         {
             var request = new SessionRequest
             {
@@ -55,7 +60,8 @@ namespace ISTS.Domain.SessionRequests
                 RoomId = roomId,
                 RequestedStartTime = requestedStartTime,
                 RequestedEndTime = requestedEndTime,
-                SessionRequestStatusId = (int)SessionRequests.SessionRequestStatusId.Pending
+                SessionRequestStatusId = (int)SessionRequests.SessionRequestStatusId.Pending,
+                RoomFunctionId = roomFunctionId
             };
 
             return request;

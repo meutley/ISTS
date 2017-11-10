@@ -97,7 +97,7 @@ namespace ISTS.Api.Test.Controllers
         public async void GetSessions_Returns_NotFound()
         {
             _roomService
-                .Setup(s => s.GetSessions(It.IsAny<Guid>()))
+                .Setup(s => s.GetSessionsAsync(It.IsAny<Guid>()))
                 .Returns(Task.FromResult<List<SessionDto>>(null));
 
             var result = await _roomsController.GetSessions(Guid.NewGuid());
@@ -118,7 +118,7 @@ namespace ISTS.Api.Test.Controllers
             var roomSessions = dtos.Where(s => s.RoomId == roomId).ToList();
 
             _roomService
-                .Setup(s => s.GetSessions(It.Is<Guid>(x => x == roomId)))
+                .Setup(s => s.GetSessionsAsync(It.Is<Guid>(x => x == roomId)))
                 .Returns(Task.FromResult(roomSessions));
 
             var result = await _roomsController.GetSessions(roomId);

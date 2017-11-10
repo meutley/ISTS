@@ -12,6 +12,8 @@ namespace ISTS.Domain.Rooms
     {
         Task<Room> GetAsync(Guid id);
         
+        Task<RoomFunction> AddRoomFunctionAsync(Guid roomId, RoomFunction entity);
+        
         Task<Session> GetSessionAsync(Guid id);
         Task<Session> CreateSessionAsync(Guid roomId, Session entity);
         Task<Session> RescheduleSessionAsync(Guid id, DateRange schedule);

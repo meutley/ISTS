@@ -19,9 +19,9 @@ namespace ISTS.Domain.Rooms
 
         public Guid StudioId { get; protected set; }
 
-        public string Name { get; protected set; }
-
         public virtual Studio Studio { get; protected set; }
+
+        public string Name { get; protected set; }
 
         public virtual ICollection<Session> Sessions { get; set; }
 
@@ -54,7 +54,11 @@ namespace ISTS.Domain.Rooms
             return CreateSessionCore(scheduledTime, sessionRequestId, sessionScheduleValidator);
         }
 
-        public SessionRequest RequestSession(Guid requestingUserId, DateRange requestedTime, ISessionScheduleValidator sessionScheduleValidator)
+        public SessionRequest RequestSession(
+            Guid requestingUserId,
+            DateRange requestedTime,
+            Guid? roomFunctionId,
+            ISessionScheduleValidator sessionScheduleValidator)
         {
             var result = Room.ValidateSchedule(this.Id, null, requestedTime, sessionScheduleValidator);
             if (result)
@@ -63,7 +67,8 @@ namespace ISTS.Domain.Rooms
                     requestingUserId,
                     this.Id,
                     requestedTime.Start,
-                    requestedTime.End);
+                    requestedTime.End,
+                    roomFunctionId);
 
                 SessionRequests.Add(request);
                 return request;

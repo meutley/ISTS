@@ -11,6 +11,10 @@ namespace ISTS.Domain.Sessions
         public Guid Id { get; protected set; }
 
         public Guid RoomId { get; protected set; }
+
+        public Guid? RoomFunctionId { get; protected set; }
+
+        public virtual RoomFunction RoomFunction { get; protected set; }
         
         public DateTime ScheduledStartTime { get; protected set; }
 
@@ -32,12 +36,13 @@ namespace ISTS.Domain.Sessions
 
         public virtual SessionRequest SessionRequest { get; protected set; }
 
-        public static Session Create(Guid roomId, DateRange schedule, Guid? sessionRequestId = null)
+        public static Session Create(Guid roomId, DateRange schedule, Guid? roomFunctionId, Guid? sessionRequestId = null)
         {
             var roomSession = new Session
             {
                 Id = Guid.NewGuid(),
                 RoomId = roomId,
+                RoomFunctionId = roomFunctionId,
                 ScheduledStartTime = schedule.Start,
                 ScheduledEndTime = schedule.End,
                 SessionRequestId = sessionRequestId

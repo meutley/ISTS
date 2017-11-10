@@ -38,7 +38,33 @@ namespace ISTS.Application.Rooms
             return result;
         }
 
-        public async Task<List<SessionDto>> GetSessions(Guid roomId)
+        public async Task<RoomFunctionDto> AddRoomFunctionAsync(Guid roomId, RoomFunctionDto model)
+        {
+            var room = await _roomRepository.GetAsync(roomId);
+            if (room == null)
+            {
+                return null;
+            }
+
+            var baseBillingRate = model.BaseBillingRate;
+            if (baseBillingRate == null)
+            {
+                baseBillingRate = new BillingRateDto();
+            }
+            
+            var function = room.AddRoomFunction(model.Name, model.Description);
+            function.SetBillingRate(
+                baseBillingRate.Name,
+                baseBillingRate.UnitPrice,
+                baseBillingRate.MinimumCharge);
+                
+            var entity = await _roomRepository.AddRoomFunctionAsync(roomId, function);
+
+            var result = _mapper.Map<RoomFunctionDto>(entity);
+            return result;
+        }
+
+        public async Task<List<SessionDto>> GetSessionsAsync(Guid roomId)
         {
             var room = await _roomRepository.GetAsync(roomId);
             if (room == null)
@@ -116,7 +142,7 @@ namespace ISTS.Application.Rooms
             var requestedDateRange = DateRange.Create(model.RequestedTime.Start, model.RequestedTime.End);
             
             var room = await _roomRepository.GetAsync(model.RoomId);
-            var newModel = room.RequestSession(model.RequestingUserId, requestedDateRange, _sessionScheduleValidator);
+            var newModel = room.RequestSession(model.RequestingUserId, requestedDateRange, model.RoomFunctionId, _sessionScheduleValidator);
             var entity = await _roomRepository.RequestSessionAsync(newModel);
 
             var result = _mapper.Map<SessionRequestDto>(entity);

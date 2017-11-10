@@ -20,6 +20,8 @@ namespace ISTS.Infrastructure.Model
 
         public DbSet<Room> Rooms { get; set; }
 
+        public DbSet<RoomFunction> RoomFunctions { get; set; }
+
         public DbSet<Session> Sessions { get; set; }
 
         public DbSet<SessionRequest> SessionRequests { get; set; }
@@ -90,6 +92,10 @@ namespace ISTS.Infrastructure.Model
                     session.HasKey(x => x.Id);
                     session.Ignore(x => x.Schedule);
 
+                    session.HasOne(x => x.RoomFunction)
+                        .WithMany(x => x.Sessions)
+                        .HasForeignKey(x => x.RoomFunctionId);
+
                     session.HasOne(x => x.SessionRequest)
                         .WithOne(x => x.Session)
                         .HasForeignKey<SessionRequest>(x => x.SessionId);
@@ -141,7 +147,7 @@ namespace ISTS.Infrastructure.Model
 
                     user.HasOne(x => x.TimeZone)
                         .WithMany(x => x.Users)
-                        .HasForeignKey(x => x.TimeZoneId);
+                        .HasForeignKey(x => x.UserTimeZoneId);
                     
                     user.HasKey(x => x.Id);
                 });

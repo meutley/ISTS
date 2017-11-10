@@ -13,6 +13,8 @@ namespace ISTS.Application.Rooms
 
         public string Name { get; set; }
 
+        public List<RoomFunctionDto> RoomFunctions { get; set; }
+
         public List<SessionDto> Sessions { get; set; }
     }
 }

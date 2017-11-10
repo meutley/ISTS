@@ -10,6 +10,8 @@ namespace ISTS.Application.SessionRequests
 
         public Guid RoomId { get; set; }
 
+        public Guid? RoomFunctionId { get; set; }
+
         public Guid RequestingUserId { get; set; }
 
         public DateRangeDto RequestedTime { get; set; }

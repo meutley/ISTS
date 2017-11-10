@@ -18,8 +18,10 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<BillingRate, BillingRateDto>();
         CreateMap<DateRange, DateRangeDto>();
         CreateMap<Room, RoomDto>();
+        CreateMap<RoomFunction, RoomFunctionDto>();
         CreateMap<Session, SessionDto>();
         CreateMap<SessionRequest, SessionRequestDto>();
         CreateMap<Studio, StudioDto>();

@@ -9,11 +9,11 @@ namespace ISTS.Domain.Users
 
         public string Name { get; protected set; }
 
-        public int UtcOffset { get; protected set; }
+        public Int16 UtcOffset { get; protected set; }
 
         public virtual ICollection<User> Users { get; set; }
 
-        public static UserTimeZone Create(string name, int utcOffset)
+        public static UserTimeZone Create(string name, Int16 utcOffset)
         {
             return new UserTimeZone
             {

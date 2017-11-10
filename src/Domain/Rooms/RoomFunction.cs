@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 
 using ISTS.Domain.Common;
+using ISTS.Domain.Sessions;
 
 namespace ISTS.Domain.Rooms
 {
@@ -21,6 +23,8 @@ namespace ISTS.Domain.Rooms
         public Guid RoomId { get; protected set; }
 
         public Room Room { get; protected set; }
+
+        public virtual ICollection<Session> Sessions { get; set; }
 
         public BillingRate BaseBillingRate
         {
@@ -83,24 +87,6 @@ namespace ISTS.Domain.Rooms
             this.BaseBillingRate = billingRate;
         }
 
-        public decimal CalculateTotalCharge(int hours)
-        {
-            if (BaseBillingRate == BillingRate.None)
-            {
-                return 0;
-            }
-
-            switch (BaseBillingRate.Name)
-            {
-                case BillingRate.HourlyType:
-                    return CalculateTotalHourly(hours);
-                case BillingRate.FlatRateType:
-                    return BaseBillingRate.UnitPrice;
-                default:
-                    return 0;
-            }
-        }
-
         private static void Validate(string name, string description)
         {
             if (string.IsNullOrEmpty(name?.Trim()))
@@ -120,16 +106,6 @@ namespace ISTS.Domain.Rooms
             {
                 throw new DomainValidationException(new ArgumentOutOfRangeException("Minimum Charge must be greater than or equal to zero"));
             }
-        }
-
-        private decimal CalculateTotalHourly(int hours)
-        {
-            var totalCharge = hours * BaseBillingRate.UnitPrice;
-            var isTotalLessThanMinimum = totalCharge < BaseBillingRate.MinimumCharge;
-
-            return isTotalLessThanMinimum
-                ? BaseBillingRate.MinimumCharge
-                : totalCharge;
         }
     }
 }

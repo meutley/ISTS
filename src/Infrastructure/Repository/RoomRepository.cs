@@ -25,11 +25,20 @@ namespace ISTS.Infrastructure.Repository
         public async Task<Room> GetAsync(Guid id)
         {
             var room = await _context.Rooms
+                .Include(r => r.RoomFunctions)
                 .Include(r => r.Sessions)
                 .Include(r => r.SessionRequests)
                 .SingleOrDefaultAsync(r => r.Id == id);
 
             return room;
+        }
+
+        public async Task<RoomFunction> AddRoomFunctionAsync(Guid roomId, RoomFunction entity)
+        {
+            await _context.RoomFunctions.AddAsync(entity);
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task<Session> GetSessionAsync(Guid id)

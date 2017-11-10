@@ -99,14 +99,16 @@ namespace ISTS.Domain.Tests.Rooms
         public void RequestSession_Returns_SessionRequest_Model()
         {
             var userId = Guid.NewGuid();
+            var roomFunctionId = Guid.NewGuid();
             var startTime = DateTime.Now;
             var endTime = startTime.AddHours(2);
             var requestedTime = DateRange.Create(startTime, endTime);
 
-            var model = Room.RequestSession(userId, requestedTime, _sessionScheduleValidator.Object);
+            var model = Room.RequestSession(userId, requestedTime, roomFunctionId, _sessionScheduleValidator.Object);
 
             Assert.NotNull(model);
             Assert.Equal(userId, model.RequestingUserId);
+            Assert.Equal(roomFunctionId, model.RoomFunctionId);
             Assert.Equal(startTime, model.RequestedStartTime);
             Assert.Equal(endTime, model.RequestedEndTime);
             Assert.Equal(requestedTime, model.RequestedTime);
@@ -122,6 +124,7 @@ namespace ISTS.Domain.Tests.Rooms
             int expectedStatusId)
         {
             var userId = Guid.NewGuid();
+            var roomFunctionId = Guid.NewGuid();
             var startTime = DateTime.Now;
             var endTime = startTime.AddHours(2);
             var requestedTime = DateRange.Create(startTime, endTime);
@@ -130,7 +133,7 @@ namespace ISTS.Domain.Tests.Rooms
                 .Setup(v => v.ValidateAsync(It.IsAny<Guid>(), It.IsAny<Guid?>(), It.IsAny<DateRange>()))
                 .Returns(Task.FromResult(SessionScheduleValidatorResult.Success));
 
-            var request = Room.RequestSession(userId, requestedTime, _sessionScheduleValidator.Object);
+            var request = Room.RequestSession(userId, requestedTime, roomFunctionId, _sessionScheduleValidator.Object);
             Assert.Equal((int)SessionRequestStatusId.Pending, request.SessionRequestStatusId);
 
             SessionRequest modifiedRequest = null;

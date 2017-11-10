@@ -44,12 +44,27 @@ namespace ISTS.Api.Controllers
             return Ok(room);
         }
 
+        [HttpPost("{id}/functions")]
+        public async Task<IActionResult> AddRoomFunction(Guid id, [FromBody]RoomFunctionDto model)
+        {
+            ValidateUserIsOwner(id);
+            var function = await _roomService.AddRoomFunctionAsync(id, model);
+            if (function == null)
+            {
+                return NotFound();
+            }
+            
+            var roomUri = ApiHelper.GetResourceUri("rooms", id);
+
+            return Created(roomUri, function);
+        }
+
         [AllowAnonymous]
         // GET api/rooms/1/sessions
         [HttpGet("{id}/sessions")]
         public async Task<IActionResult> GetSessions(Guid id)
         {
-            var sessions = await _roomService.GetSessions(id);
+            var sessions = await _roomService.GetSessionsAsync(id);
             if (sessions == null)
             {
                 return NotFound();

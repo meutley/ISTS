@@ -12,7 +12,9 @@ namespace ISTS.Application.Rooms
     {
         Task<RoomDto> GetAsync(Guid id);
         
-        Task<List<SessionDto>> GetSessions(Guid roomId);
+        Task<RoomFunctionDto> AddRoomFunctionAsync(Guid roomId, RoomFunctionDto roomFunction);
+        
+        Task<List<SessionDto>> GetSessionsAsync(Guid roomId);
         Task<SessionDto> CreateSessionAsync(Guid roomId, SessionDto session);
         Task<SessionDto> RescheduleSessionAsync(Guid roomId, Guid sessionId, DateRangeDto newSchedule);
         Task<SessionDto> StartSessionAsync(Guid roomId, Guid sessionId);

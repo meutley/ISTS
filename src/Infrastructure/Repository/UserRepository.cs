@@ -36,7 +36,9 @@ namespace ISTS.Infrastructure.Repository
                 users = users.Where(filter);
             }
             
-            return await users.ToListAsync();
+            return await users
+                .Include(u => u.TimeZone)
+                .ToListAsync();
         }
 
         public Task<User> GetByEmailAsync(string email)

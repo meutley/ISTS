@@ -16,7 +16,7 @@ namespace ISTS.Domain.Test.SessionRequests
         [InlineData("Rejected", "Reject")]
         public void ApproveReject_Throws_Exception_When_Request_Not_Pending(string currentState, string action)
         {
-            var request = SessionRequest.Create(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, DateTime.Now);
+            var request = SessionRequest.Create(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, DateTime.Now, Guid.NewGuid());
             switch (currentState)
             {
                 case "Approved":

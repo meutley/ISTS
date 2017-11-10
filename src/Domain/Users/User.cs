@@ -23,7 +23,7 @@ namespace ISTS.Domain.Users
 
         public string PostalCode { get; protected set; }
 
-        public int TimeZoneId { get; protected set; }
+        public int UserTimeZoneId { get; protected set; }
 
         public UserTimeZone TimeZone { get; protected set; }
 
@@ -50,7 +50,7 @@ namespace ISTS.Domain.Users
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 PostalCode = postalCode,
-                TimeZoneId = timeZoneId
+                UserTimeZoneId = timeZoneId
             };
 
             return user;

@@ -29,11 +29,13 @@ namespace ISTS.Api
             
             services.AddScoped<IPostalCodeRepository, PostalCodeRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<ISessionRepository, SessionRepository>();
             services.AddScoped<IStudioRepository, StudioRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             
-            services.AddScoped<IStudioService, StudioService>();
             services.AddScoped<IRoomService, RoomService>();
+            services.AddScoped<ISessionChargeCalculatorService, SessionChargeCalculatorService>();
+            services.AddScoped<IStudioService, StudioService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserPasswordService, UserPasswordService>();
         }
