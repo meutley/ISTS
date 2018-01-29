@@ -8,19 +8,12 @@ namespace ISTS.Application.Test.Common
 {
     public class DateTimeConverterTests
     {
-        private readonly IDateTimeConverter _dateTimeConverter;
-        
-        public DateTimeConverterTests()
-        {
-            _dateTimeConverter = new DateTimeConverter();
-        }
-        
         [Fact]
         public void ConvertToUtc_From_CentralStandardTime_No_DST_Is_Successful()
         {
             var sourceDateTime = new DateTime(2018, 1, 1, 1, 0, 0);
             var timeZoneId = "Central Standard Time";
-            var utcDate = _dateTimeConverter.ConvertToUtc(sourceDateTime, timeZoneId);
+            var utcDate = DateTimeConverter.ConvertToUtc(sourceDateTime, timeZoneId);
 
             Assert.Equal(new DateTime(2018, 1, 1, 7, 0, 0), utcDate);
         }
@@ -30,7 +23,7 @@ namespace ISTS.Application.Test.Common
         {
             var sourceDateTime = new DateTime(2018, 8, 1, 1, 0, 0);
             var timeZoneId = "Central Standard Time";
-            var utcDate = _dateTimeConverter.ConvertToUtc(sourceDateTime, timeZoneId);
+            var utcDate = DateTimeConverter.ConvertToUtc(sourceDateTime, timeZoneId);
 
             Assert.Equal(new DateTime(2018, 8, 1, 6, 0, 0), utcDate);
         }
@@ -40,7 +33,7 @@ namespace ISTS.Application.Test.Common
         {
             var sourceDateTime = new DateTime(2018, 1, 1, 7, 0, 0);
             var timeZoneId = "Central Standard Time";
-            var centralDate = _dateTimeConverter.ConvertFromUtc(sourceDateTime, timeZoneId);
+            var centralDate = DateTimeConverter.ConvertFromUtc(sourceDateTime, timeZoneId);
 
             Assert.Equal(new DateTime(2018, 1, 1, 1, 0, 0), centralDate);
         }
@@ -50,7 +43,7 @@ namespace ISTS.Application.Test.Common
         {
             var sourceDateTime = new DateTime(2018, 8, 1, 6, 0, 0);
             var timeZoneId = "Central Standard Time";
-            var centralDate = _dateTimeConverter.ConvertFromUtc(sourceDateTime, timeZoneId);
+            var centralDate = DateTimeConverter.ConvertFromUtc(sourceDateTime, timeZoneId);
 
             Assert.Equal(new DateTime(2018, 8, 1, 1, 0, 0), centralDate);
         }

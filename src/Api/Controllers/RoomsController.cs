@@ -59,7 +59,6 @@ namespace ISTS.Api.Controllers
             return Created(roomUri, function);
         }
 
-        [AllowAnonymous]
         // GET api/rooms/1/sessions
         [HttpGet("{id}/sessions")]
         public async Task<IActionResult> GetSessions(Guid id)
@@ -70,6 +69,7 @@ namespace ISTS.Api.Controllers
                 return NotFound();
             }
 
+            sessions.ForEach((s) => s.ConvertScheduleFromUtc(UserTimeZone.Name));
             return Ok(sessions);
         }
 
@@ -79,6 +79,8 @@ namespace ISTS.Api.Controllers
         {
             ValidateUserIsOwner(id);
             model.RoomId = id;
+            model.ConvertScheduleToUtc(UserTimeZone.Name);
+
             var session = await _roomService.CreateSessionAsync(id, model);
             var sessionUri = ApiHelper.GetResourceUri("rooms", id, "sessions", session.Id);
 
@@ -121,6 +123,7 @@ namespace ISTS.Api.Controllers
                 RequestedTime = requestedTime
             };
 
+            model.RequestedTime?.ConvertToUtc(UserTimeZone.Name);
             var request = await _roomService.RequestSessionAsync(model);
 
             return Ok(request);

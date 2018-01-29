@@ -2,10 +2,10 @@ using System;
 
 namespace ISTS.Api.Models
 {
-    internal static class ApiClaimTypes
+    public static class ApiClaimTypes
     {
-        internal static string TimeZoneId = "TimeZoneId";
-        internal static string TimeZoneName = "TimeZoneName";
-        internal static string TimeZoneUtcOffset = "TimeZoneUtcOffset";
+        public static string TimeZoneId = "TimeZoneId";
+        public static string TimeZoneName = "TimeZoneName";
+        public static string TimeZoneUtcOffset = "TimeZoneUtcOffset";
     }
 }

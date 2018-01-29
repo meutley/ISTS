@@ -139,7 +139,9 @@ namespace ISTS.Application.Rooms
 
         public async Task<SessionRequestDto> RequestSessionAsync(SessionRequestDto model)
         {
-            var requestedDateRange = DateRange.Create(model.RequestedTime.Start, model.RequestedTime.End);
+            var requestedDateRange = model.RequestedTime != null
+                ? DateRange.Create(model.RequestedTime.Start, model.RequestedTime.End)
+                : null;
             
             var room = await _roomRepository.GetAsync(model.RoomId);
             var newModel = room.RequestSession(model.RequestingUserId, requestedDateRange, model.RoomFunctionId, _sessionScheduleValidator);

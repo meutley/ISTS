@@ -63,7 +63,7 @@ namespace ISTS.Application.Test.Rooms
 
             Assert.NotNull(ex);
             Assert.NotNull(ex.InnerException);
-            Assert.IsType<ArgumentNullException>(ex.InnerException);
+            Assert.IsType<Exception>(ex.InnerException);
         }
 
         [Fact]

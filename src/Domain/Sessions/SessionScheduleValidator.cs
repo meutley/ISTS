@@ -23,7 +23,7 @@ namespace ISTS.Domain.Sessions
         {
             if (schedule == null)
             {
-                throw new DomainValidationException(new ArgumentNullException("Schedule is required"));
+                throw new DomainValidationException(new Exception("Schedule is required"));
             }
             
             if (schedule.Start >= schedule.End)

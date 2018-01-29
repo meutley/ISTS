@@ -17,6 +17,7 @@ using ISTS.Application.Common;
 using ISTS.Application.Sessions;
 using ISTS.Application.SessionRequests;
 using ISTS.Application.Studios;
+using ISTS.Api.Models;
 
 namespace ISTS.Api.Test.Controllers
 {
@@ -117,6 +118,14 @@ namespace ISTS.Api.Test.Controllers
 
             var roomSessions = dtos.Where(s => s.RoomId == roomId).ToList();
 
+            _identity.Setup(i => i.Claims).Returns(new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, "1"),
+                new Claim(ApiClaimTypes.TimeZoneId, "1"),
+                new Claim(ApiClaimTypes.TimeZoneName, "Central Standard Time"),
+                new Claim(ApiClaimTypes.TimeZoneUtcOffset, "-6")
+            });
+
             _roomService
                 .Setup(s => s.GetSessionsAsync(It.Is<Guid>(x => x == roomId)))
                 .Returns(Task.FromResult(roomSessions));
@@ -175,7 +184,7 @@ namespace ISTS.Api.Test.Controllers
         {
             var userId = Guid.NewGuid();
             var roomId = Guid.NewGuid();
-            var start = DateTime.Now;
+            var start = new DateTime(2018, 1, 1, 10, 0,0, DateTimeKind.Unspecified);
             var end = start.AddHours(2);
 
             var studio = new StudioDto
@@ -202,6 +211,13 @@ namespace ISTS.Api.Test.Controllers
 
             _identity.Setup(i => i.IsAuthenticated).Returns(true);
             _identity.Setup(i => i.Name).Returns(userId.ToString());
+            _identity.Setup(i => i.Claims).Returns(new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, userId.ToString()),
+                new Claim(ApiClaimTypes.TimeZoneId, "1"),
+                new Claim(ApiClaimTypes.TimeZoneName, "Central Standard Time"),
+                new Claim(ApiClaimTypes.TimeZoneUtcOffset, "-6")
+            });
 
             _studioService
                 .Setup(s => s.GetAsync(It.IsAny<Guid>()))
@@ -316,11 +332,18 @@ namespace ISTS.Api.Test.Controllers
         {
             var userId = Guid.NewGuid();
             var roomId = Guid.NewGuid();
-            var startTime = DateTime.Now;
+            var startTime = new DateTime(2018, 1, 1, 10, 0,0, DateTimeKind.Unspecified);
             var endTime = startTime.AddHours(2);
 
             _identity.Setup(i => i.IsAuthenticated).Returns(true);
             _identity.Setup(i => i.Name).Returns(userId.ToString());
+            _identity.Setup(i => i.Claims).Returns(new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, userId.ToString()),
+                new Claim(ApiClaimTypes.TimeZoneId, "1"),
+                new Claim(ApiClaimTypes.TimeZoneName, "Central Standard Time"),
+                new Claim(ApiClaimTypes.TimeZoneUtcOffset, "-6")
+            });
 
             var room = new RoomDto
             {
