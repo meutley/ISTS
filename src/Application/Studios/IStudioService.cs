@@ -15,6 +15,7 @@ namespace ISTS.Application.Studios
         Task<StudioDto> CreateAsync(StudioDto model);
         Task<List<StudioDto>> GetAllAsync();
         Task<StudioDto> GetAsync(Guid id);
+        Task<StudioDto> GetByFriendlyUrlAsync(string friendlyUrl);
         Task<StudioDto> UpdateAsync(StudioDto model);
         Task<List<StudioSearchResultDto>> SearchAsync(StudioSearchModel searchModel);
         

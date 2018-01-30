@@ -124,6 +124,14 @@ namespace ISTS.Application.Studios
             return result;
         }
 
+        public async Task<StudioDto> GetByFriendlyUrlAsync(string friendlyUrl)
+        {
+            var entity = await _studioRepository.GetByUrlAsync(friendlyUrl);
+            
+            var result = _mapper.Map<StudioDto>(entity);
+            return result;
+        }
+
         public async Task<StudioDto> UpdateAsync(StudioDto model)
         {
             var studio = await _studioRepository.GetAsync(model.Id);

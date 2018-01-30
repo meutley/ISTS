@@ -27,7 +27,6 @@ namespace ISTS.Api.Controllers
         }
         
         // GET api/studios/1
-        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -40,8 +39,20 @@ namespace ISTS.Api.Controllers
             return Ok(studio);
         }
 
+        // GET api/studios/getbyfriendlyurl
+        [HttpGet("getbyfriendlyurl")]
+        public async Task<IActionResult> GetByFriendlyUrl(string friendlyUrl)
+        {
+            var studio = await _studioService.GetByFriendlyUrlAsync(friendlyUrl);
+            if (studio == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(studio);
+        }
+
         // POST api/studios/search
-        [AllowAnonymous]
         [HttpPost("search")]
         public async Task<IActionResult> Search([FromBody]StudioSearchModel model)
         {
@@ -95,7 +106,6 @@ namespace ISTS.Api.Controllers
         }
 
         // GET api/studios/1/rooms
-        [AllowAnonymous]
         [HttpGet("{id}/rooms")]
         public async Task<IActionResult> GetRooms(Guid id)
         {
